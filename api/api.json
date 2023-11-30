@@ -1,0 +1,2705 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Employee's cabinet",
+        "version": "0.4.0",
+        "description": "",
+        "contact": {
+            "name": "Yandex Practicum Students Team"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1/api"
+        }
+    ],
+    "paths": {
+        "/departments": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Department"
+                                    }
+                                },
+                                "examples": {
+                                    "Departments": {
+                                        "value": [
+                                            {
+                                                "name": "HR department",
+                                                "users_number": 5,
+                                                "selected_users_number": 0,
+                                                "id": 7
+                                            },
+                                            {
+                                                "name": "Accounts department",
+                                                "users_number": 4,
+                                                "selected_users_number": 1,
+                                                "id": 3
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Departments list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listDepartments",
+                "description": "Returns a list of company departments with the number of employees"
+            }
+        },
+        "/users/{user_id}/scans/{scan_id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetScan"
+                                }
+                            }
+                        },
+                        "description": "Employee document scan response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getScan",
+                "description": "Returns the employee's document scan based on ID"
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "name": "scan_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee scan deleted response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deleteScan",
+                "description": "Deletes the employee's document scan based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "scan_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/photo": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "image/*": {
+                            "schema": {
+                                "format": "binary",
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "description": "employee ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "url",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Photo uploaded response, \nLocation header returns photo URL"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "uploadPhoto"
+            }
+        },
+        "/users/{user_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "description": "employee ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetFullUser"
+                                },
+                                "examples": {
+                                    "Employee example": {
+                                        "value": {
+                                            "id": 5,
+                                            "first_name": "Alexander",
+                                            "last_name": "Pushkin",
+                                            "middle_name": "Sergeyevich",
+                                            "position": "Novelist",
+                                            "department": "Collegium of Foreign Affairs",
+                                            "email": "pushkin@dantes.net",
+                                            "phone_numbers": [
+                                                {
+                                                    "number": "799183712345",
+                                                    "type": "mobile"
+                                                },
+                                                {
+                                                    "number": "1837",
+                                                    "type": "office"
+                                                }
+                                            ],
+                                            "passports": [
+                                                {
+                                                    "id": 5,
+                                                    "visas": [
+                                                        {
+                                                            "id": 9,
+                                                            "number": "33592222",
+                                                            "issued_state": "Germany",
+                                                            "valid_to": "1820-10-22",
+                                                            "valid_from": "1820-09-08",
+                                                            "number_entries": "2",
+                                                            "has_scan": false
+                                                        }
+                                                    ],
+                                                    "number": "4011364219",
+                                                    "issued_date": "1817-05-15",
+                                                    "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
+                                                    "type": "internal",
+                                                    "has_scan": false
+                                                }
+                                            ],
+                                            "contracts": [
+                                                {
+                                                    "date_from": "1819-01-17",
+                                                    "date_to": "1821-01-17",
+                                                    "type": "temporary",
+                                                    "number": "1000005"
+                                                }
+                                            ],
+                                            "grade": "1",
+                                            "date_of_birth": "1799-05-26",
+                                            "place_of_birth": "Москва",
+                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                                            "nationality": "Царская Россия",
+                                            "foreign_languages": [
+                                                "english",
+                                                "french"
+                                            ],
+                                            "military": {
+                                                "rank": "Старший лейтенант",
+                                                "speciality": "101182",
+                                                "category": "А2",
+                                                "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
+                                                "has_scan": true
+                                            },
+                                            "vacations": [
+                                                {
+                                                    "id": 78,
+                                                    "date_from": "1820-03-11",
+                                                    "date_to": "1820-03-25"
+                                                }
+                                            ],
+                                            "taxpayer": {
+                                                "number": "500100732259",
+                                                "has_scan": true
+                                            },
+                                            "insurance": {
+                                                "number": "08336732477",
+                                                "has_scan": true
+                                            }
+                                        }
+                                    },
+                                    "Foreigner example": {
+                                        "value": {
+                                            "id": 93,
+                                            "first_name": "Улугбек",
+                                            "last_name": "Акрамов",
+                                            "middle_name": "Рашидович",
+                                            "position": "Строитель",
+                                            "department": "Инженерный отдел",
+                                            "email": "akramovur@rogakopyta.net",
+                                            "phone_numbers": [
+                                                {
+                                                    "number": "799183712345",
+                                                    "type": "mobile"
+                                                },
+                                                {
+                                                    "number": "1837",
+                                                    "type": "office"
+                                                }
+                                            ],
+                                            "passports": [
+                                                {
+                                                    "id": 67,
+                                                    "number": "AZ0001055",
+                                                    "issued_date": "2010-05-23",
+                                                    "issued_by": "TOSHKENT SHAHAR IIBB",
+                                                    "type": "foreigners",
+                                                    "has_scan": true
+                                                }
+                                            ],
+                                            "contracts": [
+                                                {
+                                                    "date_from": "2013-08-01",
+                                                    "date_to": "2013-09-04",
+                                                    "type": "temporary",
+                                                    "number": "12345"
+                                                }
+                                            ],
+                                            "work_permit": {
+                                                "number": "77121034092",
+                                                "valid_to": "2013-09-05",
+                                                "has_scan": true
+                                            },
+                                            "grade": "2",
+                                            "date_of_birth": "1994-05-26",
+                                            "place_of_birth": "Ташкент",
+                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                                            "nationality": "Узбекистан"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getUser",
+                "description": "Returns the employee based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchFullUser"
+                            },
+                            "examples": {
+                                "Path example": {
+                                    "value": {
+                                        "grade": "2",
+                                        "registration_address": "Moscow, Tverskaya street, building 32, apartment 17"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee updated response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchUser",
+                "description": "Changes selected fields in the user structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "description": "employee ID",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/scans": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "description": "employee ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetScan"
+                                    }
+                                },
+                                "examples": {
+                                    "Scans list example": {
+                                        "value": [
+                                            {
+                                                "id": 7,
+                                                "upload_at": "2019-03-10T09:30Z",
+                                                "type": "passport",
+                                                "document_id": 7
+                                            },
+                                            {
+                                                "id": 81,
+                                                "upload_at": "2018-02-10T09:30Z",
+                                                "type": "baby_birth",
+                                                "description": "not verified by social services"
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee scans list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listScans",
+                "description": "Returns list of employee's document scans"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "type",
+                                    "fileName"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "type": {
+                                        "$ref": "#/components/schemas/ScanType"
+                                    },
+                                    "document_id": {
+                                        "type": "integer"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "fileName": {
+                                        "format": "binary",
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "description": "employee ID",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "url",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Scan uploaded response, \nLocation header returns scan URL"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "uploadScan",
+                "description": "Creates a new employee's document scan"
+            }
+        },
+        "/login": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "login",
+                                    "password"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "login": {
+                                        "description": "employee login",
+                                        "maxLength": 15,
+                                        "minLength": 5,
+                                        "type": "string",
+                                        "example": "anna"
+                                    },
+                                    "password": {
+                                        "format": "password",
+                                        "description": "employee password",
+                                        "maxLength": 15,
+                                        "minLength": 8,
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "description": "Bearer Token for further authentication",
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful authentication response: bearer token"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "login",
+                "description": "Authenticates a user and returns a bearer token on success"
+            }
+        },
+        "/users": {
+            "get": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Limit example": {
+                                "value": "50"
+                            }
+                        },
+                        "name": "limit",
+                        "description": "maximum number of results to return",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "examples": {
+                            "Query": {
+                                "value": "\"Иванов\""
+                            }
+                        },
+                        "name": "query",
+                        "description": "query to find by",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "examples": {
+                            "SortByExample": {
+                                "value": "\"alphabet\""
+                            }
+                        },
+                        "name": "sort_by",
+                        "description": "type of sort result by",
+                        "schema": {
+                            "enum": [
+                                "alphabet",
+                                "department"
+                            ],
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "name": "page",
+                        "description": "page number with results to return",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetShortUser"
+                                    }
+                                },
+                                "examples": {
+                                    "List employees example": {
+                                        "value": [
+                                            {
+                                                "first_name": "Alexander",
+                                                "last_name": "Pushkin",
+                                                "middle_name": "Sergeyevich",
+                                                "position": "Novelist",
+                                                "department": "Collegium of Foreign Affairs",
+                                                "email": "pushkin@dantes.net",
+                                                "phone_numbers": [
+                                                    {
+                                                        "number": "799183712345",
+                                                        "type": "mobile"
+                                                    },
+                                                    {
+                                                        "number": "1837",
+                                                        "type": "office"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "first_name": "Nikolai",
+                                                "last_name": "Gogol",
+                                                "middle_name": "Vasilievich",
+                                                "position": "Playwright",
+                                                "department": "Third Section of His Imperial Majesty's Own Chancellery",
+                                                "email": "gogol@fire.net",
+                                                "phone_numbers": [
+                                                    {
+                                                        "number": "799185212345",
+                                                        "type": "mobile"
+                                                    },
+                                                    {
+                                                        "number": "1821",
+                                                        "type": "office"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employees list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listUsers",
+                "description": "Returns list of company employees sorted alphabetically (default) or by department"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostFullUser"
+                            },
+                            "examples": {
+                                "Post employee example": {
+                                    "value": {
+                                        "first_name": "Alexander",
+                                        "last_name": "Pushkin",
+                                        "middle_name": "Sergeyevich",
+                                        "position": "Novelist",
+                                        "department": "Collegium of Foreign Affairs",
+                                        "email": "pushkin@dantes.net",
+                                        "phone_numbers": [
+                                            {
+                                                "number": "799183712345",
+                                                "type": "mobile"
+                                            },
+                                            {
+                                                "number": "1837",
+                                                "type": "office"
+                                            }
+                                        ],
+                                        "foreign_languages": [
+                                            "english",
+                                            "german"
+                                        ],
+                                        "military": {
+                                            "rank": "Старший лейтенант",
+                                            "speciality": "101182",
+                                            "category": "А2",
+                                            "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "url",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Employee created response, \nLocation header returns a new employee URL"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "addUser",
+                "description": "Creates a new employe in the company"
+            }
+        },
+        "/users/{user_id}/passports/{passport_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "passport_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetPassport"
+                                },
+                                "examples": {
+                                    "Foreigners passport example": {
+                                        "value": {
+                                            "id": 75,
+                                            "visas": [
+                                                {
+                                                    "id": 3,
+                                                    "number": "33592222",
+                                                    "issued_state": "Russia",
+                                                    "valid_to": "2017-09-22",
+                                                    "valid_from": "2018-09-22",
+                                                    "number_entries": "mult",
+                                                    "has_scan": true
+                                                }
+                                            ],
+                                            "number": "33592222",
+                                            "issued_date": "2016-05-15",
+                                            "issued_by": "Washington D.C. U.S.A.",
+                                            "type": "foreigners",
+                                            "has_scan": false
+                                        }
+                                    },
+                                    "Internal passport example": {
+                                        "value": {
+                                            "id": 98,
+                                            "visas": [
+                                                {
+                                                    "id": 9,
+                                                    "number": "33592222",
+                                                    "issued_state": "Germany",
+                                                    "valid_to": "2017-09-22",
+                                                    "valid_from": "2017-10-08",
+                                                    "number_entries": "2",
+                                                    "has_scan": false
+                                                }
+                                            ],
+                                            "number": "4011364219",
+                                            "issued_date": "2016-05-15",
+                                            "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
+                                            "type": "internal",
+                                            "has_scan": false
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee passport response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee/passport not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getPassport",
+                "description": "Returns the employee's passport based on ID"
+            },
+            "delete": {
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "passport_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee passport deleted response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deletePassport",
+                "description": "Deletes the employee's passport based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchPassport"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "passport_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee passport updated response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchPassport",
+                "description": "Changes selected fields in the employee's passport structure based on ID"
+            }
+        },
+        "/users/{user_id}/passports/{passport_id}/visas/{visa_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "passport_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "visa_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetVisa"
+                                }
+                            }
+                        },
+                        "description": "Employee visa response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee/passport/visa not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getVisa",
+                "description": "Returns the employee's visa based on ID"
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Employee visa deleted response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deleteVisa",
+                "description": "Deletes the employee's visa based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchVisa"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "passport_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "name": "visa_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Employee visa updated response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchVisa",
+                "description": "Changes selected fields in the employee's visa structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "passport_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "visa_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/contracts": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetContract"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee contracts list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listContracts",
+                "description": "Returns list of employee's contracts"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostContract"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "url",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Employee contract added response,\nLocation header returns a new employee contract URL"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "409": {
+                        "description": "Add contract conflict response: the contract already exists"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "addContract",
+                "description": "Creates a new employee's contract"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/passports": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetPassport"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "List employee passports"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listPassports",
+                "description": "Returns list of employee's passport"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostPassport"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "url",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Passport added response, \nLocation header returns a new employee passport URL"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "409": {
+                        "description": "Add passport conflict response: the passport already exists"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "addPassport",
+                "description": "Creates a new employee's passport"
+            }
+        },
+        "/users/{user_id}/passports/{passport_id}/visas": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetVisa"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "List employee visas for this passport"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee/passport not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listVisas",
+                "description": "Returns list of employee's visas"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostVisa"
+                            },
+                            "examples": {
+                                "New visa example": {
+                                    "value": {
+                                        "number": "33592222",
+                                        "issued_state": "Spain",
+                                        "valid_to": "2017-09-22",
+                                        "valid_from": "2017-10-08",
+                                        "number_entries": "1"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "url",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Employee visa added response,\nLocation header returns a new employee visa URL"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "addVisa",
+                "description": "Creates a new employee's visa"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "passport_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/contracts/{contract_id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetContract"
+                                }
+                            }
+                        },
+                        "description": "Employee contract response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee/contract not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getContract",
+                "description": "Returns the employee's contract based on ID"
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Employee contract deleted response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deleteContract",
+                "description": "Deletes the employee's contract based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchContract"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee contract updated response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchContract",
+                "description": "Changes selected fields in the employee's contract structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "contract_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/login/change-password": {
+            "get": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Key": {
+                                "value": "\"0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM=\""
+                            }
+                        },
+                        "name": "key",
+                        "description": "a special key sent to the employee’s email",
+                        "schema": {
+                            "format": "byte",
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Check a change password key response (empty)"
+                    },
+                    "400": {
+                        "description": "Invalid recovery key"
+                    },
+                    "429": {
+                        "description": "Too many request response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "checkKey",
+                "description": "Checks a password change key that was sent to the user's email"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "One of the request types: only login to get recovery key on email or key & a new password to change password",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/components/schemas/ChangePasswordPassword"
+                                    },
+                                    {
+                                        "$ref": "#/components/schemas/ChangePasswordLogin"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Change password response (empty)"
+                    },
+                    "400": {
+                        "description": "Invalid recovery key or password"
+                    },
+                    "404": {
+                        "description": "Employee not found"
+                    },
+                    "429": {
+                        "description": "Too many request response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "changePassword",
+                "description": "Accepts a login and sends the key to change the password to the user's email. \nOr it accepts the key and a new password and changes it."
+            }
+        },
+        "/users/{user_id}/vacations": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetVacation"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee vacations list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listVacations",
+                "description": "Returns list of employee's vacations"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostVacation"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Employee vacation added response, \nLocation header returns vacation URL"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "409": {
+                        "description": "Add vacation conflict response: the dates indicated conflict with the available ones"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "postVacation",
+                "description": "Creates a new employee's vacation"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/vacations/{vacation_id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetVacation"
+                                }
+                            }
+                        },
+                        "description": "Employee vacation response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee/vacation not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getVacation",
+                "description": "Returns the employee's vacation based on ID"
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Vacation deleted response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deleteVacation",
+                "description": "Deletes the employee's vacation based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchVacation"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vacation updated response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchVacation",
+                "description": "Changes selected fields in the employee's vacation structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "vacation_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        }
+    },
+    "components": {
+        "schemas": {
+            "PhoneNumbers": {
+                "type": "object",
+                "additionalProperties": {
+                    "maxLength": 15,
+                    "minLength": 2,
+                    "type": "string"
+                },
+                "example": {
+                    "mobile": 79999999999,
+                    "office": 123456
+                }
+            },
+            "Department": {
+                "description": "",
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "users_number": {
+                        "description": "current number of working employees",
+                        "type": "integer"
+                    },
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "recruited_users_number": {
+                        "description": "number of recruited employees",
+                        "type": "integer"
+                    }
+                }
+            },
+            "ScanType": {
+                "description": "",
+                "enum": [
+                    "passport",
+                    "taxpayer",
+                    "insurance",
+                    "contract",
+                    "personal_data_processing",
+                    "military",
+                    "marriage",
+                    "baby_birth",
+                    "education",
+                    "briefing",
+                    "training",
+                    "work_permit",
+                    "other"
+                ],
+                "type": "string"
+            },
+            "BaseVisa": {
+                "description": "",
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_state": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date",
+                        "description": "",
+                        "maxLength": 10,
+                        "minLength": 10,
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date",
+                        "description": "",
+                        "maxLength": 10,
+                        "minLength": 10,
+                        "type": "string"
+                    },
+                    "number_entries": {
+                        "description": "",
+                        "enum": [
+                            "1",
+                            "2",
+                            "mult"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "number": "33592222",
+                    "issued_state": "Spain",
+                    "valid_to": "2017-10-22",
+                    "valid_from": "2017-09-08",
+                    "number_entries": "1"
+                }
+            },
+            "BaseScan": {
+                "description": "",
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "$ref": "#/components/schemas/ScanType",
+                        "description": ""
+                    },
+                    "description": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "document_id": {
+                        "description": "document ID (if necessary), passport ID for passport scan, for example",
+                        "type": "integer"
+                    }
+                }
+            },
+            "GetScan": {
+                "description": "",
+                "required": [
+                    "id",
+                    "type",
+                    "upload_at"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseScan"
+                    }
+                ],
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "upload_at": {
+                        "format": "date-time",
+                        "description": "",
+                        "maxLength": 32,
+                        "minLength": 21,
+                        "type": "string"
+                    }
+                }
+            },
+            "BaseShortUser": {
+                "required": [],
+                "properties": {
+                    "first_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "middle_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "position": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "department": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "email": {
+                        "format": "email",
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "phone_numbers": {
+                        "$ref": "#/components/schemas/PhoneNumbers",
+                        "description": "",
+                        "maxLength": 15,
+                        "minLength": 2
+                    }
+                },
+                "example": {
+                    "first_name": "Alexander",
+                    "last_name": "Pushkin",
+                    "middle_name": "Sergeyevich",
+                    "position": "Novelist",
+                    "department": "Collegium of Foreign Affairs",
+                    "email": "pushkin@dantes.net",
+                    "phone_numbers": [
+                        {
+                            "number": "799183712345",
+                            "type": "mobile"
+                        },
+                        {
+                            "number": "1837",
+                            "type": "office"
+                        }
+                    ]
+                }
+            },
+            "GetShortUser": {
+                "description": "",
+                "required": [
+                    "id",
+                    "first_name",
+                    "last_name"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseShortUser"
+                    }
+                ],
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                }
+            },
+            "BaseFullUser": {
+                "required": [],
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseShortUser"
+                    },
+                    {
+                        "required": [
+                            "id"
+                        ]
+                    }
+                ],
+                "properties": {
+                    "grade": {
+                        "description": "",
+                        "maxLength": 1,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "date_of_birth": {
+                        "format": "date",
+                        "description": "",
+                        "maxLength": 10,
+                        "minLength": 10,
+                        "type": "string"
+                    },
+                    "place_of_birth": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "registration_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "residential_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "nationality": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "foreign_languages": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "military": {
+                        "$ref": "#/components/schemas/Military",
+                        "description": ""
+                    },
+                    "taxpayer": {
+                        "$ref": "#/components/schemas/Taxpayer",
+                        "description": "",
+                        "maxLength": 12,
+                        "minLength": 10
+                    },
+                    "insurance": {
+                        "$ref": "#/components/schemas/Insurance",
+                        "description": "",
+                        "maxLength": 11,
+                        "minLength": 11
+                    },
+                    "work_permit": {
+                        "$ref": "#/components/schemas/WorkPermit",
+                        "description": ""
+                    }
+                },
+                "example": {
+                    "grade": "1",
+                    "date_of_birth": "2018-01-17",
+                    "place_of_birth": "Москва",
+                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "nationality": "Царская Россия",
+                    "foreign_languages": [
+                        "english",
+                        "french"
+                    ],
+                    "military": {
+                        "rank": "Старший лейтенант",
+                        "speciality": "101182",
+                        "category": "А2",
+                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
+                        "has_scan": true
+                    },
+                    "taxpayer": {
+                        "number": "500100732259",
+                        "has_scan": true
+                    },
+                    "insurance": {
+                        "number": "08336732477",
+                        "has_scan": true
+                    }
+                }
+            },
+            "GetFullUser": {
+                "description": "",
+                "required": [
+                    "id",
+                    "date_of_birth",
+                    "first_name",
+                    "last_name"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseFullUser"
+                    }
+                ],
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "passports": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetPassport"
+                        }
+                    },
+                    "contracts": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BaseContract"
+                        }
+                    },
+                    "vacations": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetVacation"
+                        }
+                    }
+                }
+            },
+            "PostFullUser": {
+                "description": "",
+                "required": [
+                    "date_of_birth",
+                    "first_name",
+                    "last_name"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseFullUser"
+                    }
+                ]
+            },
+            "BasePassport": {
+                "description": "",
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_date": {
+                        "description": "",
+                        "maxLength": 8,
+                        "minLength": 8,
+                        "type": "string"
+                    },
+                    "issued_by": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "",
+                        "enum": [
+                            "internal",
+                            "external",
+                            "foreigners"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "number": "33592222",
+                    "issued_date": "2016-05-15",
+                    "issued_by": "Washington D.C. U.S.A.",
+                    "type": "foreigners"
+                }
+            },
+            "PostPassport": {
+                "description": "",
+                "required": [
+                    "number",
+                    "issued_date",
+                    "issued_by",
+                    "type"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BasePassport"
+                    }
+                ]
+            },
+            "PatchFullUser": {
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseFullUser"
+                    }
+                ]
+            },
+            "PatchPassport": {
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BasePassport"
+                    }
+                ]
+            },
+            "PostVisa": {
+                "description": "",
+                "required": [
+                    "number",
+                    "issued_state",
+                    "valid_to",
+                    "valid_from",
+                    "number_entries"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseVisa"
+                    }
+                ]
+            },
+            "PatchVisa": {
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseVisa"
+                    }
+                ]
+            },
+            "BaseContract": {
+                "description": "",
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "date_from": {
+                        "format": "date",
+                        "description": "",
+                        "maxLength": 10,
+                        "minLength": 10,
+                        "type": "string"
+                    },
+                    "date_to": {
+                        "format": "date",
+                        "description": "",
+                        "maxLength": 10,
+                        "minLength": 10,
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "",
+                        "enum": [
+                            "temporary",
+                            "permanent"
+                        ],
+                        "type": "string"
+                    },
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "date_from": "2018-01-17",
+                    "date_to": "2020-01-17",
+                    "type": "temporary",
+                    "number": "145678"
+                }
+            },
+            "GetContract": {
+                "description": "",
+                "required": [
+                    "id",
+                    "date_from",
+                    "number",
+                    "type",
+                    "has_scan"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseContract"
+                    }
+                ],
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean"
+                    }
+                }
+            },
+            "PostContract": {
+                "description": "",
+                "required": [
+                    "date_from",
+                    "number",
+                    "type"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseContract"
+                    }
+                ]
+            },
+            "PatchContract": {
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseContract"
+                    }
+                ]
+            },
+            "GetPassport": {
+                "description": "",
+                "required": [
+                    "id",
+                    "has_scan",
+                    "number",
+                    "issued_date",
+                    "issued_by",
+                    "type"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BasePassport"
+                    }
+                ],
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean"
+                    },
+                    "visas": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetVisa"
+                        }
+                    }
+                }
+            },
+            "Military": {
+                "description": "",
+                "required": [
+                    "speciality",
+                    "rank",
+                    "comissariat",
+                    "category",
+                    "has_scan"
+                ],
+                "type": "object",
+                "properties": {
+                    "rank": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "speciality": {
+                        "description": "",
+                        "maxLength": 7,
+                        "minLength": 6,
+                        "type": "string"
+                    },
+                    "category": {
+                        "description": "",
+                        "maxLength": 2,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "comissariat": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "example": {
+                    "rank": "Старший лейтенант",
+                    "speciality": "101182",
+                    "category": "А2",
+                    "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
+                    "has_scan": true
+                }
+            },
+            "Taxpayer": {
+                "description": "",
+                "required": [
+                    "has_scan",
+                    "number"
+                ],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 12,
+                        "minLength": 10,
+                        "type": "string",
+                        "example": ""
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "example": {
+                    "number": "500100732259",
+                    "has_scan": true
+                }
+            },
+            "Insurance": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 11,
+                        "minLength": 11,
+                        "type": "string"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "example": {
+                    "number": "08336732477",
+                    "has_scan": true
+                }
+            },
+            "GetVisa": {
+                "description": "",
+                "required": [
+                    "id",
+                    "number",
+                    "issued_state",
+                    "valid_to",
+                    "valid_from",
+                    "number_entries",
+                    "has_scan"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseVisa"
+                    }
+                ],
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean"
+                    }
+                }
+            },
+            "ChangePasswordLogin": {
+                "description": "",
+                "required": [
+                    "login"
+                ],
+                "type": "object",
+                "properties": {
+                    "login": {
+                        "description": "employee login",
+                        "maxLength": 15,
+                        "minLength": 5,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "login": "VasyaPP"
+                }
+            },
+            "ChangePasswordPassword": {
+                "description": "",
+                "required": [
+                    "key",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "format": "byte",
+                        "description": "a special key sent to the employee’s email",
+                        "maxLength": 64,
+                        "minLength": 64,
+                        "type": "string"
+                    },
+                    "password": {
+                        "format": "password",
+                        "description": "a new employee password",
+                        "maxLength": 15,
+                        "minLength": 8,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "key": "0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM=",
+                    "password": "pa$$word"
+                }
+            },
+            "WorkPermit": {
+                "description": "",
+                "required": [
+                    "has_scan",
+                    "number",
+                    "valid_to"
+                ],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date",
+                        "description": "",
+                        "maxLength": 10,
+                        "minLength": 10,
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date",
+                        "description": "",
+                        "maxLength": 10,
+                        "minLength": 10,
+                        "type": "string"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "example": {
+                    "number": "77121034092",
+                    "valid_to": "2013-09-05",
+                    "has_scan": true
+                }
+            },
+            "BaseVacation": {
+                "description": "",
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "date_from": {
+                        "format": "date",
+                        "description": "",
+                        "maxLength": 10,
+                        "minLength": 10,
+                        "type": "string"
+                    },
+                    "date_to": {
+                        "format": "date",
+                        "description": "",
+                        "maxLength": 10,
+                        "minLength": 10,
+                        "type": "string"
+                    }
+                }
+            },
+            "PostVacation": {
+                "description": "",
+                "required": [
+                    "date_to",
+                    "date_from"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseVacation"
+                    }
+                ]
+            },
+            "PatchVacation": {
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseVacation"
+                    }
+                ]
+            },
+            "GetVacation": {
+                "description": "",
+                "required": [
+                    "id",
+                    "date_from",
+                    "date_to"
+                ],
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseVacation"
+                    }
+                ],
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "id": 78,
+                    "date_from": "2018-03-11",
+                    "date_to": "2018-03-25"
+                }
+            }
+        },
+        "responses": {
+            "UnauthorizedError": {
+                "description": "Access token is missing or invalid"
+            },
+            "InternalServerError": {
+                "description": "Internal Server Error"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "type": "http"
+            }
+        }
+    }
+}
