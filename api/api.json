@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.4.0",
+        "version": "0.5.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -184,6 +184,15 @@
                             }
                         },
                         "description": "Photo uploaded response, \nLocation header returns photo URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
                     }
                 },
                 "security": [
@@ -393,6 +402,9 @@
                     "200": {
                         "description": "Employee updated response (empty)"
                     },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
@@ -539,6 +551,9 @@
                         },
                         "description": "Scan uploaded response, \nLocation header returns scan URL"
                     },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
@@ -648,6 +663,19 @@
                     },
                     {
                         "examples": {
+                            "Page example": {
+                                "value": "2"
+                            }
+                        },
+                        "name": "page",
+                        "description": "page number with results to return",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "examples": {
                             "SortByExample": {
                                 "value": "\"alphabet\""
                             }
@@ -660,14 +688,6 @@
                                 "department"
                             ],
                             "type": "string"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "name": "page",
-                        "description": "page number with results to return",
-                        "schema": {
-                            "type": "integer"
                         },
                         "in": "query"
                     }
@@ -797,6 +817,9 @@
                             }
                         },
                         "description": "Employee created response, \nLocation header returns a new employee URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
                     },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
@@ -978,6 +1001,9 @@
                     "200": {
                         "description": "Employee passport updated response (empty)"
                     },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
@@ -992,7 +1018,25 @@
                 ],
                 "operationId": "patchPassport",
                 "description": "Changes selected fields in the employee's passport structure based on ID"
-            }
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "passport_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
         },
         "/users/{user_id}/passports/{passport_id}/visas/{visa_id}": {
             "get": {
@@ -1112,6 +1156,9 @@
                     "200": {
                         "description": "Employee visa updated response (empty)"
                     },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
@@ -1207,6 +1254,9 @@
                             }
                         },
                         "description": "Employee contract added response,\nLocation header returns a new employee contract URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
                     },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
@@ -1314,6 +1364,9 @@
                         },
                         "description": "Passport added response, \nLocation header returns a new employee passport URL"
                     },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
@@ -1400,6 +1453,9 @@
                             }
                         },
                         "description": "Employee visa added response,\nLocation header returns a new employee visa URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
                     },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
@@ -1500,6 +1556,9 @@
                 "responses": {
                     "200": {
                         "description": "Employee contract updated response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
                     },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
@@ -1657,6 +1716,9 @@
                     "201": {
                         "description": "Employee vacation added response, \nLocation header returns vacation URL"
                     },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
@@ -1751,6 +1813,9 @@
                 "responses": {
                     "200": {
                         "description": "Vacation updated response"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
                     },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
@@ -2684,21 +2749,60 @@
                     "date_from": "2018-03-11",
                     "date_to": "2018-03-25"
                 }
+            },
+            "Error": {
+                "required": [
+                    "message"
+                ],
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
             }
         },
         "responses": {
             "UnauthorizedError": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                },
                 "description": "Access token is missing or invalid"
             },
             "InternalServerError": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                },
                 "description": "Internal Server Error"
+            },
+            "BadRequest": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                },
+                "description": "Invalid request data"
             }
         },
         "securitySchemes": {
             "bearerAuth": {
                 "scheme": "bearer",
                 "bearerFormat": "JWT",
-                "type": "http"
+                "type": "http",
+                "description": "auth: login+password, PASETO tokens"
             }
         }
     }
