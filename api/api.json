@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.5.0",
+        "version": "0.5.1",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -1670,84 +1670,6 @@
                 "description": "Accepts a login and sends the key to change the password to the user's email. \nOr it accepts the key and a new password and changes it."
             }
         },
-        "/users/{user_id}/vacations": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/GetVacation"
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Employee vacations list response"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "listVacations",
-                "description": "Returns list of employee's vacations"
-            },
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PostVacation"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "201": {
-                        "description": "Employee vacation added response, \nLocation header returns vacation URL"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "409": {
-                        "description": "Add vacation conflict response: the dates indicated conflict with the available ones"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "postVacation",
-                "description": "Creates a new employee's vacation"
-            },
-            "parameters": [
-                {
-                    "name": "user_id",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
         "/users/{user_id}/vacations/{vacation_id}": {
             "get": {
                 "responses": {
@@ -1843,6 +1765,92 @@
                 },
                 {
                     "name": "vacation_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/vacations": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetVacation"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee vacations list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listVacations",
+                "description": "Returns list of employee's vacations"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostVacation"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "url",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Employee vacation added response, \nLocation header returns vacation URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "409": {
+                        "description": "Add vacation conflict response: the dates indicated conflict with the available ones"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "postVacation",
+                "description": "Creates a new employee's vacation"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
                     "schema": {
                         "type": "integer"
                     },
