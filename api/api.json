@@ -360,32 +360,6 @@
         },
         "/users/{user_id}/passports/{passport_id}/visas/{visa_id}": {
             "get": {
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "name": "passport_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "name": "visa_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -468,32 +442,6 @@
                     },
                     "required": true
                 },
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "name": "passport_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "name": "visa_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Employee visa updated response (empty)"
@@ -830,24 +778,6 @@
         },
         "/users/{user_id}/passports/{passport_id}": {
             "get": {
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "name": "passport_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -963,24 +893,6 @@
                 "description": "Returns the employee's passport based on ID"
             },
             "delete": {
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "name": "passport_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Employee passport deleted response (empty)"
@@ -1018,24 +930,6 @@
                     },
                     "required": true
                 },
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "name": "passport_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Employee passport updated response (empty)"
@@ -1305,115 +1199,8 @@
                 }
             ]
         },
-        "/users/{user_id}/scans/{scan_id}": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/Scan"
-                                        },
-                                        {
-                                            "required": [
-                                                "id",
-                                                "type",
-                                                "upload_at"
-                                            ]
-                                        }
-                                    ]
-                                }
-                            }
-                        },
-                        "description": "Employee document scan response"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "getScan",
-                "description": "Returns the employee's document scan based on ID"
-            },
-            "delete": {
-                "parameters": [
-                    {
-                        "name": "scan_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "name": "user_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Employee scan deleted response (empty)"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "deleteScan",
-                "description": "Deletes the employee's document scan based on ID"
-            },
-            "parameters": [
-                {
-                    "name": "user_id",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                },
-                {
-                    "name": "scan_id",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
         "/users/{user_id}/scans": {
             "get": {
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "description": "employee ID",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "content": {
@@ -1505,17 +1292,6 @@
                     },
                     "required": true
                 },
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "description": "employee ID",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "201": {
                         "headers": {
@@ -1787,19 +1563,125 @@
                 "description": "Creates a new employe in the company"
             }
         },
-        "/users/{user_id}": {
+        "/login": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Auth"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "description": "PASETO Bearer Token for further authentication",
+                                            "type": "string",
+                                            "example": "v4.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwIjoiMjAyMi0wMS0wMVQwMDowMDowMCswMDowMCJ9v3Jt8mx_TdM2ceTGoqwrh4yDFn0XsHvvV_D0DtwQxVrJEBMl0F2caAdgnpKlt4p7xBnx1HcO-SPo8FPp214HDw.eyJraWQiOiJ6VmhNaVBCUDlmUmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful authentication response: bearer token"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "login",
+                "description": "Authenticates a user and returns a paseto bearer token on success"
+            }
+        },
+        "/login/change-password": {
             "get": {
                 "parameters": [
                     {
-                        "name": "user_id",
-                        "description": "employee ID",
-                        "schema": {
-                            "type": "integer"
+                        "examples": {
+                            "Key": {
+                                "value": "\"0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM=\""
+                            }
                         },
-                        "in": "path",
+                        "name": "key",
+                        "description": "a special key sent to the employee’s email",
+                        "schema": {
+                            "format": "byte",
+                            "type": "string"
+                        },
+                        "in": "query",
                         "required": true
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "Check a change password key response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "429": {
+                        "description": "Too many request response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "checkKey",
+                "description": "Checks a password change key that was sent to the user's email"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "One of the request types: only login to get recovery key on email or key & a new password to change password",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/components/schemas/NewPassword"
+                                    },
+                                    {
+                                        "$ref": "#/components/schemas/Login"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Change password response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "description": "Employee not found"
+                    },
+                    "429": {
+                        "description": "Too many request response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "changePassword",
+                "description": "Accepts a login and sends the key to change the password to the user's email. \nOr it accepts the key and a new password and changes it."
+            }
+        },
+        "/users/{user_id}": {
+            "get": {
                 "responses": {
                     "200": {
                         "content": {
@@ -2134,35 +2016,29 @@
                 }
             ]
         },
-        "/login": {
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Auth"
-                            }
-                        }
-                    },
-                    "required": true
-                },
+        "/users/{user_id}/scans/{scan_id}": {
+            "get": {
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "token": {
-                                            "description": "PASETO Bearer Token for further authentication",
-                                            "type": "string",
-                                            "example": "v4.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwIjoiMjAyMi0wMS0wMVQwMDowMDowMCswMDowMCJ9v3Jt8mx_TdM2ceTGoqwrh4yDFn0XsHvvV_D0DtwQxVrJEBMl0F2caAdgnpKlt4p7xBnx1HcO-SPo8FPp214HDw.eyJraWQiOiJ6VmhNaVBCUDlmUmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9"
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Scan"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "type",
+                                                "upload_at"
+                                            ]
                                         }
-                                    }
+                                    ]
                                 }
                             }
                         },
-                        "description": "Successful authentication response: bearer token"
+                        "description": "Employee document scan response"
                     },
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
@@ -2171,85 +2047,52 @@
                         "$ref": "#/components/responses/InternalServerError"
                     }
                 },
-                "operationId": "login",
-                "description": "Authenticates a user and returns a paseto bearer token on success"
-            }
-        },
-        "/login/change-password": {
-            "get": {
-                "parameters": [
+                "security": [
                     {
-                        "examples": {
-                            "Key": {
-                                "value": "\"0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM=\""
-                            }
-                        },
-                        "name": "key",
-                        "description": "a special key sent to the employee’s email",
-                        "schema": {
-                            "format": "byte",
-                            "type": "string"
-                        },
-                        "in": "query",
-                        "required": true
+                        "bearerAuth": []
                     }
                 ],
+                "operationId": "getScan",
+                "description": "Returns the employee's document scan based on ID"
+            },
+            "delete": {
                 "responses": {
                     "200": {
-                        "description": "Check a change password key response (empty)"
+                        "description": "Employee scan deleted response (empty)"
                     },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "429": {
-                        "description": "Too many request response"
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
                     },
                     "500": {
                         "$ref": "#/components/responses/InternalServerError"
                     }
                 },
-                "operationId": "checkKey",
-                "description": "Checks a password change key that was sent to the user's email"
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deleteScan",
+                "description": "Deletes the employee's document scan based on ID"
             },
-            "post": {
-                "requestBody": {
-                    "description": "One of the request types: only login to get recovery key on email or key & a new password to change password",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "oneOf": [
-                                    {
-                                        "$ref": "#/components/schemas/NewPassword"
-                                    },
-                                    {
-                                        "$ref": "#/components/schemas/Login"
-                                    }
-                                ]
-                            }
-                        }
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
                     },
+                    "in": "path",
                     "required": true
                 },
-                "responses": {
-                    "200": {
-                        "description": "Change password response (empty)"
+                {
+                    "name": "scan_id",
+                    "schema": {
+                        "type": "integer"
                     },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "404": {
-                        "description": "Employee not found"
-                    },
-                    "429": {
-                        "description": "Too many request response"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "operationId": "changePassword",
-                "description": "Accepts a login and sends the key to change the password to the user's email. \nOr it accepts the key and a new password and changes it."
-            }
+                    "in": "path",
+                    "required": true
+                }
+            ]
         }
     },
     "components": {
