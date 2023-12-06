@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.8.0",
+        "version": "0.9.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -1131,236 +1131,6 @@
                 }
             ]
         },
-        "/users": {
-            "get": {
-                "parameters": [
-                    {
-                        "examples": {
-                            "Limit example": {
-                                "value": "50"
-                            }
-                        },
-                        "name": "limit",
-                        "description": "maximum number of results to return",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query",
-                        "required": false
-                    },
-                    {
-                        "examples": {
-                            "Query": {
-                                "value": "\"Иванов\""
-                            }
-                        },
-                        "name": "query",
-                        "description": "query to find by",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "examples": {
-                            "Page example": {
-                                "value": "2"
-                            }
-                        },
-                        "name": "page",
-                        "description": "page number with results to return",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "examples": {
-                            "SortByExample": {
-                                "value": "\"alphabet\""
-                            }
-                        },
-                        "name": "sort_by",
-                        "description": "type of sort result by",
-                        "schema": {
-                            "enum": [
-                                "alphabet",
-                                "department"
-                            ],
-                            "type": "string"
-                        },
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "allOf": [
-                                            {
-                                                "$ref": "#/components/schemas/ShortUser"
-                                            },
-                                            {
-                                                "required": [
-                                                    "id",
-                                                    "first_name",
-                                                    "last_name"
-                                                ],
-                                                "type": "object"
-                                            }
-                                        ]
-                                    }
-                                },
-                                "examples": {
-                                    "List employees example": {
-                                        "value": [
-                                            {
-                                                "first_name": "Alexander",
-                                                "last_name": "Pushkin",
-                                                "middle_name": "Sergeyevich",
-                                                "position": "Novelist",
-                                                "department": "Collegium of Foreign Affairs",
-                                                "email": "pushkin@dantes.net",
-                                                "phone_numbers": [
-                                                    {
-                                                        "number": "799183712345",
-                                                        "type": "mobile"
-                                                    },
-                                                    {
-                                                        "number": "1837",
-                                                        "type": "office"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "first_name": "Nikolai",
-                                                "last_name": "Gogol",
-                                                "middle_name": "Vasilievich",
-                                                "position": "Playwright",
-                                                "department": "Third Section of His Imperial Majesty's Own Chancellery",
-                                                "email": "gogol@fire.net",
-                                                "phone_numbers": [
-                                                    {
-                                                        "number": "799185212345",
-                                                        "type": "mobile"
-                                                    },
-                                                    {
-                                                        "number": "1821",
-                                                        "type": "office"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Employees list response"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "listUsers",
-                "description": "Returns list of company employees sorted alphabetically (default) or by department"
-            },
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/FullUser"
-                                    },
-                                    {
-                                        "required": [
-                                            "first_name",
-                                            "last_name",
-                                            "date_of_birth"
-                                        ],
-                                        "type": "object"
-                                    }
-                                ]
-                            },
-                            "examples": {
-                                "Post employee example": {
-                                    "value": {
-                                        "first_name": "Alexander",
-                                        "last_name": "Pushkin",
-                                        "middle_name": "Sergeyevich",
-                                        "position": "Novelist",
-                                        "department": "Collegium of Foreign Affairs",
-                                        "email": "pushkin@dantes.net",
-                                        "phone_numbers": [
-                                            {
-                                                "number": "799183712345",
-                                                "type": "mobile"
-                                            },
-                                            {
-                                                "number": "1837",
-                                                "type": "office"
-                                            }
-                                        ],
-                                        "foreign_languages": [
-                                            "english",
-                                            "german"
-                                        ],
-                                        "military": {
-                                            "rank": "Старший лейтенант",
-                                            "speciality": "101182",
-                                            "category": "А2",
-                                            "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "201": {
-                        "headers": {
-                            "Location": {
-                                "schema": {
-                                    "format": "uri",
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "description": "Employee created response, \nLocation header returns a new employee URL"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "addUser",
-                "description": "Creates a new employe in the company"
-            }
-        },
         "/login": {
             "post": {
                 "requestBody": {
@@ -2078,6 +1848,237 @@
                     "required": true
                 }
             ]
+        },
+        "/users": {
+            "get": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Limit example": {
+                                "value": "50"
+                            }
+                        },
+                        "name": "limit",
+                        "description": "maximum number of results to return",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "examples": {
+                            "Query": {
+                                "value": "\"Иванов\""
+                            }
+                        },
+                        "name": "query",
+                        "description": "query to find by",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "examples": {
+                            "Page example": {
+                                "value": "2"
+                            }
+                        },
+                        "name": "page",
+                        "description": "page number with results to return",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "examples": {
+                            "SortByExample": {
+                                "value": "\"alphabet\""
+                            }
+                        },
+                        "name": "sort_by",
+                        "description": "type of sort result by",
+                        "schema": {
+                            "enum": [
+                                "alphabet",
+                                "department"
+                            ],
+                            "type": "string"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/ShortUser"
+                                            },
+                                            {
+                                                "required": [
+                                                    "id",
+                                                    "first_name",
+                                                    "last_name"
+                                                ],
+                                                "type": "object"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "examples": {
+                                    "List employees example": {
+                                        "value": [
+                                            {
+                                                "first_name": "Alexander",
+                                                "last_name": "Pushkin",
+                                                "middle_name": "Sergeyevich",
+                                                "position": "Novelist",
+                                                "department": "Collegium of Foreign Affairs",
+                                                "email": "pushkin@dantes.net",
+                                                "phone_numbers": [
+                                                    {
+                                                        "number": "799183712345",
+                                                        "type": "mobile"
+                                                    },
+                                                    {
+                                                        "number": "1837",
+                                                        "type": "office"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "first_name": "Nikolai",
+                                                "last_name": "Gogol",
+                                                "middle_name": "Vasilievich",
+                                                "position": "Playwright",
+                                                "department": "Third Section of His Imperial Majesty's Own Chancellery",
+                                                "email": "gogol@fire.net",
+                                                "phone_numbers": [
+                                                    {
+                                                        "number": "799185212345",
+                                                        "type": "mobile"
+                                                    },
+                                                    {
+                                                        "number": "1821",
+                                                        "type": "office"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employees list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listUsers",
+                "description": "Returns list of company employees sorted alphabetically (default) or by department"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/FullUser"
+                                    },
+                                    {
+                                        "required": [
+                                            "first_name",
+                                            "last_name",
+                                            "date_of_birth"
+                                        ],
+                                        "type": "object"
+                                    }
+                                ]
+                            },
+                            "examples": {
+                                "Post employee example": {
+                                    "value": {
+                                        "first_name": "Alexander",
+                                        "last_name": "Pushkin",
+                                        "middle_name": "Sergeyevich",
+                                        "gender": "male",
+                                        "position": "Novelist",
+                                        "department": "Collegium of Foreign Affairs",
+                                        "email": "pushkin@dantes.net",
+                                        "phone_numbers": [
+                                            {
+                                                "number": "799183712345",
+                                                "type": "mobile"
+                                            },
+                                            {
+                                                "number": "1837",
+                                                "type": "office"
+                                            }
+                                        ],
+                                        "foreign_languages": [
+                                            "english",
+                                            "german"
+                                        ],
+                                        "military": {
+                                            "rank": "Старший лейтенант",
+                                            "speciality": "101182",
+                                            "category": "А2",
+                                            "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "uri",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Employee created response, \nLocation header returns a new employee URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "addUser",
+                "description": "Creates a new employe in the company"
+            }
         }
     },
     "components": {
@@ -2568,6 +2569,52 @@
                     "has_scan": true
                 }
             },
+            "Insurance": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 11,
+                        "minLength": 11,
+                        "type": "string"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "example": {
+                    "number": "08336732477",
+                    "has_scan": true
+                }
+            },
+            "Department": {
+                "description": "",
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "users_number": {
+                        "description": "current number of working employees",
+                        "type": "integer"
+                    },
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "recruited_users_number": {
+                        "description": "number of recruited employees",
+                        "type": "integer"
+                    }
+                }
+            },
             "FullUser": {
                 "required": [],
                 "allOf": [
@@ -2585,6 +2632,13 @@
                             "date_of_birth": {
                                 "format": "date",
                                 "description": "",
+                                "type": "string"
+                            },
+                            "gender": {
+                                "enum": [
+                                    "male",
+                                    "female"
+                                ],
                                 "type": "string"
                             },
                             "place_of_birth": {
@@ -2680,6 +2734,7 @@
                 "example": {
                     "grade": "1",
                     "date_of_birth": "2018-01-17",
+                    "gender": "male",
                     "place_of_birth": "Москва",
                     "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
                     "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
@@ -2705,27 +2760,6 @@
                     }
                 }
             },
-            "Insurance": {
-                "description": "",
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "description": "",
-                        "maxLength": 11,
-                        "minLength": 11,
-                        "type": "string"
-                    },
-                    "has_scan": {
-                        "description": "",
-                        "type": "boolean",
-                        "readOnly": true
-                    }
-                },
-                "example": {
-                    "number": "08336732477",
-                    "has_scan": true
-                }
-            },
             "PatchFullUser": {
                 "minProperties": 1,
                 "required": [],
@@ -2744,6 +2778,13 @@
                             "date_of_birth": {
                                 "format": "date",
                                 "description": "",
+                                "type": "string"
+                            },
+                            "gender": {
+                                "enum": [
+                                    "male",
+                                    "female"
+                                ],
                                 "type": "string"
                             },
                             "place_of_birth": {
@@ -2795,31 +2836,6 @@
                         }
                     }
                 ]
-            },
-            "Department": {
-                "description": "",
-                "required": [],
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "users_number": {
-                        "description": "current number of working employees",
-                        "type": "integer"
-                    },
-                    "id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "recruited_users_number": {
-                        "description": "number of recruited employees",
-                        "type": "integer"
-                    }
-                }
             }
         },
         "responses": {
