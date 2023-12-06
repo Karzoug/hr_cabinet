@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.7.0",
+        "version": "0.7.1",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -2169,6 +2169,7 @@
                 "properties": {
                     "rank": {
                         "description": "",
+                        "maxLength": 150,
                         "type": "string"
                     },
                     "speciality": {
@@ -2185,6 +2186,7 @@
                     },
                     "comissariat": {
                         "description": "",
+                        "maxLength": 150,
                         "type": "string"
                     },
                     "has_scan": {
@@ -2653,6 +2655,7 @@
                     },
                     "description": {
                         "description": "",
+                        "maxLength": 150,
                         "type": "string"
                     },
                     "document_id": {
@@ -2729,7 +2732,7 @@
                     "login": {
                         "format": "email",
                         "description": "employee login (email)",
-                        "maxLength": 15,
+                        "maxLength": 50,
                         "minLength": 5,
                         "type": "string",
                         "example": "anna@gazneft.ru"
