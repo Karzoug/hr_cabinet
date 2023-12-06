@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.7.1",
+        "version": "0.7.2",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -2524,105 +2524,6 @@
                     ]
                 }
             },
-            "FullUser": {
-                "required": [],
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/ShortUser"
-                    }
-                ],
-                "properties": {
-                    "grade": {
-                        "description": "",
-                        "maxLength": 1,
-                        "minLength": 1,
-                        "type": "string"
-                    },
-                    "date_of_birth": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "place_of_birth": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "registration_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "residential_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "nationality": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "foreign_languages": {
-                        "description": "",
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "military": {
-                        "$ref": "#/components/schemas/Military",
-                        "description": ""
-                    },
-                    "taxpayer": {
-                        "$ref": "#/components/schemas/Taxpayer",
-                        "description": "",
-                        "maxLength": 12,
-                        "minLength": 10
-                    },
-                    "insurance": {
-                        "$ref": "#/components/schemas/Insurance",
-                        "description": "",
-                        "maxLength": 11,
-                        "minLength": 11
-                    },
-                    "work_permit": {
-                        "$ref": "#/components/schemas/WorkPermit",
-                        "description": ""
-                    }
-                },
-                "example": {
-                    "grade": "1",
-                    "date_of_birth": "2018-01-17",
-                    "place_of_birth": "Москва",
-                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "nationality": "Царская Россия",
-                    "foreign_languages": [
-                        "english",
-                        "french"
-                    ],
-                    "military": {
-                        "rank": "Старший лейтенант",
-                        "speciality": "101182",
-                        "category": "А2",
-                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
-                        "has_scan": true
-                    },
-                    "taxpayer": {
-                        "number": "500100732259",
-                        "has_scan": true
-                    },
-                    "insurance": {
-                        "number": "08336732477",
-                        "has_scan": true
-                    }
-                }
-            },
             "Vacation": {
                 "description": "",
                 "required": [],
@@ -2744,6 +2645,107 @@
                         "minLength": 8,
                         "type": "string",
                         "example": "pa$$word"
+                    }
+                }
+            },
+            "FullUser": {
+                "required": [],
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ShortUser"
+                    },
+                    {
+                        "properties": {
+                            "grade": {
+                                "description": "",
+                                "maxLength": 1,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "date_of_birth": {
+                                "format": "date",
+                                "description": "",
+                                "type": "string"
+                            },
+                            "place_of_birth": {
+                                "description": "",
+                                "maxLength": 150,
+                                "minLength": 2,
+                                "type": "string"
+                            },
+                            "registration_address": {
+                                "description": "",
+                                "maxLength": 150,
+                                "minLength": 2,
+                                "type": "string"
+                            },
+                            "residential_address": {
+                                "description": "",
+                                "maxLength": 150,
+                                "minLength": 2,
+                                "type": "string"
+                            },
+                            "nationality": {
+                                "description": "",
+                                "maxLength": 150,
+                                "minLength": 2,
+                                "type": "string"
+                            },
+                            "foreign_languages": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "military": {
+                                "$ref": "#/components/schemas/Military",
+                                "description": ""
+                            },
+                            "taxpayer": {
+                                "$ref": "#/components/schemas/Taxpayer",
+                                "description": "",
+                                "maxLength": 12,
+                                "minLength": 10
+                            },
+                            "insurance": {
+                                "$ref": "#/components/schemas/Insurance",
+                                "description": "",
+                                "maxLength": 11,
+                                "minLength": 11
+                            },
+                            "work_permit": {
+                                "$ref": "#/components/schemas/WorkPermit",
+                                "description": ""
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "grade": "1",
+                    "date_of_birth": "2018-01-17",
+                    "place_of_birth": "Москва",
+                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "nationality": "Царская Россия",
+                    "foreign_languages": [
+                        "english",
+                        "french"
+                    ],
+                    "military": {
+                        "rank": "Старший лейтенант",
+                        "speciality": "101182",
+                        "category": "А2",
+                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
+                        "has_scan": true
+                    },
+                    "taxpayer": {
+                        "number": "500100732259",
+                        "has_scan": true
+                    },
+                    "insurance": {
+                        "number": "08336732477",
+                        "has_scan": true
                     }
                 }
             }
