@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.7.2",
+        "version": "0.7.3",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -1185,7 +1185,7 @@
                         "bearerAuth": []
                     }
                 ],
-                "operationId": "postVacation",
+                "operationId": "addVacation",
                 "description": "Creates a new employee's vacation"
             },
             "parameters": [
