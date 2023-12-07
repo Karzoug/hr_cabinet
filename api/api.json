@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.9.0",
+        "version": "0.10.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -1521,334 +1521,6 @@
                 "description": "Creates a new employee's passport"
             }
         },
-        "/users/{user_id}": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/FullUser"
-                                        },
-                                        {
-                                            "required": [
-                                                "id",
-                                                "first_name",
-                                                "last_name",
-                                                "date_of_birth"
-                                            ]
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "description": "",
-                                                    "type": "integer"
-                                                },
-                                                "passports": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Passport"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "number",
-                                                                    "issued_date",
-                                                                    "issued_by",
-                                                                    "type",
-                                                                    "has_scan"
-                                                                ]
-                                                            },
-                                                            {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "visas": {
-                                                                        "description": "",
-                                                                        "type": "array",
-                                                                        "items": {
-                                                                            "allOf": [
-                                                                                {
-                                                                                    "$ref": "#/components/schemas/Visa"
-                                                                                },
-                                                                                {
-                                                                                    "required": [
-                                                                                        "id",
-                                                                                        "has_scan",
-                                                                                        "number",
-                                                                                        "issued_state",
-                                                                                        "valid_to",
-                                                                                        "valid_from",
-                                                                                        "number_entries"
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "contracts": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Contract"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "has_scan",
-                                                                    "date_from",
-                                                                    "type",
-                                                                    "number"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "vacations": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Vacation"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "date_to"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                },
-                                "examples": {
-                                    "Employee example": {
-                                        "value": {
-                                            "id": 5,
-                                            "first_name": "Alexander",
-                                            "last_name": "Pushkin",
-                                            "middle_name": "Sergeyevich",
-                                            "position": "Novelist",
-                                            "department": "Collegium of Foreign Affairs",
-                                            "email": "pushkin@dantes.net",
-                                            "phone_numbers": [
-                                                {
-                                                    "number": "799183712345",
-                                                    "type": "mobile"
-                                                },
-                                                {
-                                                    "number": "1837",
-                                                    "type": "office"
-                                                }
-                                            ],
-                                            "passports": [
-                                                {
-                                                    "id": 5,
-                                                    "visas": [
-                                                        {
-                                                            "id": 9,
-                                                            "number": "33592222",
-                                                            "issued_state": "Germany",
-                                                            "valid_to": "1820-10-22",
-                                                            "valid_from": "1820-09-08",
-                                                            "number_entries": "2",
-                                                            "has_scan": false
-                                                        }
-                                                    ],
-                                                    "number": "4011364219",
-                                                    "issued_date": "1817-05-15",
-                                                    "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
-                                                    "type": "internal",
-                                                    "has_scan": false
-                                                }
-                                            ],
-                                            "contracts": [
-                                                {
-                                                    "date_from": "1819-01-17",
-                                                    "date_to": "1821-01-17",
-                                                    "type": "temporary",
-                                                    "number": "1000005"
-                                                }
-                                            ],
-                                            "grade": "1",
-                                            "date_of_birth": "1799-05-26",
-                                            "place_of_birth": "Москва",
-                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                                            "nationality": "Царская Россия",
-                                            "foreign_languages": [
-                                                "english",
-                                                "french"
-                                            ],
-                                            "military": {
-                                                "rank": "Старший лейтенант",
-                                                "speciality": "101182",
-                                                "category": "А2",
-                                                "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
-                                                "has_scan": true
-                                            },
-                                            "vacations": [
-                                                {
-                                                    "id": 78,
-                                                    "date_from": "1820-03-11",
-                                                    "date_to": "1820-03-25"
-                                                }
-                                            ],
-                                            "taxpayer": {
-                                                "number": "500100732259",
-                                                "has_scan": true
-                                            },
-                                            "insurance": {
-                                                "number": "08336732477",
-                                                "has_scan": true
-                                            }
-                                        }
-                                    },
-                                    "Foreigner example": {
-                                        "value": {
-                                            "id": 93,
-                                            "first_name": "Улугбек",
-                                            "last_name": "Акрамов",
-                                            "middle_name": "Рашидович",
-                                            "position": "Строитель",
-                                            "department": "Инженерный отдел",
-                                            "email": "akramovur@rogakopyta.net",
-                                            "phone_numbers": [
-                                                {
-                                                    "number": "799183712345",
-                                                    "type": "mobile"
-                                                },
-                                                {
-                                                    "number": "1837",
-                                                    "type": "office"
-                                                }
-                                            ],
-                                            "passports": [
-                                                {
-                                                    "id": 67,
-                                                    "number": "AZ0001055",
-                                                    "issued_date": "2010-05-23",
-                                                    "issued_by": "TOSHKENT SHAHAR IIBB",
-                                                    "type": "foreigners",
-                                                    "has_scan": true
-                                                }
-                                            ],
-                                            "contracts": [
-                                                {
-                                                    "date_from": "2013-08-01",
-                                                    "date_to": "2013-09-04",
-                                                    "type": "temporary",
-                                                    "number": "12345"
-                                                }
-                                            ],
-                                            "work_permit": {
-                                                "number": "77121034092",
-                                                "valid_to": "2013-09-05",
-                                                "has_scan": true
-                                            },
-                                            "grade": "2",
-                                            "date_of_birth": "1994-05-26",
-                                            "place_of_birth": "Ташкент",
-                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
-                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
-                                            "nationality": "Узбекистан"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Employee response"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "404": {
-                        "description": "Employee not found response"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "getUser",
-                "description": "Returns the employee full data based on ID"
-            },
-            "patch": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchFullUser"
-                            },
-                            "examples": {
-                                "Path example": {
-                                    "value": {
-                                        "grade": "2",
-                                        "registration_address": "Moscow, Tverskaya street, building 32, apartment 17"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Employee updated response (empty)"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "404": {
-                        "description": "Employee not found"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "patchUser",
-                "description": "Changes selected fields in the user structure based on ID"
-            },
-            "parameters": [
-                {
-                    "name": "user_id",
-                    "description": "employee ID",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
         "/users": {
             "get": {
                 "parameters": [
@@ -2079,6 +1751,899 @@
                 "operationId": "addUser",
                 "description": "Creates a new employe in the company"
             }
+        },
+        "/users/{user_id}/educations": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/Education"
+                                            },
+                                            {
+                                                "required": [
+                                                    "id",
+                                                    "has_scan",
+                                                    "date_from",
+                                                    "issued_institution"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee education list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listEducations",
+                "description": "Returns list of employee's educations"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Education"
+                                    },
+                                    {
+                                        "required": [
+                                            "date_from",
+                                            "issued_institution"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "uri",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Employee education added response,\nLocation header returns a new employee education URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "Add education conflict response: the education already exists"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "addEducation",
+                "description": "Creates a new employee education"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/educations/{education_id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Education"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "has_scan",
+                                                "date_from",
+                                                "issued_institution"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Employee education response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee/education not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getEducation",
+                "description": "Returns the employee education based on ID"
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Employee education deleted response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deleteEducation",
+                "description": "Deletes the employee education based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Education"
+                                    },
+                                    {
+                                        "minProperties": 1
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee education updated response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchEducation",
+                "description": "Changes selected fields in the employee education structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "education_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/trainings": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/Training"
+                                            },
+                                            {
+                                                "required": [
+                                                    "id",
+                                                    "has_scan",
+                                                    "date_from",
+                                                    "issued_institution",
+                                                    "program"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee training list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listTrainings",
+                "description": "Returns list of employee trainings"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Training"
+                                    },
+                                    {
+                                        "required": [
+                                            "date_from",
+                                            "issued_institution",
+                                            "program"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "uri",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Employee training added response,\nLocation header returns a new employee training URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "Add training conflict response: the training already exists"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "addTraining",
+                "description": "Creates a new employee training"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/trainings/{training_id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Training"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "has_scan",
+                                                "date_from",
+                                                "issued_institution",
+                                                "program"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        "description": "Employee training response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee/training not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getTraining",
+                "description": "Returns the employee training based on ID"
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Employee training deleted response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deleteTraining",
+                "description": "Deletes the employee training based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Training"
+                                    },
+                                    {
+                                        "minProperties": 1
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee training updated response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchTraining",
+                "description": "Changes selected fields in the employee training structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "training_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FullUser"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "first_name",
+                                                "last_name",
+                                                "date_of_birth"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "",
+                                                    "type": "integer"
+                                                },
+                                                "passports": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Passport"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "number",
+                                                                    "issued_date",
+                                                                    "issued_by",
+                                                                    "type",
+                                                                    "has_scan"
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "visas": {
+                                                                        "description": "",
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "allOf": [
+                                                                                {
+                                                                                    "$ref": "#/components/schemas/Visa"
+                                                                                },
+                                                                                {
+                                                                                    "required": [
+                                                                                        "id",
+                                                                                        "has_scan",
+                                                                                        "number",
+                                                                                        "issued_state",
+                                                                                        "valid_to",
+                                                                                        "valid_from",
+                                                                                        "number_entries"
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "contracts": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Contract"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "has_scan",
+                                                                    "date_from",
+                                                                    "type",
+                                                                    "number"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "vacations": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Vacation"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "date_from",
+                                                                    "date_to"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "educations": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Education"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "date_from",
+                                                                    "issued_institution"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "trainings": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Training"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "date_from",
+                                                                    "issued_institution",
+                                                                    "program"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "Employee example": {
+                                        "value": {
+                                            "id": 5,
+                                            "first_name": "Alexander",
+                                            "last_name": "Pushkin",
+                                            "middle_name": "Sergeyevich",
+                                            "position": "Novelist",
+                                            "department": "Collegium of Foreign Affairs",
+                                            "email": "pushkin@dantes.net",
+                                            "phone_numbers": [
+                                                {
+                                                    "number": "799183712345",
+                                                    "type": "mobile"
+                                                },
+                                                {
+                                                    "number": "1837",
+                                                    "type": "office"
+                                                }
+                                            ],
+                                            "passports": [
+                                                {
+                                                    "id": 5,
+                                                    "visas": [
+                                                        {
+                                                            "id": 9,
+                                                            "number": "33592222",
+                                                            "issued_state": "Germany",
+                                                            "valid_to": "1820-10-22",
+                                                            "valid_from": "1820-09-08",
+                                                            "number_entries": "2",
+                                                            "has_scan": false
+                                                        }
+                                                    ],
+                                                    "number": "4011364219",
+                                                    "issued_date": "1817-05-15",
+                                                    "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
+                                                    "type": "internal",
+                                                    "has_scan": false
+                                                }
+                                            ],
+                                            "contracts": [
+                                                {
+                                                    "date_from": "1819-01-17",
+                                                    "date_to": "1821-01-17",
+                                                    "type": "temporary",
+                                                    "number": "1000005"
+                                                }
+                                            ],
+                                            "grade": "1",
+                                            "date_of_birth": "1799-05-26",
+                                            "place_of_birth": "Москва",
+                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                                            "nationality": "Царская Россия",
+                                            "foreign_languages": [
+                                                "english",
+                                                "french"
+                                            ],
+                                            "military": {
+                                                "rank": "Старший лейтенант",
+                                                "speciality": "101182",
+                                                "category": "А2",
+                                                "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
+                                                "has_scan": true
+                                            },
+                                            "vacations": [
+                                                {
+                                                    "id": 78,
+                                                    "date_from": "1820-03-11",
+                                                    "date_to": "1820-03-25"
+                                                }
+                                            ],
+                                            "taxpayer": {
+                                                "number": "500100732259",
+                                                "has_scan": true
+                                            },
+                                            "insurance": {
+                                                "number": "08336732477",
+                                                "has_scan": true
+                                            }
+                                        }
+                                    },
+                                    "Foreigner example": {
+                                        "value": {
+                                            "id": 93,
+                                            "first_name": "Улугбек",
+                                            "last_name": "Акрамов",
+                                            "middle_name": "Рашидович",
+                                            "position": "Строитель",
+                                            "department": "Инженерный отдел",
+                                            "email": "akramovur@rogakopyta.net",
+                                            "phone_numbers": [
+                                                {
+                                                    "number": "799183712345",
+                                                    "type": "mobile"
+                                                },
+                                                {
+                                                    "number": "1837",
+                                                    "type": "office"
+                                                }
+                                            ],
+                                            "passports": [
+                                                {
+                                                    "id": 67,
+                                                    "number": "AZ0001055",
+                                                    "issued_date": "2010-05-23",
+                                                    "issued_by": "TOSHKENT SHAHAR IIBB",
+                                                    "type": "foreigners",
+                                                    "has_scan": true
+                                                }
+                                            ],
+                                            "contracts": [
+                                                {
+                                                    "date_from": "2013-08-01",
+                                                    "date_to": "2013-09-04",
+                                                    "type": "temporary",
+                                                    "number": "12345"
+                                                }
+                                            ],
+                                            "work_permit": {
+                                                "number": "77121034092",
+                                                "valid_to": "2013-09-05",
+                                                "has_scan": true
+                                            },
+                                            "grade": "2",
+                                            "date_of_birth": "1994-05-26",
+                                            "place_of_birth": "Ташкент",
+                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                                            "nationality": "Узбекистан"
+                                        }
+                                    },
+                                    "Additional data example": {
+                                        "value": {
+                                            "id": 9,
+                                            "first_name": "Сергей",
+                                            "last_name": "Сказочкин",
+                                            "middle_name": "Дмитриевич",
+                                            "position": "На дуде игрец",
+                                            "department": "Отдел развития фантазии",
+                                            "email": "sergei@fairy.com",
+                                            "date_of_birth": "1978-07-23",
+                                            "position_track": [
+                                                {
+                                                    "date_from": "2018-01-17",
+                                                    "date_to": "2018-03-17",
+                                                    "position": "Швец"
+                                                },
+                                                {
+                                                    "date_from": "2018-03-18",
+                                                    "date_to": "2018-05-18",
+                                                    "position": "Жнец"
+                                                },
+                                                {
+                                                    "date_from": "2018-05-19",
+                                                    "position": "На дуде игрец"
+                                                }
+                                            ],
+                                            "educations": [
+                                                {
+                                                    "id": 578,
+                                                    "has_scan": true,
+                                                    "number": "1030180354933",
+                                                    "date_to": "2015-01-01",
+                                                    "date_from": "2011-01-01",
+                                                    "issued_institution": "ФГБОУ ВО «Астраханский государственный университет им. В. Н. Татищева»",
+                                                    "program": "Связи с общественностью"
+                                                }
+                                            ],
+                                            "trainings": [
+                                                {
+                                                    "number": "A15/456878-456",
+                                                    "issued_institution": "Yandex Practicum",
+                                                    "program": "Advanced Go developer",
+                                                    "cost": 120000,
+                                                    "date_to": "2023-01-10",
+                                                    "date_from": "2023-07-10",
+                                                    "id": 95,
+                                                    "has_scan": true
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getUser",
+                "description": "Returns the employee full data based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchFullUser"
+                            },
+                            "examples": {
+                                "Path example": {
+                                    "value": {
+                                        "grade": "2",
+                                        "registration_address": "Moscow, Tverskaya street, building 32, apartment 17"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee updated response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchUser",
+                "description": "Changes selected fields in the user structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "description": "employee ID",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
         }
     },
     "components": {
@@ -2615,6 +3180,114 @@
                     }
                 }
             },
+            "PersonalDataProcessing": {
+                "description": "",
+                "type": "object",
+                "properties": {
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "example": {
+                    "has_scan": true
+                }
+            },
+            "Training": {
+                "description": "",
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_institution": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "program": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "cost": {
+                        "description": "cost per person",
+                        "type": "integer"
+                    },
+                    "date_to": {
+                        "format": "date",
+                        "description": "end date of training",
+                        "type": "string"
+                    },
+                    "date_from": {
+                        "format": "date",
+                        "description": "start date of training",
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    }
+                },
+                "example": {
+                    "number": "A15/456878-456",
+                    "issued_institution": "Yandex Practicum",
+                    "program": "Advanced Go developer",
+                    "cost": 120000,
+                    "date_to": "2023-01-10",
+                    "date_from": "2023-07-10",
+                    "id": 95,
+                    "has_scan": true
+                }
+            },
+            "PositionTrack": {
+                "description": "",
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "date_from": {
+                            "format": "date",
+                            "type": "string"
+                        },
+                        "date_to": {
+                            "format": "date",
+                            "type": "string"
+                        },
+                        "position": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "example": [
+                    {
+                        "date_from": "2018-01-17",
+                        "date_to": "2018-03-17",
+                        "position": "Швец"
+                    },
+                    {
+                        "date_from": "2018-03-18",
+                        "date_to": "2018-05-18",
+                        "position": "Жнец"
+                    },
+                    {
+                        "date_from": "2018-05-19",
+                        "position": "На дуде игрец"
+                    }
+                ]
+            },
             "FullUser": {
                 "required": [],
                 "allOf": [
@@ -2672,6 +3345,20 @@
                                     "type": "string"
                                 }
                             },
+                            "position_track": {
+                                "description": "",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/PositionTrack"
+                                    },
+                                    {
+                                        "required": [
+                                            "date_from",
+                                            "position"
+                                        ]
+                                    }
+                                ]
+                            },
                             "military": {
                                 "description": "",
                                 "allOf": [
@@ -2727,6 +3414,10 @@
                                         ]
                                     }
                                 ]
+                            },
+                            "personal_data_processing": {
+                                "$ref": "#/components/schemas/PersonalDataProcessing",
+                                "description": ""
                             }
                         }
                     }
@@ -2832,10 +3523,67 @@
                             "work_permit": {
                                 "$ref": "#/components/schemas/WorkPermit",
                                 "description": ""
+                            },
+                            "position_track": {
+                                "$ref": "#/components/schemas/PositionTrack",
+                                "description": ""
                             }
                         }
                     }
                 ]
+            },
+            "Education": {
+                "description": "",
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_institution": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "date_to": {
+                        "format": "date",
+                        "description": "date of graduation",
+                        "type": "string"
+                    },
+                    "date_from": {
+                        "format": "date",
+                        "description": "date of commencement of studies",
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "program": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": 578,
+                    "has_scan": true,
+                    "number": "1030180354933",
+                    "date_to": "2015-01-01",
+                    "date_from": "2011-01-01",
+                    "issued_institution": "ФГБОУ ВО «Астраханский государственный университет им. В. Н. Татищева»",
+                    "program": "Связи с общественностью"
+                }
             }
         },
         "responses": {
