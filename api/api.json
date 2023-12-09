@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.12.0",
+        "version": "0.14.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -62,7 +62,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "uploadPhoto"
@@ -106,7 +108,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "listContracts",
@@ -168,7 +172,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "addContract",
@@ -223,7 +229,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "getContract",
@@ -243,7 +251,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "deleteContract",
@@ -283,7 +293,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "patchContract",
@@ -348,7 +360,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "getVisa",
@@ -368,7 +382,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "deleteVisa",
@@ -408,7 +424,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "patchVisa",
@@ -484,7 +502,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "listVisas",
@@ -549,7 +569,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "addVisa",
@@ -684,7 +706,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "getPassport",
@@ -704,7 +728,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "deletePassport",
@@ -744,7 +770,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "patchPassport",
@@ -805,7 +833,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "getVacation",
@@ -825,7 +855,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "deleteVacation",
@@ -865,7 +897,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "patchVacation",
@@ -926,7 +960,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "listVacations",
@@ -980,7 +1016,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "addVacation",
@@ -1054,7 +1092,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "listScans",
@@ -1114,7 +1154,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "uploadScan",
@@ -1164,7 +1206,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "getScan",
@@ -1184,7 +1228,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "deleteScan",
@@ -1263,7 +1309,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "listDepartments",
@@ -1331,7 +1379,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "listPassports",
@@ -1397,7 +1447,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "addPassport",
@@ -1441,7 +1493,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "listEducations",
@@ -1502,7 +1556,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "addEducation",
@@ -1556,7 +1612,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "getEducation",
@@ -1576,7 +1634,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "deleteEducation",
@@ -1616,7 +1676,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "patchEducation",
@@ -1679,7 +1741,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "listTrainings",
@@ -1741,7 +1805,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "addTraining",
@@ -1796,7 +1862,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "getTraining",
@@ -1816,7 +1884,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "deleteTraining",
@@ -1856,7 +1926,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "patchTraining",
@@ -2020,7 +2092,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "listUsers",
@@ -2107,11 +2181,150 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:create"
+                        ]
                     }
                 ],
                 "operationId": "addUser",
                 "description": "Creates a new employe in the company"
+            }
+        },
+        "/login/change-password": {
+            "get": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Key": {
+                                "value": "0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM="
+                            }
+                        },
+                        "name": "key",
+                        "description": "a special key sent to the employee’s email",
+                        "schema": {
+                            "format": "byte",
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Check a change password key response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "429": {
+                        "description": "Too many request response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "checkKey",
+                "description": "Checks a password change key that was sent to the user email"
+            },
+            "post": {
+                "requestBody": {
+                    "description": "One of the request types: only login to get recovery key on email or key & a new password to change password",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "oneOf": [
+                                    {
+                                        "$ref": "#/components/schemas/ChangePasswordRequest"
+                                    },
+                                    {
+                                        "$ref": "#/components/schemas/InitChangePasswordRequest"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Change password response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "description": "Employee not found"
+                    },
+                    "429": {
+                        "description": "Too many request response"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "changePassword",
+                "description": "Accepts a login and sends the key to change the password to the user email. \nOr it accepts the key and a new password and changes it."
+            }
+        },
+        "/login": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Auth"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "access_token",
+                                        "token_type"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "The access token issued by the server",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "The type of the token issued",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "The lifetime in seconds of the access token",
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "Example": {
+                                        "value": {
+                                            "access_token": "v4.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwIjoiMjAyMi0wMS0wMVQwMDowMDowMCswMDowMCJ9v3Jt8mx_TdM2ceTGoqwrh4yDFn0XsHvvV_D0DtwQxVrJEBMl0F2caAdgnpKlt4p7xBnx1HcO-SPo8FPp214HDw.eyJraWQiOiJ6VmhNaVBCUDlmUmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9",
+                                            "token_type": "bearer",
+                                            "expires_in": 3600
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful authentication response: access token"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "login",
+                "description": "Authenticates a user and returns an access token on success"
             }
         },
         "/users/{user_id}": {
@@ -2239,7 +2452,8 @@
                                                                 "required": [
                                                                     "id",
                                                                     "date_from",
-                                                                    "issued_institution"
+                                                                    "issued_institution",
+                                                                    "has_scan"
                                                                 ]
                                                             }
                                                         ]
@@ -2258,7 +2472,8 @@
                                                                     "id",
                                                                     "date_from",
                                                                     "issued_institution",
-                                                                    "program"
+                                                                    "program",
+                                                                    "has_scan"
                                                                 ]
                                                             }
                                                         ]
@@ -2475,7 +2690,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:read"
+                        ]
                     }
                 ],
                 "operationId": "getUser",
@@ -2519,7 +2736,9 @@
                 },
                 "security": [
                     {
-                        "bearerAuth": []
+                        "bearerAuth": [
+                            "user:update"
+                        ]
                     }
                 ],
                 "operationId": "patchUser",
@@ -2536,143 +2755,6 @@
                     "required": true
                 }
             ]
-        },
-        "/login/change-password": {
-            "get": {
-                "parameters": [
-                    {
-                        "examples": {
-                            "Key": {
-                                "value": "0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM="
-                            }
-                        },
-                        "name": "key",
-                        "description": "a special key sent to the employee’s email",
-                        "schema": {
-                            "format": "byte",
-                            "type": "string"
-                        },
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Check a change password key response (empty)"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "429": {
-                        "description": "Too many request response"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "operationId": "checkKey",
-                "description": "Checks a password change key that was sent to the user email"
-            },
-            "post": {
-                "requestBody": {
-                    "description": "One of the request types: only login to get recovery key on email or key & a new password to change password",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "oneOf": [
-                                    {
-                                        "$ref": "#/components/schemas/NewPassword"
-                                    },
-                                    {
-                                        "$ref": "#/components/schemas/Login"
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Change password response (empty)"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "404": {
-                        "description": "Employee not found"
-                    },
-                    "429": {
-                        "description": "Too many request response"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "operationId": "changePassword",
-                "description": "Accepts a login and sends the key to change the password to the user email. \nOr it accepts the key and a new password and changes it."
-            }
-        },
-        "/login": {
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Auth"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "access_token",
-                                        "token_type"
-                                    ],
-                                    "type": "object",
-                                    "properties": {
-                                        "access_token": {
-                                            "description": "The access token issued by the server",
-                                            "type": "string"
-                                        },
-                                        "token_type": {
-                                            "description": "The type of the token issued",
-                                            "type": "string"
-                                        },
-                                        "expires_in": {
-                                            "description": "The lifetime in seconds of the access token",
-                                            "type": "integer"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "Example": {
-                                        "value": {
-                                            "access_token": "v4.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwIjoiMjAyMi0wMS0wMVQwMDowMDowMCswMDowMCJ9v3Jt8mx_TdM2ceTGoqwrh4yDFn0XsHvvV_D0DtwQxVrJEBMl0F2caAdgnpKlt4p7xBnx1HcO-SPo8FPp214HDw.eyJraWQiOiJ6VmhNaVBCUDlmUmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9",
-                                            "token_type": "bearer",
-                                            "expires_in": 3600
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful authentication response: access token"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "operationId": "login",
-                "description": "Authenticates a user and returns an access token on success"
-            }
         }
     },
     "components": {
@@ -2926,53 +3008,6 @@
                         "type": "string",
                         "example": "2019-08-24T14:15:22Z"
                     }
-                }
-            },
-            "Login": {
-                "description": "",
-                "required": [
-                    "login"
-                ],
-                "type": "object",
-                "properties": {
-                    "login": {
-                        "format": "email",
-                        "description": "employee login (email)",
-                        "maxLength": 50,
-                        "minLength": 5,
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "login": "vasyapp&gazneft.ru"
-                }
-            },
-            "NewPassword": {
-                "description": "",
-                "required": [
-                    "key",
-                    "password"
-                ],
-                "type": "object",
-                "properties": {
-                    "key": {
-                        "format": "byte",
-                        "description": "a special key sent to the employee’s email",
-                        "maxLength": 64,
-                        "minLength": 64,
-                        "type": "string"
-                    },
-                    "password": {
-                        "format": "password",
-                        "description": "a new employee password",
-                        "maxLength": 15,
-                        "minLength": 8,
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "key": "0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM=",
-                    "password": "pa$$word"
                 }
             },
             "Auth": {
@@ -3408,195 +3443,6 @@
                 ],
                 "type": "string"
             },
-            "FullUser": {
-                "required": [],
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/ShortUser"
-                    },
-                    {
-                        "properties": {
-                            "grade": {
-                                "description": "",
-                                "maxLength": 1,
-                                "minLength": 1,
-                                "type": "string"
-                            },
-                            "working_model": {
-                                "$ref": "#/components/schemas/WorkingModel",
-                                "description": ""
-                            },
-                            "date_of_birth": {
-                                "format": "date",
-                                "description": "",
-                                "type": "string"
-                            },
-                            "gender": {
-                                "enum": [
-                                    "male",
-                                    "female"
-                                ],
-                                "type": "string"
-                            },
-                            "place_of_birth": {
-                                "description": "",
-                                "maxLength": 150,
-                                "minLength": 2,
-                                "type": "string"
-                            },
-                            "registration_address": {
-                                "description": "",
-                                "maxLength": 150,
-                                "minLength": 2,
-                                "type": "string"
-                            },
-                            "residential_address": {
-                                "description": "",
-                                "maxLength": 150,
-                                "minLength": 2,
-                                "type": "string"
-                            },
-                            "nationality": {
-                                "description": "",
-                                "maxLength": 150,
-                                "minLength": 2,
-                                "type": "string"
-                            },
-                            "foreign_languages": {
-                                "description": "",
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            },
-                            "finance": {
-                                "$ref": "#/components/schemas/UserFinance",
-                                "readOnly": true
-                            },
-                            "position_track": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/PositionTrack"
-                                    },
-                                    {
-                                        "required": [
-                                            "date_from",
-                                            "position"
-                                        ]
-                                    }
-                                ]
-                            },
-                            "military": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/Military"
-                                    },
-                                    {
-                                        "required": [
-                                            "speciality",
-                                            "rank",
-                                            "comissariat",
-                                            "category"
-                                        ]
-                                    }
-                                ]
-                            },
-                            "taxpayer": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/Taxpayer"
-                                    },
-                                    {
-                                        "required": [
-                                            "number"
-                                        ]
-                                    }
-                                ]
-                            },
-                            "insurance": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/Insurance"
-                                    },
-                                    {
-                                        "required": [
-                                            "number"
-                                        ]
-                                    }
-                                ]
-                            },
-                            "work_permit": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/WorkPermit"
-                                    },
-                                    {
-                                        "required": [
-                                            "number",
-                                            "valid_to"
-                                        ]
-                                    }
-                                ]
-                            },
-                            "personal_data_processing": {
-                                "$ref": "#/components/schemas/PersonalDataProcessing",
-                                "description": ""
-                            }
-                        }
-                    }
-                ],
-                "example": {
-                    "id": 1,
-                    "first_name": "Alexander",
-                    "last_name": "Pushkin",
-                    "middle_name": "Sergeyevich",
-                    "position": "Novelist",
-                    "department": "Collegium of Foreign Affairs",
-                    "email": "pushkin@dantes.net",
-                    "phone_numbers": [
-                        {
-                            "number": "799183712345",
-                            "type": "mobile"
-                        },
-                        {
-                            "number": "1837",
-                            "type": "office"
-                        }
-                    ],
-                    "grade": "1",
-                    "working_model": "remote",
-                    "date_of_birth": "2018-01-17",
-                    "gender": "male",
-                    "place_of_birth": "Москва",
-                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "nationality": "Царская Россия",
-                    "foreign_languages": [
-                        "english",
-                        "french"
-                    ],
-                    "military": {
-                        "rank": "Старший лейтенант",
-                        "speciality": "101182",
-                        "category": "А2",
-                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
-                        "has_scan": true
-                    },
-                    "taxpayer": {
-                        "number": "500100732259",
-                        "has_scan": true
-                    },
-                    "insurance": {
-                        "number": "08336732477",
-                        "has_scan": true
-                    }
-                }
-            },
             "UserFinance": {
                 "description": "",
                 "type": "object",
@@ -3679,6 +3525,266 @@
                     "id": 95,
                     "has_scan": true
                 }
+            },
+            "FullUser": {
+                "required": [],
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/ShortUser"
+                    },
+                    {
+                        "properties": {
+                            "grade": {
+                                "description": "",
+                                "maxLength": 1,
+                                "minLength": 1,
+                                "type": "string"
+                            },
+                            "working_model": {
+                                "$ref": "#/components/schemas/WorkingModel",
+                                "description": ""
+                            },
+                            "date_of_birth": {
+                                "format": "date",
+                                "description": "",
+                                "type": "string"
+                            },
+                            "gender": {
+                                "enum": [
+                                    "male",
+                                    "female"
+                                ],
+                                "type": "string"
+                            },
+                            "place_of_birth": {
+                                "description": "",
+                                "maxLength": 150,
+                                "minLength": 2,
+                                "type": "string"
+                            },
+                            "registration_address": {
+                                "description": "",
+                                "maxLength": 150,
+                                "minLength": 2,
+                                "type": "string"
+                            },
+                            "residential_address": {
+                                "description": "",
+                                "maxLength": 150,
+                                "minLength": 2,
+                                "type": "string"
+                            },
+                            "nationality": {
+                                "description": "",
+                                "maxLength": 150,
+                                "minLength": 2,
+                                "type": "string"
+                            },
+                            "foreign_languages": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "finance": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/UserFinance"
+                                    },
+                                    {
+                                        "required": [
+                                            "salary",
+                                            "social_security_tax",
+                                            "income_tax"
+                                        ]
+                                    }
+                                ],
+                                "readOnly": true
+                            },
+                            "position_track": {
+                                "description": "",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/PositionTrack"
+                                    },
+                                    {
+                                        "required": [
+                                            "date_from",
+                                            "position"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "military": {
+                                "description": "",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Military"
+                                    },
+                                    {
+                                        "required": [
+                                            "speciality",
+                                            "rank",
+                                            "comissariat",
+                                            "category",
+                                            "has_scan"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "taxpayer": {
+                                "description": "",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Taxpayer"
+                                    },
+                                    {
+                                        "required": [
+                                            "number",
+                                            "has_scan"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "insurance": {
+                                "description": "",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Insurance"
+                                    },
+                                    {
+                                        "required": [
+                                            "number",
+                                            "has_scan"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "work_permit": {
+                                "description": "",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/WorkPermit"
+                                    },
+                                    {
+                                        "required": [
+                                            "number",
+                                            "valid_to",
+                                            "has_scan"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "personal_data_processing": {
+                                "description": "",
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/PersonalDataProcessing"
+                                    },
+                                    {
+                                        "required": [
+                                            "has_scan"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "id": 1,
+                    "first_name": "Alexander",
+                    "last_name": "Pushkin",
+                    "middle_name": "Sergeyevich",
+                    "position": "Novelist",
+                    "department": "Collegium of Foreign Affairs",
+                    "email": "pushkin@dantes.net",
+                    "phone_numbers": [
+                        {
+                            "number": "799183712345",
+                            "type": "mobile"
+                        },
+                        {
+                            "number": "1837",
+                            "type": "office"
+                        }
+                    ],
+                    "grade": "1",
+                    "working_model": "remote",
+                    "date_of_birth": "2018-01-17",
+                    "gender": "male",
+                    "place_of_birth": "Москва",
+                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "nationality": "Царская Россия",
+                    "foreign_languages": [
+                        "english",
+                        "french"
+                    ],
+                    "military": {
+                        "rank": "Старший лейтенант",
+                        "speciality": "101182",
+                        "category": "А2",
+                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
+                        "has_scan": true
+                    },
+                    "taxpayer": {
+                        "number": "500100732259",
+                        "has_scan": true
+                    },
+                    "insurance": {
+                        "number": "08336732477",
+                        "has_scan": true
+                    }
+                }
+            },
+            "InitChangePasswordRequest": {
+                "description": "",
+                "required": [
+                    "login"
+                ],
+                "type": "object",
+                "properties": {
+                    "login": {
+                        "format": "email",
+                        "description": "employee login (email)",
+                        "maxLength": 50,
+                        "minLength": 5,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "login": "vasyapp&gazneft.ru"
+                }
+            },
+            "ChangePasswordRequest": {
+                "description": "",
+                "required": [
+                    "key",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "format": "byte",
+                        "description": "a special key sent to the employee’s email",
+                        "maxLength": 64,
+                        "minLength": 64,
+                        "type": "string"
+                    },
+                    "password": {
+                        "format": "password",
+                        "description": "a new employee password",
+                        "maxLength": 15,
+                        "minLength": 8,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "key": "0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM=",
+                    "password": "pa$$word"
+                }
             }
         },
         "responses": {
@@ -3716,7 +3822,7 @@
         "securitySchemes": {
             "bearerAuth": {
                 "scheme": "bearer",
-                "bearerFormat": "JWT",
+                "bearerFormat": "PASETO",
                 "type": "http",
                 "description": "auth: login+password, PASETO tokens"
             }
