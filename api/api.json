@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.11.0",
+        "version": "0.12.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -1130,47 +1130,6 @@
                     "required": true
                 }
             ]
-        },
-        "/login": {
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Auth"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "token": {
-                                            "description": "PASETO Bearer Token for further authentication",
-                                            "type": "string",
-                                            "example": "v4.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwIjoiMjAyMi0wMS0wMVQwMDowMDowMCswMDowMCJ9v3Jt8mx_TdM2ceTGoqwrh4yDFn0XsHvvV_D0DtwQxVrJEBMl0F2caAdgnpKlt4p7xBnx1HcO-SPo8FPp214HDw.eyJraWQiOiJ6VmhNaVBCUDlmUmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9"
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful authentication response: bearer token"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "operationId": "login",
-                "description": "Authenticates a user and returns a paseto bearer token on success"
-            }
         },
         "/users/{user_id}/scans/{scan_id}": {
             "get": {
@@ -2652,6 +2611,67 @@
                 },
                 "operationId": "changePassword",
                 "description": "Accepts a login and sends the key to change the password to the user email. \nOr it accepts the key and a new password and changes it."
+            }
+        },
+        "/login": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Auth"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "access_token",
+                                        "token_type"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "The access token issued by the server",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "The type of the token issued",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "The lifetime in seconds of the access token",
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "Example": {
+                                        "value": {
+                                            "access_token": "v4.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwIjoiMjAyMi0wMS0wMVQwMDowMDowMCswMDowMCJ9v3Jt8mx_TdM2ceTGoqwrh4yDFn0XsHvvV_D0DtwQxVrJEBMl0F2caAdgnpKlt4p7xBnx1HcO-SPo8FPp214HDw.eyJraWQiOiJ6VmhNaVBCUDlmUmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9",
+                                            "token_type": "bearer",
+                                            "expires_in": 3600
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful authentication response: access token"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalServerError"
+                    }
+                },
+                "operationId": "login",
+                "description": "Authenticates a user and returns an access token on success"
             }
         }
     },
