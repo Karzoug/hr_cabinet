@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.14.0",
+        "version": "0.14.1",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -56,8 +56,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -102,8 +108,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -166,8 +178,14 @@
                         },
                         "description": "Add contract conflict response: the contract already exists"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -223,8 +241,14 @@
                     "404": {
                         "description": "Employee/contract not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -245,8 +269,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -287,8 +317,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -354,8 +390,14 @@
                     "404": {
                         "description": "Employee/passport/visa not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -376,8 +418,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -418,8 +466,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -496,8 +550,14 @@
                     "404": {
                         "description": "Employee/passport not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -563,8 +623,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -700,8 +766,14 @@
                     "404": {
                         "description": "Employee/passport not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -722,8 +794,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -764,8 +842,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -827,8 +911,14 @@
                     "404": {
                         "description": "Employee/vacation not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -849,8 +939,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -891,8 +987,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -954,8 +1056,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1010,8 +1118,14 @@
                     "409": {
                         "description": "Add vacation conflict response: the dates indicated conflict with the available ones"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1086,8 +1200,14 @@
                     "404": {
                         "description": "Employee not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1148,8 +1268,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1200,8 +1326,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1222,8 +1354,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1303,8 +1441,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1373,8 +1517,14 @@
                     "404": {
                         "description": "Employee not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1441,8 +1591,14 @@
                     "409": {
                         "description": "Add passport conflict response: the passport already exists"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1487,8 +1643,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1550,8 +1712,14 @@
                         },
                         "description": "Add education conflict response: the education already exists"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1606,8 +1774,14 @@
                     "404": {
                         "description": "Employee/education not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1628,8 +1802,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1670,8 +1850,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1735,8 +1921,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1799,8 +1991,14 @@
                         },
                         "description": "Add training conflict response: the training already exists"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1856,8 +2054,14 @@
                     "404": {
                         "description": "Employee/training not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1878,8 +2082,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1920,8 +2130,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1953,243 +2169,6 @@
                 }
             ]
         },
-        "/users": {
-            "get": {
-                "parameters": [
-                    {
-                        "examples": {
-                            "Limit example": {
-                                "value": "50"
-                            }
-                        },
-                        "name": "limit",
-                        "description": "maximum number of results to return",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query",
-                        "required": false
-                    },
-                    {
-                        "examples": {
-                            "Query": {
-                                "value": "\"Иванов\""
-                            }
-                        },
-                        "name": "query",
-                        "description": "query to find by",
-                        "schema": {
-                            "type": "string"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "examples": {
-                            "Page example": {
-                                "value": "2"
-                            }
-                        },
-                        "name": "page",
-                        "description": "page number with results to return",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "query"
-                    },
-                    {
-                        "examples": {
-                            "SortByExample": {
-                                "value": "\"alphabet\""
-                            }
-                        },
-                        "name": "sort_by",
-                        "description": "type of sort result by",
-                        "schema": {
-                            "default": "alphabet",
-                            "enum": [
-                                "alphabet",
-                                "department"
-                            ],
-                            "type": "string"
-                        },
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "allOf": [
-                                            {
-                                                "$ref": "#/components/schemas/ShortUser"
-                                            },
-                                            {
-                                                "required": [
-                                                    "id",
-                                                    "first_name",
-                                                    "last_name"
-                                                ],
-                                                "type": "object"
-                                            }
-                                        ]
-                                    }
-                                },
-                                "examples": {
-                                    "List employees example": {
-                                        "value": [
-                                            {
-                                                "first_name": "Alexander",
-                                                "last_name": "Pushkin",
-                                                "middle_name": "Sergeyevich",
-                                                "position": "Novelist",
-                                                "department": "Collegium of Foreign Affairs",
-                                                "email": "pushkin@dantes.net",
-                                                "phone_numbers": [
-                                                    {
-                                                        "number": "799183712345",
-                                                        "type": "mobile"
-                                                    },
-                                                    {
-                                                        "number": "1837",
-                                                        "type": "office"
-                                                    }
-                                                ]
-                                            },
-                                            {
-                                                "first_name": "Nikolai",
-                                                "last_name": "Gogol",
-                                                "middle_name": "Vasilievich",
-                                                "position": "Playwright",
-                                                "department": "Third Section of His Imperial Majesty's Own Chancellery",
-                                                "email": "gogol@fire.net",
-                                                "phone_numbers": [
-                                                    {
-                                                        "number": "799185212345",
-                                                        "type": "mobile"
-                                                    },
-                                                    {
-                                                        "number": "1821",
-                                                        "type": "office"
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Employees list response"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": [
-                            "user:read"
-                        ]
-                    }
-                ],
-                "operationId": "listUsers",
-                "description": "Returns list of company employees sorted alphabetically (default) or by department"
-            },
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/FullUser"
-                                    },
-                                    {
-                                        "required": [
-                                            "first_name",
-                                            "last_name",
-                                            "date_of_birth",
-                                            "gender"
-                                        ],
-                                        "type": "object"
-                                    }
-                                ]
-                            },
-                            "examples": {
-                                "Post employee example": {
-                                    "value": {
-                                        "first_name": "Alexander",
-                                        "last_name": "Pushkin",
-                                        "middle_name": "Sergeyevich",
-                                        "gender": "male",
-                                        "position": "Novelist",
-                                        "department": "Collegium of Foreign Affairs",
-                                        "email": "pushkin@dantes.net",
-                                        "phone_numbers": [
-                                            {
-                                                "number": "799183712345",
-                                                "type": "mobile"
-                                            },
-                                            {
-                                                "number": "1837",
-                                                "type": "office"
-                                            }
-                                        ],
-                                        "foreign_languages": [
-                                            "english",
-                                            "german"
-                                        ],
-                                        "military": {
-                                            "rank": "Старший лейтенант",
-                                            "speciality": "101182",
-                                            "category": "А2",
-                                            "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "201": {
-                        "headers": {
-                            "Location": {
-                                "schema": {
-                                    "format": "uri",
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "description": "Employee created response, \nLocation header returns a new employee URL"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": [
-                            "user:create"
-                        ]
-                    }
-                ],
-                "operationId": "addUser",
-                "description": "Creates a new employe in the company"
-            }
-        },
         "/login/change-password": {
             "get": {
                 "parameters": [
@@ -2219,8 +2198,14 @@
                     "429": {
                         "description": "Too many request response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "operationId": "checkKey",
@@ -2258,8 +2243,14 @@
                     "429": {
                         "description": "Too many request response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "operationId": "changePassword",
@@ -2319,8 +2310,14 @@
                     "401": {
                         "$ref": "#/components/responses/UnauthorizedError"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "operationId": "login",
@@ -2684,8 +2681,14 @@
                     "404": {
                         "description": "Employee not found response"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -2730,8 +2733,14 @@
                     "404": {
                         "description": "Employee not found"
                     },
-                    "500": {
-                        "$ref": "#/components/responses/InternalServerError"
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -2755,6 +2764,265 @@
                     "required": true
                 }
             ]
+        },
+        "/users": {
+            "get": {
+                "parameters": [
+                    {
+                        "examples": {
+                            "Limit example": {
+                                "value": "50"
+                            }
+                        },
+                        "name": "limit",
+                        "description": "maximum number of results to return",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query",
+                        "required": false
+                    },
+                    {
+                        "examples": {
+                            "Query": {
+                                "value": "\"Иванов\""
+                            }
+                        },
+                        "name": "query",
+                        "description": "query to find by",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "examples": {
+                            "Page example": {
+                                "value": "2"
+                            }
+                        },
+                        "name": "page",
+                        "description": "page number with results to return",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "query"
+                    },
+                    {
+                        "examples": {
+                            "SortByExample": {
+                                "value": "\"alphabet\""
+                            }
+                        },
+                        "name": "sort_by",
+                        "description": "type of sort result by",
+                        "schema": {
+                            "default": "alphabet",
+                            "enum": [
+                                "alphabet",
+                                "department"
+                            ],
+                            "type": "string"
+                        },
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/ShortUser"
+                                            },
+                                            {
+                                                "required": [
+                                                    "id",
+                                                    "first_name",
+                                                    "last_name"
+                                                ],
+                                                "type": "object"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "examples": {
+                                    "List employees example": {
+                                        "value": [
+                                            {
+                                                "first_name": "Alexander",
+                                                "last_name": "Pushkin",
+                                                "middle_name": "Sergeyevich",
+                                                "position": "Novelist",
+                                                "department": "Collegium of Foreign Affairs",
+                                                "email": "pushkin@dantes.net",
+                                                "phone_numbers": [
+                                                    {
+                                                        "number": "799183712345",
+                                                        "type": "mobile"
+                                                    },
+                                                    {
+                                                        "number": "1837",
+                                                        "type": "office"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "first_name": "Nikolai",
+                                                "last_name": "Gogol",
+                                                "middle_name": "Vasilievich",
+                                                "position": "Playwright",
+                                                "department": "Third Section of His Imperial Majesty's Own Chancellery",
+                                                "email": "gogol@fire.net",
+                                                "phone_numbers": [
+                                                    {
+                                                        "number": "799185212345",
+                                                        "type": "mobile"
+                                                    },
+                                                    {
+                                                        "number": "1821",
+                                                        "type": "office"
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employees list response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "user:read"
+                        ]
+                    }
+                ],
+                "operationId": "listUsers",
+                "description": "Returns list of company employees sorted alphabetically (default) or by department"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/FullUser"
+                                    },
+                                    {
+                                        "required": [
+                                            "first_name",
+                                            "last_name",
+                                            "date_of_birth",
+                                            "gender"
+                                        ],
+                                        "type": "object"
+                                    }
+                                ]
+                            },
+                            "examples": {
+                                "Post employee example": {
+                                    "value": {
+                                        "first_name": "Alexander",
+                                        "last_name": "Pushkin",
+                                        "middle_name": "Sergeyevich",
+                                        "gender": "male",
+                                        "position": "Novelist",
+                                        "department": "Collegium of Foreign Affairs",
+                                        "email": "pushkin@dantes.net",
+                                        "phone_numbers": [
+                                            {
+                                                "number": "799183712345",
+                                                "type": "mobile"
+                                            },
+                                            {
+                                                "number": "1837",
+                                                "type": "office"
+                                            }
+                                        ],
+                                        "foreign_languages": [
+                                            "english",
+                                            "german"
+                                        ],
+                                        "military": {
+                                            "rank": "Старший лейтенант",
+                                            "speciality": "101182",
+                                            "category": "А2",
+                                            "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "uri",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Employee created response, \nLocation header returns a new employee URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "409": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "Add user conflict response: the user already exists"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "user:create"
+                        ]
+                    }
+                ],
+                "operationId": "addUser",
+                "description": "Creates a new employe in the company"
+            }
         }
     },
     "components": {
@@ -3797,16 +4065,6 @@
                     }
                 },
                 "description": "Access token is missing or invalid"
-            },
-            "InternalServerError": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Error"
-                        }
-                    }
-                },
-                "description": "Internal Server Error"
             },
             "BadRequest": {
                 "content": {
