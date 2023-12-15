@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS "users"
     "middlename"           varchar NOT NULL,
     "gender"               gender  NOT NULL,
     "date_of_birth"        date    NOT NULL,
-    "place_of_birth"       date    NOT NULL,
+    "place_of_birth"       varchar NOT NULL,
     "position_id"          bigint  NOT NULL,
     "department_id"        bigint  NOT NULL,
     "grade"                varchar,
@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS "educations"
     "id"                  bigserial PRIMARY KEY,
     "user_id"             bigint  NOT NULL,
     "name_of_institution" varchar NOT NULL,
+    "name_of_program"     varchar NOT NULL,
     "document_number"     varchar NOT NULL,
     "year_of_begin"       date    NOT NULL,
     "year_of_end"         date    NOT NULL,
@@ -179,7 +180,7 @@ CREATE TABLE IF NOT EXISTS "contracts"
 (
     "id"            bigserial PRIMARY KEY,
     "user_id"       bigint        NOT NULL,
-    "number"        integer       NOT NULL,
+    "number"        varchar       NOT NULL,
     "contract_type" contract_type NOT NULL,
     "work_type"     work_type     NOT NULL,
     "date_begin"    date          NOT NULL,
@@ -218,9 +219,9 @@ CREATE TABLE IF NOT EXISTS "finances"
 (
     "id"                  bigserial PRIMARY KEY,
     "user_id"             bigint  NOT NULL,
-    "salary"              integer NOT NULL,
-    "fee_to_pension_fund" integer NOT NULL,
-    "fee_to_tax"          integer NOT NULL,
+    "salary"              bigint NOT NULL,
+    "social_security_tax" bigint NOT NULL,
+    "income_tax"          bigint NOT NULL,
     "created_at"          timestamptz DEFAULT (now()),
     "updated_at"          timestamptz
 );
