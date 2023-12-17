@@ -18,6 +18,9 @@ type ServerInterface interface {
 	// (GET /departments)
 	ListDepartments(w http.ResponseWriter, r *http.Request)
 
+	// (GET /health)
+	Health(w http.ResponseWriter, r *http.Request)	
+
 	// (POST /login)
 	Login(w http.ResponseWriter, r *http.Request)
 
@@ -165,6 +168,21 @@ func (siw *ServerInterfaceWrapper) ListDepartments(w http.ResponseWriter, r *htt
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListDepartments(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// ListDepartments operation middleware
+func (siw *ServerInterfaceWrapper) Health(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.Health(w, r)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -1699,6 +1717,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		ErrorHandlerFunc:   options.ErrorHandlerFunc,
 	}
 
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/health", wrapper.Health)
+	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/departments", wrapper.ListDepartments)
 	})

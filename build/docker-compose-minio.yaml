@@ -5,7 +5,7 @@ services:
     container_name: ecabinet_minio
     image: minio/minio:latest
     command: server --console-address ":9001" /data/
-    restart: always
+    restart: unless-stopped
     ports:
 #      - "9000:9000"
       - "9001:9001"
@@ -15,7 +15,7 @@ services:
       - minio-storage:/data
     healthcheck:
       test: ["CMD", "mc", "ready", "local"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
 volumes:

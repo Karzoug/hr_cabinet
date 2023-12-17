@@ -4,6 +4,7 @@ services:
   postgres:
     image: postgres:16.1-alpine3.19
     container_name: ecabinet_postgres
+    restart: unless-stopped
     env_file:
       - secrets/db.dev.env
       - db.dev.env

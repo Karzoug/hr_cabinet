@@ -21,6 +21,8 @@ FROM debian:trixie-slim AS build-release-stage
 
 WORKDIR /
 
+RUN apt-get -y update; apt-get -y install curl
+
 COPY --from=build-stage /server /server
 
 EXPOSE $HTTP_PORT

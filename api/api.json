@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.17.0",
+        "version": "0.18.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -14,6 +14,26 @@
         }
     ],
     "paths": {
+        "/health": {
+            "get": {
+                "responses": {
+                    "200": {                        
+                        "description": "The server is up and running"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "health",
+                "description": "Check if the server is up and running"
+            }
+        },        
         "/users/{user_id}/photo": {
             "post": {
                 "requestBody": {
