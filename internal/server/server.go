@@ -8,7 +8,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Employee-s-file-cabinet/backend/internal/config"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/s3"
 	"github.com/go-chi/chi/v5"
@@ -38,7 +37,7 @@ const (
 	defaultShutdownPeriod = 30 * time.Second
 )
 
-func New(cfg config.HTTP, userRepository userRepository, s3FileUploader s3FileUploader, logger *slog.Logger) *server {
+func New(cfg Config, userRepository userRepository, s3FileUploader s3FileUploader, logger *slog.Logger) *server {
 	logger = logger.With(slog.String("from", "http-server"))
 
 	srv := &http.Server{
