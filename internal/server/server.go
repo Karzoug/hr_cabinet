@@ -13,6 +13,8 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+const baseURL = "/api/v1"
+
 var _ api.ServerInterface = (*server)(nil)
 
 type s3FileUploader interface {
@@ -55,10 +57,15 @@ func New(cfg Config, userRepository userRepository, s3FileUploader s3FileUploade
 		logger:         logger,
 	}
 
+	mux := chi.NewRouter()
+	mux.NotFound(s.notFound)
+	mux.MethodNotAllowed(s.methodNotAllowed)
+	mux.Use(s.logAccess)
+	mux.Use(s.recoverPanic)
+
 	srv.Handler = api.HandlerWithOptions(s, api.ChiServerOptions{
-		BaseURL:     fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
-		BaseRouter:  chi.NewRouter(),
-		Middlewares: []api.MiddlewareFunc{s.logAccess, s.recoverPanic},
+		BaseURL:    baseURL,
+		BaseRouter: mux,
 	})
 
 	return s

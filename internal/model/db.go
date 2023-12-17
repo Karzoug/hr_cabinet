@@ -5,18 +5,16 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/Employee-s-file-cabinet/backend/pkg/e"
 	_ "github.com/jackc/pgx/stdlib" // use as driver for sqlx
 	"github.com/jmoiron/sqlx"
 )
 
 const (
-	defaultMaxOpenConn     = 4
-	defaultMaxIdleConn     = 4
 	defaultMaxConnIdleTime = time.Second * 30
 	defaultMaxConnLifetime = time.Minute * 2
 
-	defaultConnAttempts = 10
-	defaultConnTimeout  = time.Second
+	defaultConnTimeout = time.Second
 )
 
 // DB структура с настройками подключения к БД и доступом к текущему соединению.
@@ -34,11 +32,8 @@ type DB struct {
 // New создаёт объект DB с заданными параметрами и подключается к БД.
 func New(dsn string, opts ...Option) (*DB, error) {
 	db := &DB{
-		maxOpenConn:     defaultMaxOpenConn,
-		maxIdleConn:     defaultMaxIdleConn,
 		maxConnIdleTime: defaultMaxConnIdleTime,
 		maxConnLifetime: defaultMaxConnLifetime,
-		connAttempts:    defaultConnAttempts,
 		connTimeout:     defaultConnTimeout,
 	}
 
@@ -61,7 +56,7 @@ func New(dsn string, opts ...Option) (*DB, error) {
 	}
 
 	if err != nil {
-		return nil, fmt.Errorf("new db: %w", err)
+		return nil, e.Wrap("new db", err)
 	}
 
 	db.SetMaxOpenConns(db.maxOpenConn)

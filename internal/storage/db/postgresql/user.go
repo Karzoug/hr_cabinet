@@ -15,7 +15,8 @@ func NewUserStorage(cfg Config) (*userStorage, error) {
 	const op = "create user storage"
 
 	db, err := model.New(cfg.DSN,
-		model.MaxOpenConn(cfg.MaxOpen),
+		model.MaxOpenConn(cfg.MaxOpenConns),
+		model.MaxIdleConn(cfg.MaxIdleConns),
 		model.ConnAttempts(cfg.ConnAttempts))
 	if err != nil {
 		return nil, e.Wrap(op, err)

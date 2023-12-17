@@ -16,6 +16,8 @@ var (
 	ErrLimitRequestBodySize   = errors.New("request body too large")
 	ErrBadContentLengthHeader = errors.New("bad content length header: missing or not a number")
 	ErrInternalServerError    = errors.New("the server encountered a problem and could not process your request")
+	ErrNotFoundRoute          = errors.New("the requested resource could not be found")
+	ErrMethodNotAllowed       = errors.New("the method is not supported for this resource")
 )
 
 func (s *server) reportServerError(r *http.Request, err error, withStack bool) {
@@ -42,4 +44,12 @@ func (s *server) errorMessage(w http.ResponseWriter, r *http.Request, status int
 		s.reportServerError(r, err, false)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+}
+
+func (s *server) notFound(w http.ResponseWriter, r *http.Request) {
+	s.errorMessage(w, r, http.StatusNotFound, ErrNotFoundRoute.Error(), nil)
+}
+
+func (s *server) methodNotAllowed(w http.ResponseWriter, r *http.Request) {
+	s.errorMessage(w, r, http.StatusMethodNotAllowed, ErrMethodNotAllowed.Error(), nil)
 }

@@ -8,7 +8,7 @@ import (
 )
 
 type Config struct {
-	LogLevel string            `env:"LOG_LEVEL" default:"debug"`
+	LogLevel string            `env:"LOG_LEVEL" env-default:"debug"`
 	HTTP     server.Config     `env-prefix:"HTTP_"`
 	PG       postgresql.Config `env-prefix:"PG_"`
 }

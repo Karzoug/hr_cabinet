@@ -21,7 +21,8 @@ var (
 )
 
 func main() {
-	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	ctx, stop := signal.NotifyContext(context.Background(),
+		syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	defer stop()
 
 	cfg, err := config.New()
@@ -33,7 +34,7 @@ func main() {
 	logger := buildLogger(os.Stdout, cfg.LogLevel, envMode)
 
 	logger.Info(
-		"starting app server",
+		"starting app",
 		slog.String("env", envMode.String()),
 		slog.String("build version", buildVersion),
 		slog.String("build date", buildDate),
