@@ -3,7 +3,6 @@ package postgresql
 import (
 	"context"
 
-	"github.com/Employee-s-file-cabinet/backend/internal/config"
 	"github.com/Employee-s-file-cabinet/backend/internal/model"
 	"github.com/Employee-s-file-cabinet/backend/pkg/e"
 )
@@ -12,7 +11,7 @@ type userStorage struct {
 	*model.DB
 }
 
-func NewUserStorage(cfg config.PG) (*userStorage, error) {
+func NewUserStorage(cfg Config) (*userStorage, error) {
 	const op = "create user storage"
 
 	db, err := model.New(cfg.DSN,

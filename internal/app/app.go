@@ -6,7 +6,7 @@ import (
 
 	"github.com/Employee-s-file-cabinet/backend/internal/config"
 	"github.com/Employee-s-file-cabinet/backend/internal/server"
-	postgresql "github.com/Employee-s-file-cabinet/backend/internal/storage/db/posgresql"
+	"github.com/Employee-s-file-cabinet/backend/internal/storage/db/postgresql"
 	"golang.org/x/sync/errgroup"
 )
 
