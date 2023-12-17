@@ -9,6 +9,10 @@ gen-api-server:
 install-dependencies:
 	go install github.com/deepmap/oapi-codegen/v2/cmd/oapi-codegen@latest
 
+.PHONY: lint
+lint:
+	golangci-lint run ./...
+
 .PHONY: new-migration
 new-migration: ## Создание новой миграции (задать name=...)
 	migrate create -ext sql -dir migrations -seq $(name)
