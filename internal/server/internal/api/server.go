@@ -161,7 +161,7 @@ type MiddlewareFunc func(http.Handler) http.Handler
 func (siw *ServerInterfaceWrapper) ListDepartments(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListDepartments(w, r)
@@ -260,7 +260,7 @@ func (siw *ServerInterfaceWrapper) ListUsers(w http.ResponseWriter, r *http.Requ
 
 	var err error
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params ListUsersParams
@@ -312,7 +312,7 @@ func (siw *ServerInterfaceWrapper) ListUsers(w http.ResponseWriter, r *http.Requ
 func (siw *ServerInterfaceWrapper) AddUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:create"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserCreateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddUser(w, r)
@@ -340,7 +340,7 @@ func (siw *ServerInterfaceWrapper) GetUser(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetUser(w, r, userId)
@@ -368,7 +368,7 @@ func (siw *ServerInterfaceWrapper) PatchUser(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchUser(w, r, userId)
@@ -396,7 +396,7 @@ func (siw *ServerInterfaceWrapper) ListContracts(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListContracts(w, r, userId)
@@ -424,7 +424,7 @@ func (siw *ServerInterfaceWrapper) AddContract(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddContract(w, r, userId)
@@ -461,7 +461,7 @@ func (siw *ServerInterfaceWrapper) DeleteContract(w http.ResponseWriter, r *http
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteContract(w, r, userId, contractId)
@@ -498,7 +498,7 @@ func (siw *ServerInterfaceWrapper) GetContract(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetContract(w, r, userId, contractId)
@@ -535,7 +535,7 @@ func (siw *ServerInterfaceWrapper) PatchContract(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchContract(w, r, userId, contractId)
@@ -563,7 +563,7 @@ func (siw *ServerInterfaceWrapper) ListEducations(w http.ResponseWriter, r *http
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListEducations(w, r, userId)
@@ -591,7 +591,7 @@ func (siw *ServerInterfaceWrapper) AddEducation(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddEducation(w, r, userId)
@@ -628,7 +628,7 @@ func (siw *ServerInterfaceWrapper) DeleteEducation(w http.ResponseWriter, r *htt
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteEducation(w, r, userId, educationId)
@@ -665,7 +665,7 @@ func (siw *ServerInterfaceWrapper) GetEducation(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetEducation(w, r, userId, educationId)
@@ -702,7 +702,7 @@ func (siw *ServerInterfaceWrapper) PatchEducation(w http.ResponseWriter, r *http
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchEducation(w, r, userId, educationId)
@@ -730,7 +730,7 @@ func (siw *ServerInterfaceWrapper) ListPassports(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListPassports(w, r, userId)
@@ -758,7 +758,7 @@ func (siw *ServerInterfaceWrapper) AddPassport(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddPassport(w, r, userId)
@@ -795,7 +795,7 @@ func (siw *ServerInterfaceWrapper) DeletePassport(w http.ResponseWriter, r *http
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeletePassport(w, r, userId, passportId)
@@ -832,7 +832,7 @@ func (siw *ServerInterfaceWrapper) GetPassport(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetPassport(w, r, userId, passportId)
@@ -869,7 +869,7 @@ func (siw *ServerInterfaceWrapper) PatchPassport(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchPassport(w, r, userId, passportId)
@@ -906,7 +906,7 @@ func (siw *ServerInterfaceWrapper) ListVisas(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListVisas(w, r, userId, passportId)
@@ -943,7 +943,7 @@ func (siw *ServerInterfaceWrapper) AddVisa(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddVisa(w, r, userId, passportId)
@@ -989,7 +989,7 @@ func (siw *ServerInterfaceWrapper) DeleteVisa(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteVisa(w, r, userId, passportId, visaId)
@@ -1035,7 +1035,7 @@ func (siw *ServerInterfaceWrapper) GetVisa(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetVisa(w, r, userId, passportId, visaId)
@@ -1081,7 +1081,7 @@ func (siw *ServerInterfaceWrapper) PatchVisa(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchVisa(w, r, userId, passportId, visaId)
@@ -1109,7 +1109,7 @@ func (siw *ServerInterfaceWrapper) UploadPhoto(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UploadPhoto(w, r, userId)
@@ -1137,7 +1137,7 @@ func (siw *ServerInterfaceWrapper) ListScans(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListScans(w, r, userId)
@@ -1165,7 +1165,7 @@ func (siw *ServerInterfaceWrapper) UploadScan(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UploadScan(w, r, userId)
@@ -1202,7 +1202,7 @@ func (siw *ServerInterfaceWrapper) DeleteScan(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteScan(w, r, userId, scanId)
@@ -1239,7 +1239,7 @@ func (siw *ServerInterfaceWrapper) GetScan(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetScan(w, r, userId, scanId)
@@ -1267,7 +1267,7 @@ func (siw *ServerInterfaceWrapper) ListTrainings(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListTrainings(w, r, userId)
@@ -1295,7 +1295,7 @@ func (siw *ServerInterfaceWrapper) AddTraining(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddTraining(w, r, userId)
@@ -1332,7 +1332,7 @@ func (siw *ServerInterfaceWrapper) DeleteTraining(w http.ResponseWriter, r *http
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteTraining(w, r, userId, trainingId)
@@ -1369,7 +1369,7 @@ func (siw *ServerInterfaceWrapper) GetTraining(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetTraining(w, r, userId, trainingId)
@@ -1406,7 +1406,7 @@ func (siw *ServerInterfaceWrapper) PatchTraining(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchTraining(w, r, userId, trainingId)
@@ -1434,7 +1434,7 @@ func (siw *ServerInterfaceWrapper) ListVacations(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListVacations(w, r, userId)
@@ -1462,7 +1462,7 @@ func (siw *ServerInterfaceWrapper) AddVacation(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddVacation(w, r, userId)
@@ -1499,7 +1499,7 @@ func (siw *ServerInterfaceWrapper) DeleteVacation(w http.ResponseWriter, r *http
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteVacation(w, r, userId, vacationId)
@@ -1536,7 +1536,7 @@ func (siw *ServerInterfaceWrapper) GetVacation(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:read"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetVacation(w, r, userId, vacationId)
@@ -1573,7 +1573,7 @@ func (siw *ServerInterfaceWrapper) PatchVacation(w http.ResponseWriter, r *http.
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:update"})
+	ctx = context.WithValue(ctx, BearerAuthScopes, UserUpdateAccess)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchVacation(w, r, userId, vacationId)
