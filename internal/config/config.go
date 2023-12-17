@@ -3,25 +3,22 @@ package config
 
 import "github.com/ilyakaznacheev/cleanenv"
 
-type (
-	Config struct {
-		HTTP
-		PG
-		LogLevel string `env:"LOG_LEVEL" default:"debug"`
-	}
+type Config struct {
+	LogLevel string `env:"LOG_LEVEL" default:"debug"`
+	HTTP     HTTP   `env-prefix:"HTTP_"`
+	PG       PG     `env-prefix:"PG_"`
+}
 
-	// HTTP - настройка http-подключения.
-	HTTP struct {
-		Port string `env-required:"true" env:"HTTP_PORT" default:"9990"`
-	}
+type HTTP struct {
+	Host string `env:"HOST" default:"localhost"`
+	Port int    `env-required:"true" env:"HTTP_PORT" default:"9990"`
+}
 
-	// PG - настройки подключения к БД Postgres.
-	PG struct {
-		MaxOpen      int    `env:"PG_POOL_MAX"`
-		ConnAttempts int    `env:"PG_CONN_ATTEMPTS"`
-		DSN          string `env-required:"true"  env:"PG_DSN"`
-	}
-)
+type PG struct {
+	MaxOpen      int    `env:"POOL_MAX"`
+	ConnAttempts int    `env:"CONN_ATTEMPTS"`
+	DSN          string `env-required:"true"  env:"DSN"`
+}
 
 // New создаёт объект Config.
 func New() (*Config, error) {

@@ -1,16 +1,27 @@
 package app
 
-import "github.com/Employee-s-file-cabinet/backend/internal/config"
+import (
+	"context"
+	"log/slog"
 
-type App struct{}
+	"github.com/Employee-s-file-cabinet/backend/internal/config"
+	"github.com/Employee-s-file-cabinet/backend/internal/server"
+	"golang.org/x/sync/errgroup"
+)
 
-func New(cfg *config.Config) (*App, error) {
-	return &App{}, nil
+func Run(pctx context.Context, cfg *config.Config, logger *slog.Logger) error {
+	db, err := postgresql.New(pctx, cfg.PG)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
 
-	// Инициализация БД
-	// Инициализация сервера/хэндлеров
-}
+	srv := server.New(cfg.HTTP, db, nil, logger)
 
-func (a *App) Run() error {
-	return nil
+	eg, ctx := errgroup.WithContext(pctx)
+	eg.Go(func() error {
+		return srv.Run(ctx)
+	})
+
+	return eg.Wait()
 }
