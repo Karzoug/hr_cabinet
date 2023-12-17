@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.15.0",
+        "version": "0.16.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -10,7 +10,7 @@
     },
     "servers": [
         {
-            "url": "http://127.0.0.1/api"
+            "url": "https://ecabinet.acceleratorpracticum.ru/api/v1"
         }
     ],
     "paths": {
