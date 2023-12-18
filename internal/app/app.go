@@ -9,6 +9,7 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/config"
 	"github.com/Employee-s-file-cabinet/backend/internal/server"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/db/postgresql"
+	"github.com/Employee-s-file-cabinet/backend/internal/storage/s3"
 )
 
 func Run(pctx context.Context, cfg *config.Config, logger *slog.Logger) error {
@@ -18,7 +19,12 @@ func Run(pctx context.Context, cfg *config.Config, logger *slog.Logger) error {
 	}
 	defer db.Close()
 
-	srv := server.New(cfg.HTTP, db, nil, logger)
+	s3Storage, err := s3.New(pctx, cfg.S3)
+	if err != nil {
+		return err
+	}
+
+	srv := server.New(cfg.HTTP, db, s3Storage, logger)
 
 	eg, ctx := errgroup.WithContext(pctx)
 	eg.Go(func() error {

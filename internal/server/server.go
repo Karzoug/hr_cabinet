@@ -17,8 +17,9 @@ const baseURL = "/api/v1"
 
 var _ api.ServerInterface = (*server)(nil)
 
-type s3FileUploader interface {
-	UploadFile(context.Context, s3.UploadableFile) error
+type s3FileRepository interface {
+	UploadFile(context.Context, s3.File) error
+	DownloadFile(ctx context.Context, prefix, name string) (s3.File, func() error, error)
 }
 
 type userRepository interface {
@@ -27,7 +28,7 @@ type userRepository interface {
 
 type server struct {
 	httpServer     *http.Server
-	fileUploader   s3FileUploader
+	fileRepository s3FileRepository
 	userRepository userRepository
 	logger         *slog.Logger
 }
@@ -39,7 +40,7 @@ const (
 	defaultShutdownPeriod = 30 * time.Second
 )
 
-func New(cfg Config, userRepository userRepository, s3FileUploader s3FileUploader, logger *slog.Logger) *server {
+func New(cfg Config, userRepository userRepository, s3FileRepository s3FileRepository, logger *slog.Logger) *server {
 	logger = logger.With(slog.String("from", "http-server"))
 
 	srv := &http.Server{
@@ -52,7 +53,7 @@ func New(cfg Config, userRepository userRepository, s3FileUploader s3FileUploade
 
 	s := &server{
 		httpServer:     srv,
-		fileUploader:   s3FileUploader,
+		fileRepository: s3FileRepository,
 		userRepository: userRepository,
 		logger:         logger,
 	}
