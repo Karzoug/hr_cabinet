@@ -1,10 +1,10 @@
-// TODO: Структуры с тегами переменных окружения
 package config
 
 import (
+	"github.com/ilyakaznacheev/cleanenv"
+
 	"github.com/Employee-s-file-cabinet/backend/internal/server"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/db/postgresql"
-	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Config struct {

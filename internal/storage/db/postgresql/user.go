@@ -7,11 +7,11 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/e"
 )
 
-type userStorage struct {
+type storage struct {
 	*model.DB
 }
 
-func NewUserStorage(cfg Config) (*userStorage, error) {
+func NewStorage(cfg Config) (*storage, error) {
 	const op = "create user storage"
 
 	db, err := model.New(cfg.DSN,
@@ -22,10 +22,10 @@ func NewUserStorage(cfg Config) (*userStorage, error) {
 		return nil, e.Wrap(op, err)
 	}
 
-	return &userStorage{db}, nil
+	return &storage{db}, nil
 }
 
-func (s *userStorage) ExistUser(ctx context.Context, userID int) (bool, error) {
+func (s *storage) ExistUser(ctx context.Context, userID int) (bool, error) {
 	const op = "postrgresql user storage: exist user"
 
 	panic("not implemented")

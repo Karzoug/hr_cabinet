@@ -5,9 +5,10 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/Employee-s-file-cabinet/backend/pkg/e"
 	_ "github.com/jackc/pgx/stdlib" // use as driver for sqlx
 	"github.com/jmoiron/sqlx"
+
+	"github.com/Employee-s-file-cabinet/backend/pkg/e"
 )
 
 const (

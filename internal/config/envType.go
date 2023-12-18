@@ -3,9 +3,9 @@ package config
 import "errors"
 
 const (
-	// EnvDevelopment is a constant defining the development environment.
-	EnvProduction EnvType = iota
 	// EnvProduction is a constant defining the production environment.
+	EnvProduction EnvType = iota
+	// EnvDevelopment is a constant defining the development environment.
 	EnvDevelopment
 )
 
