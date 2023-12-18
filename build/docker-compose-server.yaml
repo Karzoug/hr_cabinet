@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  server:
+    build:
+      context: ./../
+      dockerfile: ./build/server.Dockerfile
+    container_name: ecabinet_server
+    restart: on-failure:10
+    env_file:
+      - secrets/server.dev.env
+      - server.dev.env
+    ports:
+      - 9990:9990
+    healthcheck:
+      test: curl --fail http://localhost:9990/api/v1/health || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5

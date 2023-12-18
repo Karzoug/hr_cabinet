@@ -38,6 +38,8 @@ func (s *server) CheckKey(w http.ResponseWriter, r *http.Request, params api.Che
 		// TODO: return error
 		return
 	}
+
+	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Accept  application/json

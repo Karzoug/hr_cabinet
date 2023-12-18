@@ -3,12 +3,13 @@ package server
 import (
 	"net/http"
 
-	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 	"github.com/muonsoft/validation/validator"
+
+	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 )
 
 // @Produce application/json
-// @Success 200 {array} api.ShortUser
+// @Success 200 {object} api.ListUsersJSONResponseBody
 // @Router  /users [get]
 func (s *server) ListUsers(w http.ResponseWriter, r *http.Request, params api.ListUsersParams) {
 	w.WriteHeader(http.StatusNotImplemented)

@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16.1-alpine3.19
+    container_name: ecabinet_postgres
+    restart: unless-stopped
+    env_file:
+      - secrets/db.dev.env
+      - db.dev.env
+    ports:
+      - "54321:5432"
+    volumes:
+      - database-data-server:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+volumes:
+  database-data-server:

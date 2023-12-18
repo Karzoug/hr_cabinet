@@ -20,8 +20,9 @@ const (
 type ContractType string
 
 const (
-	ContractTypePermanent ContractType = "permanent"
-	ContractTypeTemporary ContractType = "temporary"
+	ContractTypePermanent    ContractType = "permanent"
+	ContractTypeTemporary    ContractType = "temporary"
+	ContractTypeSelfEmployed ContractType = "self_employed"
 )
 
 // Gender represents user gender.
@@ -116,7 +117,7 @@ func (c Contract) Validate(ctx context.Context, validator *vld.Validator) error 
 		vld.StringProperty("number", c.Number, it.HasLengthBetween(2, 50)),
 		vld.ComparableProperty[ContractType]("type",
 			c.Type,
-			it.IsOneOf[ContractType](ContractTypePermanent, ContractTypeTemporary)),
+			it.IsOneOf[ContractType](ContractTypePermanent, ContractTypeTemporary, ContractTypeSelfEmployed)),
 	)
 }
 
@@ -669,7 +670,8 @@ func (pc PatchContractJSONRequestBody) Validate(ctx context.Context, validator *
 			Then(vld.NilComparable(pc.Type,
 				it.IsOneOf[ContractType](
 					ContractTypePermanent,
-					ContractTypeTemporary))),
+					ContractTypeTemporary,
+					ContractTypeSelfEmployed))),
 	)
 }
 
@@ -836,6 +838,13 @@ func (v PatchVacationJSONRequestBody) Validate(ctx context.Context, validator *v
 // ------------------------------------------------------------------
 // Custom response
 // ------------------------------------------------------------------
+
+type ListUsersJSONResponseBody struct {
+	Users       []ShortUser `json:"users"`
+	TotalUsers  int         `json:"total_users"`
+	TotalPages  int         `json:"total_pages"`
+	CurrentPage int         `json:"current_page"`
+}
 
 type GetUserJSONResponseBody struct {
 	FullUser
