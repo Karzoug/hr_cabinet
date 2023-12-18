@@ -9,7 +9,7 @@ import (
 )
 
 // @Produce application/json
-// @Success 200 {array} api.ShortUser
+// @Success 200 {object} api.ListUsersJSONResponseBody
 // @Router  /users [get]
 func (s *server) ListUsers(w http.ResponseWriter, r *http.Request, params api.ListUsersParams) {
 	w.WriteHeader(http.StatusNotImplemented)

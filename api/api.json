@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.18.0",
+        "version": "0.19.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -17,7 +17,7 @@
         "/health": {
             "get": {
                 "responses": {
-                    "200": {                        
+                    "200": {
                         "description": "The server is up and running"
                     },
                     "default": {
@@ -33,7 +33,7 @@
                 "operationId": "health",
                 "description": "Check if the server is up and running"
             }
-        },        
+        },
         "/users/{user_id}/photo": {
             "post": {
                 "requestBody": {
@@ -89,7 +89,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -141,7 +141,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -211,7 +211,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -274,7 +274,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -302,7 +302,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -350,7 +350,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -423,7 +423,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -451,7 +451,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -499,7 +499,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -583,7 +583,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -656,7 +656,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -799,7 +799,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -827,7 +827,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -875,7 +875,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -944,7 +944,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -972,7 +972,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -1020,7 +1020,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -1089,7 +1089,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -1151,7 +1151,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -1233,7 +1233,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -1301,7 +1301,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -1359,7 +1359,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -1387,7 +1387,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -1474,7 +1474,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -1550,7 +1550,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -1624,7 +1624,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -1676,7 +1676,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -1745,7 +1745,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -1807,7 +1807,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -1835,7 +1835,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -1883,7 +1883,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -1954,7 +1954,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -2024,7 +2024,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -2087,7 +2087,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -2115,7 +2115,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -2163,7 +2163,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -2188,73 +2188,6 @@
                     "required": true
                 }
             ]
-        },
-        "/login": {
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Auth"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "access_token",
-                                        "token_type"
-                                    ],
-                                    "type": "object",
-                                    "properties": {
-                                        "access_token": {
-                                            "description": "The access token issued by the server",
-                                            "type": "string"
-                                        },
-                                        "token_type": {
-                                            "description": "The type of the token issued",
-                                            "type": "string"
-                                        },
-                                        "expires_in": {
-                                            "description": "The lifetime in seconds of the access token",
-                                            "type": "integer"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "Example": {
-                                        "value": {
-                                            "access_token": "v4.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwIjoiMjAyMi0wMS0wMVQwMDowMDowMCswMDowMCJ9v3Jt8mx_TdM2ceTGoqwrh4yDFn0XsHvvV_D0DtwQxVrJEBMl0F2caAdgnpKlt4p7xBnx1HcO-SPo8FPp214HDw.eyJraWQiOiJ6VmhNaVBCUDlmUmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9",
-                                            "token_type": "bearer",
-                                            "expires_in": 3600
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Successful authentication response: access token"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        }
-                    }
-                },
-                "operationId": "login",
-                "description": "Authenticates a user and returns an access token on success"
-            }
         },
         "/login/init-change-password": {
             "post": {
@@ -2737,7 +2670,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -2789,7 +2722,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            4
+                            "user:4"
                         ]
                     }
                 ],
@@ -2807,6 +2740,82 @@
                     "required": true
                 }
             ]
+        },
+        "/login": {
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Auth"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "headers": {
+                            "Set-Cookie": {
+                                "examples": {
+                                    "ecabinet:token": {
+                                        "value": "v4.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwIjoiMjAyMi0wMS0wMVQwMDowMDowMCswMDowMCJ9v3Jt8mx_TdM2ceTGoqwrh4yDFn0XsHvvV_D0DtwQxVrJEBMl0F2caAdgnpKlt4p7xBnx1HcO-SPo8FPp214HDw"
+                                    }
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "access_token",
+                                        "token_type"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "access_token": {
+                                            "description": "The access token issued by the server",
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "description": "The type of the token issued",
+                                            "type": "string"
+                                        },
+                                        "expires_in": {
+                                            "description": "The lifetime in seconds of the access token",
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "Example": {
+                                        "value": {
+                                            "access_token": "v4.public.eyJkYXRhIjoidGhpcyBpcyBhIHNpZ25lZCBtZXNzYWdlIiwiZXhwIjoiMjAyMi0wMS0wMVQwMDowMDowMCswMDowMCJ9v3Jt8mx_TdM2ceTGoqwrh4yDFn0XsHvvV_D0DtwQxVrJEBMl0F2caAdgnpKlt4p7xBnx1HcO-SPo8FPp214HDw.eyJraWQiOiJ6VmhNaVBCUDlmUmYyc25FY1Q3Z0ZUaW9lQTlDT2NOeTlEZmdMMVc2MGhhTiJ9",
+                                            "token_type": "bearer",
+                                            "expires_in": 3600
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Successful authentication response: access token"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "login",
+                "description": "Authenticates a user and returns an access token on success"
+            }
         },
         "/users": {
             "get": {
@@ -2876,51 +2885,79 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "allOf": [
-                                            {
-                                                "$ref": "#/components/schemas/ShortUser"
-                                            },
-                                            {
-                                                "required": [
-                                                    "id",
-                                                    "first_name",
-                                                    "last_name"
-                                                ],
-                                                "type": "object"
+                                    "required": [
+                                        "users",
+                                        "total_users",
+                                        "total_pages",
+                                        "current_page"
+                                    ],
+                                    "type": "object",
+                                    "properties": {
+                                        "users": {
+                                            "type": "array",
+                                            "items": {
+                                                "allOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/ShortUser"
+                                                    },
+                                                    {
+                                                        "required": [
+                                                            "id",
+                                                            "first_name",
+                                                            "last_name"
+                                                        ],
+                                                        "type": "object"
+                                                    }
+                                                ]
                                             }
-                                        ]
+                                        },
+                                        "total_users": {
+                                            "description": "total employee count in company",
+                                            "type": "integer"
+                                        },
+                                        "total_pages": {
+                                            "description": "total pages count (based on current limit parameter)",
+                                            "type": "integer"
+                                        },
+                                        "current_page": {
+                                            "description": "current page number (based on current limit parameter)",
+                                            "type": "integer"
+                                        }
                                     }
                                 },
                                 "examples": {
                                     "List employees example": {
-                                        "value": [
-                                            {
-                                                "first_name": "Alexander",
-                                                "last_name": "Pushkin",
-                                                "middle_name": "Sergeyevich",
-                                                "position": "Novelist",
-                                                "department": "Collegium of Foreign Affairs",
-                                                "email": "pushkin@dantes.net",
-                                                "phone_numbers": {
-                                                    "mobile": "79999999999",
-                                                    "office": "123456"
+                                        "value": {
+                                            "users": [
+                                                {
+                                                    "first_name": "Alexander",
+                                                    "last_name": "Pushkin",
+                                                    "middle_name": "Sergeyevich",
+                                                    "position": "Novelist",
+                                                    "department": "Collegium of Foreign Affairs",
+                                                    "email": "pushkin@dantes.net",
+                                                    "phone_numbers": {
+                                                        "mobile": "79999999999",
+                                                        "office": "123456"
+                                                    }
+                                                },
+                                                {
+                                                    "first_name": "Nikolai",
+                                                    "last_name": "Gogol",
+                                                    "middle_name": "Vasilievich",
+                                                    "position": "Playwright",
+                                                    "department": "Third Section of His Imperial Majesty's Own Chancellery",
+                                                    "email": "gogol@fire.net",
+                                                    "phone_numbers": {
+                                                        "mobile": "79999999999",
+                                                        "office": "123456"
+                                                    }
                                                 }
-                                            },
-                                            {
-                                                "first_name": "Nikolai",
-                                                "last_name": "Gogol",
-                                                "middle_name": "Vasilievich",
-                                                "position": "Playwright",
-                                                "department": "Third Section of His Imperial Majesty's Own Chancellery",
-                                                "email": "gogol@fire.net",
-                                                "phone_numbers": {
-                                                    "mobile": "79999999999",
-                                                    "office": "123456"
-                                                }
-                                            }
-                                        ]
+                                            ],
+                                            "current_page": 2,
+                                            "total_pages": 2,
+                                            "total_users": 16
+                                        }
                                     }
                                 }
                             }
@@ -2943,7 +2980,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            2
+                            "user:2"
                         ]
                     }
                 ],
@@ -3048,7 +3085,7 @@
                 "security": [
                     {
                         "bearerAuth": [
-                            1
+                            "1"
                         ]
                     }
                 ],
@@ -3104,7 +3141,8 @@
                         "description": "",
                         "enum": [
                             "temporary",
-                            "permanent"
+                            "permanent",
+                            "self_employed"
                         ],
                         "type": "string"
                     },
@@ -4106,7 +4144,7 @@
                 "scheme": "bearer",
                 "bearerFormat": "PASETO",
                 "type": "http",
-                "description": "auth: login+password, PASETO tokens"
+                "description": "auth: login+password, returned PASETO token in cookies"
             }
         }
     }
