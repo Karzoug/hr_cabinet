@@ -8,9 +8,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/s3"
-	"github.com/go-chi/chi/v5"
 )
 
 const baseURL = "/api/v1"

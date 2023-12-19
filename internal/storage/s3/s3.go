@@ -6,9 +6,10 @@ import (
 	"io"
 	"log/slog"
 
-	"github.com/Employee-s-file-cabinet/backend/pkg/e"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+
+	"github.com/Employee-s-file-cabinet/backend/pkg/e"
 )
 
 const (
