@@ -19,7 +19,7 @@ type ServerInterface interface {
 	ListDepartments(w http.ResponseWriter, r *http.Request)
 
 	// (GET /health)
-	Health(w http.ResponseWriter, r *http.Request)	
+	Health(w http.ResponseWriter, r *http.Request)
 
 	// (POST /login)
 	Login(w http.ResponseWriter, r *http.Request)
@@ -40,7 +40,7 @@ type ServerInterface interface {
 	AddUser(w http.ResponseWriter, r *http.Request)
 
 	// (GET /users/{user_id})
-	GetUser(w http.ResponseWriter, r *http.Request, userId int)
+	GetUser(w http.ResponseWriter, r *http.Request, userId int, params GetUserParams)
 
 	// (PATCH /users/{user_id})
 	PatchUser(w http.ResponseWriter, r *http.Request, userId int)
@@ -358,10 +358,21 @@ func (siw *ServerInterfaceWrapper) GetUser(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	ctx = context.WithValue(ctx, BearerAuthScopes, UserReadAccess)
+	ctx = context.WithValue(ctx, BearerAuthScopes, []string{"user:2"})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetUserParams
+
+	// ------------- Optional query parameter "expanded" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "expanded", r.URL.Query(), &params.Expanded)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "expanded", Err: err})
+		return
+	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetUser(w, r, userId)
+		siw.Handler.GetUser(w, r, userId, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
