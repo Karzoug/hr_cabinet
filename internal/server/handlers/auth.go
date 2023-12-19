@@ -1,10 +1,11 @@
-package server
+package handlers
 
 import (
 	"net/http"
 
-	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 	"github.com/muonsoft/validation/validator"
+
+	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 )
 
 // @Accept  application/json
