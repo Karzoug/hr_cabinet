@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.20.0",
+        "version": "0.20.1",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -3913,7 +3913,8 @@
                     "nationality",
                     "taxpayer",
                     "insurance",
-                    "email"
+                    "email",
+                    "position_track"
                 ],
                 "allOf": [
                     {

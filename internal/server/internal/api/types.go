@@ -192,7 +192,7 @@ type FullUser struct {
 	Nationality            string                  `json:"nationality"`
 	PersonalDataProcessing *PersonalDataProcessing `json:"personal_data_processing,omitempty"`
 	PlaceOfBirth           string                  `json:"place_of_birth"`
-	PositionTrack          []PositionTrackItem     `json:"position_track,omitempty"`
+	PositionTrack          []PositionTrackItem     `json:"position_track"`
 	RegistrationAddress    string                  `json:"registration_address"`
 	ResidentialAddress     string                  `json:"residential_address"`
 	Taxpayer               Taxpayer                `json:"taxpayer"`
