@@ -21,10 +21,6 @@ var (
 )
 
 func main() {
-	ctx, stop := signal.NotifyContext(context.Background(),
-		syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	defer stop()
-
 	cfg, err := config.New()
 	if err != nil {
 		slog.Error(fmt.Sprintf("failed to get config: %s", err.Error()))
@@ -39,6 +35,11 @@ func main() {
 		slog.String("build version", buildVersion),
 		slog.String("build date", buildDate),
 	)
+
+	ctx, stop := signal.NotifyContext(context.Background(),
+		syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	defer stop()
+
 	if err := app.Run(ctx, cfg, logger); err != nil {
 		logger.Error("app stopped with error", sl.Error(err))
 	}
