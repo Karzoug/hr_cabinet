@@ -1,6 +1,6 @@
 package postgresql
 
-import "github.com/Employee-s-file-cabinet/backend/pkg/e"
+import "github.com/Employee-s-file-cabinet/backend/pkg/errhelper"
 
 type storage struct {
 	*DB
@@ -14,7 +14,7 @@ func NewStorage(cfg Config) (*storage, error) {
 		MaxIdleConn(cfg.MaxIdleConns),
 		ConnAttempts(cfg.ConnAttempts))
 	if err != nil {
-		return nil, e.Wrap(op, err)
+		return nil, errhelper.Wrap(op, err)
 	}
 
 	return &storage{db}, nil

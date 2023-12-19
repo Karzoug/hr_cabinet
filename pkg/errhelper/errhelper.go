@@ -1,5 +1,5 @@
-// Package e provides a helper function to work with errors.
-package e
+// Package errhelper provides a helper function to work with errors.
+package errhelper
 
 import (
 	"fmt"
