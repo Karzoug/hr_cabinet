@@ -7,8 +7,6 @@ import (
 
 	_ "github.com/jackc/pgx/stdlib" // use as driver for sqlx
 	"github.com/jmoiron/sqlx"
-
-	"github.com/Employee-s-file-cabinet/backend/pkg/errhelper"
 )
 
 const (
@@ -57,7 +55,7 @@ func NewDB(dsn string, opts ...Option) (*DB, error) {
 	}
 
 	if err != nil {
-		return nil, errhelper.Wrap("new db", err)
+		return nil, fmt.Errorf("%s: %w", "new db", err)
 	}
 
 	db.SetMaxOpenConns(db.maxOpenConn)
