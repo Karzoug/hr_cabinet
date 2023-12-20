@@ -11,7 +11,7 @@ import (
 // @Produce application/json
 // @Success 200 {object} api.ListUsersJSONResponseBody
 // @Router  /users [get]
-func (s *server) ListUsers(w http.ResponseWriter, r *http.Request, params api.ListUsersParams) {
+func (h *handler) ListUsers(w http.ResponseWriter, r *http.Request, params api.ListUsersParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -19,7 +19,7 @@ func (s *server) ListUsers(w http.ResponseWriter, r *http.Request, params api.Li
 // @Param   body body api.FullUser true ""
 // @Failure 409  {object} api.Error "user already exists"
 // @Router  /users [post]
-func (s *server) AddUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) AddUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var user api.FullUser
@@ -37,14 +37,14 @@ func (s *server) AddUser(w http.ResponseWriter, r *http.Request) {
 // @Produce application/json
 // @Success 200 {object} api.GetUserJSONResponseBody
 // @Router  /users/{user_id} [get]
-func (s *server) GetUser(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) GetUser(w http.ResponseWriter, r *http.Request, userID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Accept  application/json
 // @Param   body body api.PatchFullUserJSONRequestBody true ""
 // @Router  /users/{user_id} [patch]
-func (s *server) PatchUser(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) PatchUser(w http.ResponseWriter, r *http.Request, userID int) {
 	ctx := r.Context()
 
 	var patch api.PatchFullUserJSONRequestBody
@@ -63,6 +63,6 @@ func (s *server) PatchUser(w http.ResponseWriter, r *http.Request, userID int) {
 // @Accept  image/png
 // @Accept  image/jpeg
 // @Router  /users/{user_id}/photo [post]
-func (s *server) UploadPhoto(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) UploadPhoto(w http.ResponseWriter, r *http.Request, userID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

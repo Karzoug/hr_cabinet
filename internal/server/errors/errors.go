@@ -1,4 +1,4 @@
-package handlers
+package errors
 
 import (
 	"errors"
@@ -20,7 +20,7 @@ var (
 	ErrMethodNotAllowed       = errors.New("the method is not supported for this resource")
 )
 
-func (s *server) reportServerError(r *http.Request, err error, withStack bool) {
+func ReportError(r *http.Request, err error, withStack bool) {
 	var (
 		message = err.Error()
 		method  = r.Method
@@ -30,26 +30,26 @@ func (s *server) reportServerError(r *http.Request, err error, withStack bool) {
 
 	requestAttrs := slog.Group("request", "method", method, "url", url)
 	if withStack {
-		s.logger.Error(message, requestAttrs, "trace", trace)
+		slog.Error(message, requestAttrs, "trace", trace)
 	} else {
-		s.logger.Error(message, requestAttrs)
+		slog.Error(message, requestAttrs)
 	}
 }
 
-func (s *server) errorMessage(w http.ResponseWriter, r *http.Request, status int, message string, headers http.Header) {
+func ErrorMessage(w http.ResponseWriter, r *http.Request, status int, message string, headers http.Header) {
 	message = strings.ToUpper(message[:1]) + message[1:]
 
 	err := response.JSONWithHeaders(w, status, api.Error{Message: message}, headers)
 	if err != nil {
-		s.reportServerError(r, err, false)
+		ReportError(r, err, false)
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
 
-func (s *server) notFound(w http.ResponseWriter, r *http.Request) {
-	s.errorMessage(w, r, http.StatusNotFound, ErrNotFoundRoute.Error(), nil)
+func NotFound(w http.ResponseWriter, r *http.Request) {
+	ErrorMessage(w, r, http.StatusNotFound, ErrNotFoundRoute.Error(), nil)
 }
 
-func (s *server) methodNotAllowed(w http.ResponseWriter, r *http.Request) {
-	s.errorMessage(w, r, http.StatusMethodNotAllowed, ErrMethodNotAllowed.Error(), nil)
+func MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
+	ErrorMessage(w, r, http.StatusMethodNotAllowed, ErrMethodNotAllowed.Error(), nil)
 }

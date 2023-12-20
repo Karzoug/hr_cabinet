@@ -1,4 +1,4 @@
-package handlers
+package server
 
 type Config struct {
 	Host  string `env:"HOST" env-default:"localhost"` // not used

@@ -11,7 +11,7 @@ import (
 // @Produce application/json
 // @Success 200 {array} api.Contract
 // @Router  /users/{user_id}/contracts [get]
-func (s *server) ListContracts(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) ListContracts(w http.ResponseWriter, r *http.Request, userID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -19,7 +19,7 @@ func (s *server) ListContracts(w http.ResponseWriter, r *http.Request, userID in
 // @Param   body body api.Contract true ""
 // @Failure 409  {object} api.Error "contract already exists"
 // @Router  /users/{user_id}/contracts [post]
-func (s *server) AddContract(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) AddContract(w http.ResponseWriter, r *http.Request, userID int) {
 	ctx := r.Context()
 
 	var c api.Contract
@@ -36,21 +36,21 @@ func (s *server) AddContract(w http.ResponseWriter, r *http.Request, userID int)
 }
 
 // @Router /users/{user_id}/contracts/{contract_id} [delete]
-func (s *server) DeleteContract(w http.ResponseWriter, r *http.Request, userID int, contractID int) {
+func (h *handler) DeleteContract(w http.ResponseWriter, r *http.Request, userID int, contractID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Produce application/json
 // @Success 200 {object} api.Contract
 // @Router  /users/{user_id}/contracts/{contract_id} [get]
-func (s *server) GetContract(w http.ResponseWriter, r *http.Request, userID int, contractID int) {
+func (h *handler) GetContract(w http.ResponseWriter, r *http.Request, userID int, contractID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Accept  application/json
 // @Param   body body api.PatchContractJSONRequestBody true ""
 // @Router  /users/{user_id}/contracts/{contract_id} [patch]
-func (s *server) PatchContract(w http.ResponseWriter, r *http.Request, userID int, contractID int) {
+func (h *handler) PatchContract(w http.ResponseWriter, r *http.Request, userID int, contractID int) {
 	ctx := r.Context()
 
 	var patch api.PatchContractJSONRequestBody

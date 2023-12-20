@@ -11,7 +11,7 @@ import (
 // @Produce application/json
 // @Success 200 {array} api.Education
 // @Router  /users/{user_id}/educations [get]
-func (s *server) ListEducations(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) ListEducations(w http.ResponseWriter, r *http.Request, userID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -19,7 +19,7 @@ func (s *server) ListEducations(w http.ResponseWriter, r *http.Request, userID i
 // @Param   body body api.Education true ""
 // @Failure 409  {object} api.Error "education already exists"
 // @Router  /users/{user_id}/educations [post]
-func (s *server) AddEducation(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) AddEducation(w http.ResponseWriter, r *http.Request, userID int) {
 	ctx := r.Context()
 
 	var e api.Education
@@ -36,21 +36,21 @@ func (s *server) AddEducation(w http.ResponseWriter, r *http.Request, userID int
 }
 
 // @Router /users/{user_id}/educations/{education_id} [delete]
-func (s *server) DeleteEducation(w http.ResponseWriter, r *http.Request, userID int, educationID int) {
+func (h *handler) DeleteEducation(w http.ResponseWriter, r *http.Request, userID int, educationID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Produce application/json
 // @Success 200 {object} api.Education
 // @Router  /users/{user_id}/educations/{education_id} [get]
-func (s *server) GetEducation(w http.ResponseWriter, r *http.Request, userID int, educationID int) {
+func (h *handler) GetEducation(w http.ResponseWriter, r *http.Request, userID int, educationID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Accept  application/json
 // @Param   body body api.PatchEducationJSONRequestBody true ""
 // @Router  /users/{user_id}/educations/{education_id} [patch]
-func (s *server) PatchEducation(w http.ResponseWriter, r *http.Request, userID int, educationID int) {
+func (h *handler) PatchEducation(w http.ResponseWriter, r *http.Request, userID int, educationID int) {
 	ctx := r.Context()
 
 	var patch api.PatchEducationJSONRequestBody

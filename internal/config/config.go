@@ -3,13 +3,13 @@ package config
 import (
 	"github.com/ilyakaznacheev/cleanenv"
 
-	"github.com/Employee-s-file-cabinet/backend/internal/server/handlers"
+	"github.com/Employee-s-file-cabinet/backend/internal/server"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/db/postgresql"
 )
 
 type Config struct {
 	LogLevel string            `env:"LOG_LEVEL" env-default:"debug"`
-	HTTP     handlers.Config   `env-prefix:"HTTP_"`
+	HTTP     server.Config     `env-prefix:"HTTP_"`
 	PG       postgresql.Config `env-prefix:"PG_"`
 }
 

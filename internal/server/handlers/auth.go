@@ -13,7 +13,7 @@ import (
 // @Param   body body api.Auth true ""
 // @Success 200 {object} api.Token
 // @Router  /login [post]
-func (s *server) Login(w http.ResponseWriter, r *http.Request) {
+func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var auth api.Auth
@@ -30,7 +30,7 @@ func (s *server) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 // @Router /login/change-password [get]
-func (s *server) CheckKey(w http.ResponseWriter, r *http.Request, params api.CheckKeyParams) {
+func (h *handler) CheckKey(w http.ResponseWriter, r *http.Request, params api.CheckKeyParams) {
 	ctx := r.Context()
 
 	if err := params.Validate(ctx, validator.Instance()); err != nil {
@@ -46,7 +46,7 @@ func (s *server) CheckKey(w http.ResponseWriter, r *http.Request, params api.Che
 // @Accept  application/json
 // @Param   body body api.InitChangePasswordRequest true ""
 // @Router  /login/init-change-password [post]
-func (s *server) InitChangePassword(w http.ResponseWriter, r *http.Request) {
+func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var chPsw api.InitChangePasswordRequest
@@ -66,7 +66,7 @@ func (s *server) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 // @Accept  application/json
 // @Param   body body api.ChangePasswordRequest true ""
 // @Router  /login/change-password [post]
-func (s *server) ChangePassword(w http.ResponseWriter, r *http.Request) {
+func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var chPsw api.ChangePasswordRequest
