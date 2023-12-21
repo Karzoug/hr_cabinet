@@ -1,4 +1,4 @@
-package server
+package handlers
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 
 // @Success 200
 // @Router  /health [get]
-func (s *server) Health(w http.ResponseWriter, r *http.Request) {
+func (h *handler) Health(w http.ResponseWriter, r *http.Request) {
 	_ = r.Context()
 
 	// TODO: implement health check

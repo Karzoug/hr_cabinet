@@ -1,4 +1,4 @@
-package server
+package handlers
 
 import (
 	"net/http"
@@ -11,7 +11,7 @@ import (
 // @Produce application/json
 // @Success 200 {array} api.Passport
 // @Router  /users/{user_id}/passports [get]
-func (s *server) ListPassports(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) ListPassports(w http.ResponseWriter, r *http.Request, userID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -19,7 +19,7 @@ func (s *server) ListPassports(w http.ResponseWriter, r *http.Request, userID in
 // @Param   body body api.Passport true ""
 // @Failure 409  {object} api.Error "passport already exists"
 // @Router  /users/{user_id}/passports [post]
-func (s *server) AddPassport(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) AddPassport(w http.ResponseWriter, r *http.Request, userID int) {
 	ctx := r.Context()
 
 	var p api.Passport
@@ -36,21 +36,21 @@ func (s *server) AddPassport(w http.ResponseWriter, r *http.Request, userID int)
 }
 
 // @Router /users/{user_id}/passports/{passport_id} [delete]
-func (s *server) DeletePassport(w http.ResponseWriter, r *http.Request, userID int, passportID int) {
+func (h *handler) DeletePassport(w http.ResponseWriter, r *http.Request, userID int, passportID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Produce application/json
 // @Success 200 {object} api.Passport
 // @Router  /users/{user_id}/passports/{passport_id} [get]
-func (s *server) GetPassport(w http.ResponseWriter, r *http.Request, userID int, passportID int) {
+func (h *handler) GetPassport(w http.ResponseWriter, r *http.Request, userID int, passportID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Accept application/json
 // @Param   body body api.PatchPassportJSONRequestBody true ""
 // @Router  /users/{user_id}/passports/{passport_id} [patch]
-func (s *server) PatchPassport(w http.ResponseWriter, r *http.Request, userID int, passportID int) {
+func (h *handler) PatchPassport(w http.ResponseWriter, r *http.Request, userID int, passportID int) {
 	ctx := r.Context()
 
 	var patch api.PatchPassportJSONRequestBody

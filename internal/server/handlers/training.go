@@ -1,4 +1,4 @@
-package server
+package handlers
 
 import (
 	"net/http"
@@ -11,7 +11,7 @@ import (
 // @Produce application/json
 // @Success 200 {array} api.Training
 // @Router  /users/{user_id}/trainings [get]
-func (s *server) ListTrainings(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) ListTrainings(w http.ResponseWriter, r *http.Request, userID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -19,7 +19,7 @@ func (s *server) ListTrainings(w http.ResponseWriter, r *http.Request, userID in
 // @Param   body body api.Training true ""
 // @Failure 409  {object} api.Error "training already exists"
 // @Router  /users/{user_id}/trainings [post]
-func (s *server) AddTraining(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) AddTraining(w http.ResponseWriter, r *http.Request, userID int) {
 	ctx := r.Context()
 
 	var t api.Training
@@ -36,21 +36,21 @@ func (s *server) AddTraining(w http.ResponseWriter, r *http.Request, userID int)
 }
 
 // @Router /users/{user_id}/trainings/{training_id} [delete]
-func (s *server) DeleteTraining(w http.ResponseWriter, r *http.Request, userID int, trainingID int) {
+func (h *handler) DeleteTraining(w http.ResponseWriter, r *http.Request, userID int, trainingID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Produce application/json
 // @Success 200 {object} api.Training
 // @Router  /users/{user_id}/trainings/{training_id} [get]
-func (s *server) GetTraining(w http.ResponseWriter, r *http.Request, userID int, trainingID int) {
+func (h *handler) GetTraining(w http.ResponseWriter, r *http.Request, userID int, trainingID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Accept application/json
 // @Param   body body api.PatchTrainingJSONRequestBody true ""
 // @Router  /users/{user_id}/trainings/{training_id} [patch]
-func (s *server) PatchTraining(w http.ResponseWriter, r *http.Request, userID int, trainingID int) {
+func (h *handler) PatchTraining(w http.ResponseWriter, r *http.Request, userID int, trainingID int) {
 	ctx := r.Context()
 
 	var patch api.PatchTrainingJSONRequestBody

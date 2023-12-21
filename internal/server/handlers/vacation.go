@@ -1,4 +1,4 @@
-package server
+package handlers
 
 import (
 	"net/http"
@@ -11,7 +11,7 @@ import (
 // @Produce application/json
 // @Success 200 {array} api.Vacation
 // @Router  /users/{user_id}/vacations [get]
-func (s *server) ListVacations(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) ListVacations(w http.ResponseWriter, r *http.Request, userID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -19,7 +19,7 @@ func (s *server) ListVacations(w http.ResponseWriter, r *http.Request, userID in
 // @Param   body body api.Vacation true ""
 // @Failure 409  {object} api.Error "vacation already exists"
 // @Router  /users/{user_id}/vacations [post]
-func (s *server) AddVacation(w http.ResponseWriter, r *http.Request, userID int) {
+func (h *handler) AddVacation(w http.ResponseWriter, r *http.Request, userID int) {
 	ctx := r.Context()
 
 	var v api.Vacation
@@ -35,21 +35,21 @@ func (s *server) AddVacation(w http.ResponseWriter, r *http.Request, userID int)
 }
 
 // @Router /users/{user_id}/vacations/{vacation_id} [delete]
-func (s *server) DeleteVacation(w http.ResponseWriter, r *http.Request, userID int, vacationID int) {
+func (h *handler) DeleteVacation(w http.ResponseWriter, r *http.Request, userID int, vacationID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Accept application/json
 // @Success 200 {object} api.Vacation
 // @Router  /users/{user_id}/vacations/{vacation_id} [get]
-func (s *server) GetVacation(w http.ResponseWriter, r *http.Request, userID int, vacationID int) {
+func (h *handler) GetVacation(w http.ResponseWriter, r *http.Request, userID int, vacationID int) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Accept application/json
 // @Param   body body api.PatchVacationJSONRequestBody true ""
 // @Router  /users/{user_id}/vacations/{vacation_id} [patch]
-func (s *server) PatchVacation(w http.ResponseWriter, r *http.Request, userID int, vacationID int) {
+func (h *handler) PatchVacation(w http.ResponseWriter, r *http.Request, userID int, vacationID int) {
 	ctx := r.Context()
 
 	var patch api.PatchVacationJSONRequestBody

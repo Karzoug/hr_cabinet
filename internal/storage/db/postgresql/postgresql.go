@@ -1,4 +1,4 @@
-package model
+package postgresql
 
 import (
 	"fmt"
@@ -7,8 +7,6 @@ import (
 
 	_ "github.com/jackc/pgx/stdlib" // use as driver for sqlx
 	"github.com/jmoiron/sqlx"
-
-	"github.com/Employee-s-file-cabinet/backend/pkg/e"
 )
 
 const (
@@ -30,8 +28,8 @@ type DB struct {
 	connTimeout     time.Duration
 }
 
-// New создаёт объект DB с заданными параметрами и подключается к БД.
-func New(dsn string, opts ...Option) (*DB, error) {
+// NewDB создаёт объект DB с заданными параметрами и подключается к БД.
+func NewDB(dsn string, opts ...Option) (*DB, error) {
 	db := &DB{
 		maxConnIdleTime: defaultMaxConnIdleTime,
 		maxConnLifetime: defaultMaxConnLifetime,
@@ -57,7 +55,7 @@ func New(dsn string, opts ...Option) (*DB, error) {
 	}
 
 	if err != nil {
-		return nil, e.Wrap("new db", err)
+		return nil, fmt.Errorf("%s: %w", "new db", err)
 	}
 
 	db.SetMaxOpenConns(db.maxOpenConn)
@@ -68,7 +66,7 @@ func New(dsn string, opts ...Option) (*DB, error) {
 	return db, nil
 }
 
-// Shutdown дожидается завершения запросов и закрывает все открытые соединения.
-func (db *DB) Shutdown() error {
+// CloseConnection дожидается завершения запросов и закрывает все открытые соединения.
+func (db *DB) CloseConnection() error {
 	return db.Close()
 }

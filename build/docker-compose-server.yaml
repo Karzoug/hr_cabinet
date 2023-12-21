@@ -6,7 +6,7 @@ services:
       context: ./../
       dockerfile: ./build/server.Dockerfile
     container_name: ecabinet_server
-    restart: on-failure:10
+    restart: on-failure
     env_file:
       - secrets/server.dev.env
       - server.dev.env
