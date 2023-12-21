@@ -2,9 +2,9 @@ name: golangci-lint
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: ["main", "develop"]
+  pull request:
+    branches: ["main", "develop"]
 
 jobs:
   golangci:
