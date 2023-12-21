@@ -5,12 +5,14 @@ import (
 
 	"github.com/Employee-s-file-cabinet/backend/internal/server"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/db/postgresql"
+	"github.com/Employee-s-file-cabinet/backend/internal/storage/s3"
 )
 
 type Config struct {
 	LogLevel string            `env:"LOG_LEVEL" env-default:"debug"`
 	HTTP     server.Config     `env-prefix:"HTTP_"`
 	PG       postgresql.Config `env-prefix:"PG_"`
+	S3       s3.Config         `env-prefix:"S3_"`
 }
 
 // New создаёт объект Config.

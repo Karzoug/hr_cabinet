@@ -19,7 +19,7 @@ type ServerInterface interface {
 	ListDepartments(w http.ResponseWriter, r *http.Request)
 
 	// (GET /health)
-	Health(w http.ResponseWriter, r *http.Request)	
+	Health(w http.ResponseWriter, r *http.Request)
 
 	// (POST /login)
 	Login(w http.ResponseWriter, r *http.Request)

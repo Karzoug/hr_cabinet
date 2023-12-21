@@ -20,6 +20,7 @@ var (
 	ErrMethodNotAllowed       = errors.New("the method is not supported for this resource")
 )
 
+// reportServerError logs the server error, with or without stack trace.
 func (s *server) reportServerError(r *http.Request, err error, withStack bool) {
 	var (
 		message = err.Error()
@@ -36,6 +37,7 @@ func (s *server) reportServerError(r *http.Request, err error, withStack bool) {
 	}
 }
 
+// errorMessage converts an error to api.Error and writes this one in JSON format to response writer
 func (s *server) errorMessage(w http.ResponseWriter, r *http.Request, status int, message string, headers http.Header) {
 	message = strings.ToUpper(message[:1]) + message[1:]
 
