@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Employee-s-file-cabinet/backend/internal/server/errors"
+	srvErrors "github.com/Employee-s-file-cabinet/backend/internal/server/errors"
 )
 
 func RecoverPanic(next http.Handler) http.Handler {
@@ -12,10 +12,10 @@ func RecoverPanic(next http.Handler) http.Handler {
 		defer func() {
 			err := recover()
 			if err != nil {
-				errors.ReportError(r, fmt.Errorf("%s", err), true)
-				errors.ErrorMessage(w, r,
+				srvErrors.ReportError(r, fmt.Errorf("%s", err), true)
+				srvErrors.ErrorMessage(w, r,
 					http.StatusInternalServerError,
-					errors.ErrInternalServerError.Error(),
+					srvErrors.ErrInternalServerError.Error(),
 					nil)
 			}
 		}()

@@ -11,6 +11,7 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	srvErrors "github.com/Employee-s-file-cabinet/backend/internal/server/errors"
+	"github.com/Employee-s-file-cabinet/backend/internal/server/handlers"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/middleware"
 )
@@ -19,7 +20,6 @@ const baseURL = "/api/v1"
 
 type server struct {
 	httpServer *http.Server
-	handler    api.ServerInterface
 	logger     *slog.Logger
 }
 
@@ -30,7 +30,7 @@ const (
 	defaultShutdownPeriod = 30 * time.Second
 )
 
-func New(cfg Config, handler api.ServerInterface, logger *slog.Logger) *server {
+func New(cfg Config, userRepository handlers.UserRepository, s3FileUploader handlers.S3FileUploader, logger *slog.Logger) *server {
 	logger = logger.With(slog.String("from", "http-server"))
 
 	srv := &http.Server{
@@ -43,9 +43,10 @@ func New(cfg Config, handler api.ServerInterface, logger *slog.Logger) *server {
 
 	s := &server{
 		httpServer: srv,
-		handler:    handler,
 		logger:     logger,
 	}
+
+	handler := handlers.New(userRepository, nil, logger)
 
 	mux := chi.NewRouter()
 	mux.NotFound(srvErrors.NotFound)
@@ -53,7 +54,7 @@ func New(cfg Config, handler api.ServerInterface, logger *slog.Logger) *server {
 	mux.Use(middleware.LogAccess)
 	mux.Use(middleware.RecoverPanic)
 
-	srv.Handler = api.HandlerWithOptions(s.handler, api.ChiServerOptions{
+	srv.Handler = api.HandlerWithOptions(handler, api.ChiServerOptions{
 		BaseURL:    baseURL,
 		BaseRouter: mux,
 	})
