@@ -1,6 +1,7 @@
 package app
 
 import (
+	"backend/internal/utils/email"
 	"context"
 	"log/slog"
 

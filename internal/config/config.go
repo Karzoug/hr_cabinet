@@ -6,6 +6,7 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/server"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/db/postgresql"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/s3"
+	"github.com/Employee-s-file-cabinet/backend/internal/utils/email"
 )
 
 type Config struct {
@@ -13,6 +14,7 @@ type Config struct {
 	HTTP     server.Config     `env-prefix:"HTTP_"`
 	PG       postgresql.Config `env-prefix:"PG_"`
 	S3       s3.Config         `env-prefix:"S3_"`
+	Mail     email.Config      `env-prefix:"MAIL_"`
 }
 
 // New создаёт объект Config.
