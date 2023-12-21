@@ -35,7 +35,9 @@ func New(cfg Config,
 	dbRepository handlers.DBRepository,
 	s3FileRepository handlers.S3FileRepository,
 	tokenManager handlers.TokenManager,
+	keyRepository handlers.KeyRepository,
 	logger *slog.Logger) *server {
+
 	logger = logger.With(slog.String("from", "http-server"))
 
 	srv := &http.Server{
@@ -52,7 +54,7 @@ func New(cfg Config,
 	}
 
 	passwordVerification := password.New()
-	handler := handlers.New(dbRepository, s3FileRepository, passwordVerification, tokenManager, logger)
+	handler := handlers.New(dbRepository, s3FileRepository, passwordVerification, tokenManager, keyRepository, logger)
 
 	mux := chi.NewRouter()
 	mux.NotFound(srvErrors.NotFound)
