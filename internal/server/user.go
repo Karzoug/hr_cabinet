@@ -43,7 +43,7 @@ func (s *server) AddUser(w http.ResponseWriter, r *http.Request) {
 // @Produce application/json
 // @Success 200 {object} api.GetUserJSONResponseBody
 // @Router  /users/{user_id} [get]
-func (s *server) GetUser(w http.ResponseWriter, r *http.Request, userID int) {
+func (s *server) GetUser(w http.ResponseWriter, r *http.Request, userId int, params api.GetUserParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 

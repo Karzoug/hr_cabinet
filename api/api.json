@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.19.0",
+        "version": "0.20.1",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -2312,435 +2312,6 @@
                 "description": "Accepts a key and a new password and changes it."
             }
         },
-        "/users/{user_id}": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/FullUser"
-                                        },
-                                        {
-                                            "required": [
-                                                "id",
-                                                "first_name",
-                                                "last_name",
-                                                "date_of_birth",
-                                                "gender"
-                                            ]
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "description": "",
-                                                    "type": "integer"
-                                                },
-                                                "passports": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Passport"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "number",
-                                                                    "issued_date",
-                                                                    "issued_by",
-                                                                    "type",
-                                                                    "has_scan"
-                                                                ]
-                                                            },
-                                                            {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "visas": {
-                                                                        "description": "",
-                                                                        "type": "array",
-                                                                        "items": {
-                                                                            "allOf": [
-                                                                                {
-                                                                                    "$ref": "#/components/schemas/Visa"
-                                                                                },
-                                                                                {
-                                                                                    "required": [
-                                                                                        "id",
-                                                                                        "has_scan",
-                                                                                        "number",
-                                                                                        "issued_state",
-                                                                                        "valid_to",
-                                                                                        "valid_from",
-                                                                                        "number_entries"
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "contracts": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Contract"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "has_scan",
-                                                                    "date_from",
-                                                                    "type",
-                                                                    "number"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "vacations": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Vacation"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "date_to"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "educations": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Education"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "issued_institution",
-                                                                    "has_scan"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "trainings": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Training"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "issued_institution",
-                                                                    "program",
-                                                                    "has_scan"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                },
-                                "examples": {
-                                    "Employee example": {
-                                        "value": {
-                                            "id": 5,
-                                            "first_name": "Alexander",
-                                            "last_name": "Pushkin",
-                                            "middle_name": "Sergeyevich",
-                                            "position": "Novelist",
-                                            "department": "Collegium of Foreign Affairs",
-                                            "email": "pushkin@dantes.net",
-                                            "phone_numbers": {
-                                                "mobile": "79999999999",
-                                                "office": "123456"
-                                            },
-                                            "passports": [
-                                                {
-                                                    "id": 5,
-                                                    "visas": [
-                                                        {
-                                                            "id": 9,
-                                                            "number": "33592222",
-                                                            "issued_state": "Germany",
-                                                            "valid_to": "1820-10-22",
-                                                            "valid_from": "1820-09-08",
-                                                            "number_entries": "2",
-                                                            "has_scan": false
-                                                        }
-                                                    ],
-                                                    "number": "4011364219",
-                                                    "issued_date": "1817-05-15",
-                                                    "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
-                                                    "type": "internal",
-                                                    "has_scan": false
-                                                }
-                                            ],
-                                            "contracts": [
-                                                {
-                                                    "date_from": "1819-01-17",
-                                                    "date_to": "1821-01-17",
-                                                    "type": "temporary",
-                                                    "number": "1000005"
-                                                }
-                                            ],
-                                            "grade": "1",
-                                            "working_model": "remote",
-                                            "date_of_birth": "1799-05-26",
-                                            "place_of_birth": "Москва",
-                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                                            "nationality": "Царская Россия",
-                                            "foreign_languages": [
-                                                "english",
-                                                "french"
-                                            ],
-                                            "military": {
-                                                "rank": "Старший лейтенант",
-                                                "speciality": "101182",
-                                                "category": "А2",
-                                                "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
-                                                "has_scan": true
-                                            },
-                                            "vacations": [
-                                                {
-                                                    "id": 78,
-                                                    "date_from": "1820-03-11",
-                                                    "date_to": "1820-03-25"
-                                                }
-                                            ],
-                                            "taxpayer": {
-                                                "number": "500100732259",
-                                                "has_scan": true
-                                            },
-                                            "insurance": {
-                                                "number": "08336732477",
-                                                "has_scan": true
-                                            },
-                                            "gender": "male"
-                                        }
-                                    },
-                                    "Foreigner example": {
-                                        "value": {
-                                            "id": 93,
-                                            "first_name": "Улугбек",
-                                            "last_name": "Акрамов",
-                                            "middle_name": "Рашидович",
-                                            "position": "Строитель",
-                                            "department": "Инженерный отдел",
-                                            "email": "akramovur@rogakopyta.net",
-                                            "phone_numbers": {
-                                                "mobile": "79999999999",
-                                                "office": "123456"
-                                            },
-                                            "passports": [
-                                                {
-                                                    "id": 67,
-                                                    "number": "AZ0001055",
-                                                    "issued_date": "2010-05-23",
-                                                    "issued_by": "TOSHKENT SHAHAR IIBB",
-                                                    "type": "foreigners",
-                                                    "has_scan": true
-                                                }
-                                            ],
-                                            "contracts": [
-                                                {
-                                                    "date_from": "2013-08-01",
-                                                    "date_to": "2013-09-04",
-                                                    "type": "temporary",
-                                                    "number": "12345"
-                                                }
-                                            ],
-                                            "work_permit": {
-                                                "number": "77121034092",
-                                                "valid_to": "2013-09-05",
-                                                "has_scan": true
-                                            },
-                                            "grade": "2",
-                                            "working_model": "in-office",
-                                            "date_of_birth": "1994-05-26",
-                                            "place_of_birth": "Ташкент",
-                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
-                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
-                                            "nationality": "Узбекистан",
-                                            "gender": "male"
-                                        }
-                                    },
-                                    "Additional data example": {
-                                        "value": {
-                                            "id": 9,
-                                            "first_name": "Сергей",
-                                            "last_name": "Сказочкин",
-                                            "middle_name": "Дмитриевич",
-                                            "gender": "male",
-                                            "position": "На дуде игрец",
-                                            "department": "Отдел развития фантазии",
-                                            "email": "sergei@fairy.com",
-                                            "date_of_birth": "1978-07-23",
-                                            "working_model": "hybrid",
-                                            "position_track": [
-                                                {
-                                                    "date_from": "2018-01-17",
-                                                    "date_to": "2018-03-17",
-                                                    "position": "Швец"
-                                                },
-                                                {
-                                                    "date_from": "2018-03-18",
-                                                    "date_to": "2018-05-18",
-                                                    "position": "Жнец"
-                                                },
-                                                {
-                                                    "date_from": "2018-05-19",
-                                                    "position": "На дуде игрец"
-                                                }
-                                            ],
-                                            "educations": [
-                                                {
-                                                    "id": 578,
-                                                    "has_scan": true,
-                                                    "number": "1030180354933",
-                                                    "date_to": "2015-01-01",
-                                                    "date_from": "2011-01-01",
-                                                    "issued_institution": "ФГБОУ ВО «Астраханский государственный университет им. В. Н. Татищева»",
-                                                    "program": "Связи с общественностью"
-                                                }
-                                            ],
-                                            "trainings": [
-                                                {
-                                                    "number": "A15/456878-456",
-                                                    "issued_institution": "Yandex Practicum",
-                                                    "program": "Advanced Go developer",
-                                                    "cost": 120000,
-                                                    "date_to": "2023-01-10",
-                                                    "date_from": "2023-07-10",
-                                                    "id": 95,
-                                                    "has_scan": true
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Employee response"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "404": {
-                        "description": "Employee not found response"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": [
-                            "user:2"
-                        ]
-                    }
-                ],
-                "operationId": "getUser",
-                "description": "Returns the employee full data based on ID"
-            },
-            "patch": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchFullUser"
-                            },
-                            "examples": {
-                                "Path example": {
-                                    "value": {
-                                        "grade": "2",
-                                        "registration_address": "Moscow, Tverskaya street, building 32, apartment 17"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Employee updated response (empty)"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "404": {
-                        "description": "Employee not found"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": [
-                            "user:4"
-                        ]
-                    }
-                ],
-                "operationId": "patchUser",
-                "description": "Changes selected fields in the user structure based on ID"
-            },
-            "parameters": [
-                {
-                    "name": "user_id",
-                    "description": "employee ID",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
         "/login": {
             "post": {
                 "requestBody": {
@@ -2902,9 +2473,7 @@
                                                     },
                                                     {
                                                         "required": [
-                                                            "id",
-                                                            "first_name",
-                                                            "last_name"
+                                                            "id"
                                                         ],
                                                         "type": "object"
                                                     }
@@ -2992,20 +2561,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/FullUser"
-                                    },
-                                    {
-                                        "required": [
-                                            "first_name",
-                                            "last_name",
-                                            "date_of_birth",
-                                            "gender"
-                                        ],
-                                        "type": "object"
-                                    }
-                                ]
+                                "$ref": "#/components/schemas/FullUser"
                             },
                             "examples": {
                                 "Post employee example": {
@@ -3092,6 +2648,404 @@
                 "operationId": "addUser",
                 "description": "Creates a new employe in the company"
             }
+        },
+        "/users/{user_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "expanded",
+                        "description": "whether to return detailed data on passports, contracts, vacations, etc. along with user data (default - no)",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "in": "query",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "personal_data_processing"
+                                    ],
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FullUser"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "",
+                                                    "type": "integer"
+                                                },
+                                                "passports": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Passport"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "number",
+                                                                    "issued_date",
+                                                                    "issued_by",
+                                                                    "type",
+                                                                    "has_scan"
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "visas": {
+                                                                        "description": "",
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "allOf": [
+                                                                                {
+                                                                                    "$ref": "#/components/schemas/Visa"
+                                                                                },
+                                                                                {
+                                                                                    "required": [
+                                                                                        "id",
+                                                                                        "has_scan",
+                                                                                        "number",
+                                                                                        "issued_state",
+                                                                                        "valid_to",
+                                                                                        "valid_from",
+                                                                                        "number_entries"
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "contracts": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Contract"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "has_scan",
+                                                                    "date_from",
+                                                                    "type",
+                                                                    "number"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "vacations": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Vacation"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "date_from",
+                                                                    "date_to"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "educations": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Education"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "date_from",
+                                                                    "issued_institution",
+                                                                    "has_scan"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "trainings": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Training"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "date_from",
+                                                                    "issued_institution",
+                                                                    "program",
+                                                                    "has_scan"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "Employee example (not expanded)": {
+                                        "value": {
+                                            "id": 5,
+                                            "first_name": "Alexander",
+                                            "last_name": "Pushkin",
+                                            "middle_name": "Sergeyevich",
+                                            "position": "Novelist",
+                                            "department": "Collegium of Foreign Affairs",
+                                            "email": "pushkin@dantes.net",
+                                            "phone_numbers": {
+                                                "mobile": "79999999999",
+                                                "office": "123456"
+                                            },
+                                            "grade": "1",
+                                            "working_model": "remote",
+                                            "date_of_birth": "1799-05-26",
+                                            "place_of_birth": "Москва",
+                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                                            "nationality": "Царская Россия",
+                                            "foreign_languages": [
+                                                "english",
+                                                "french"
+                                            ],
+                                            "military": {
+                                                "rank": "Старший лейтенант",
+                                                "speciality": "101182",
+                                                "category": "А2",
+                                                "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
+                                                "has_scan": true
+                                            },
+                                            "taxpayer": {
+                                                "number": "500100732259",
+                                                "has_scan": true
+                                            },
+                                            "insurance": {
+                                                "number": "08336732477",
+                                                "has_scan": true
+                                            },
+                                            "gender": "male"
+                                        }
+                                    },
+                                    "Foreigner example (expanded)": {
+                                        "value": {
+                                            "id": 93,
+                                            "first_name": "Улугбек",
+                                            "last_name": "Акрамов",
+                                            "middle_name": "Рашидович",
+                                            "position": "Строитель",
+                                            "department": "Инженерный отдел",
+                                            "email": "akramovur@rogakopyta.net",
+                                            "phone_numbers": {
+                                                "mobile": "79999999999",
+                                                "office": "123456"
+                                            },
+                                            "passports": [
+                                                {
+                                                    "id": 67,
+                                                    "number": "AZ0001055",
+                                                    "issued_date": "2010-05-23",
+                                                    "issued_by": "TOSHKENT SHAHAR IIBB",
+                                                    "type": "foreigners",
+                                                    "has_scan": true
+                                                }
+                                            ],
+                                            "contracts": [
+                                                {
+                                                    "date_from": "2013-08-01",
+                                                    "date_to": "2013-09-04",
+                                                    "type": "temporary",
+                                                    "number": "12345"
+                                                }
+                                            ],
+                                            "work_permit": {
+                                                "number": "77121034092",
+                                                "valid_to": "2013-09-05",
+                                                "has_scan": true
+                                            },
+                                            "grade": "2",
+                                            "working_model": "in-office",
+                                            "date_of_birth": "1994-05-26",
+                                            "place_of_birth": "Ташкент",
+                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                                            "nationality": "Узбекистан",
+                                            "gender": "male"
+                                        }
+                                    },
+                                    "Another expanded data": {
+                                        "value": {
+                                            "id": 9,
+                                            "first_name": "Сергей",
+                                            "last_name": "Сказочкин",
+                                            "middle_name": "Дмитриевич",
+                                            "gender": "male",
+                                            "position": "На дуде игрец",
+                                            "department": "Отдел развития фантазии",
+                                            "email": "sergei@fairy.com",
+                                            "date_of_birth": "1978-07-23",
+                                            "working_model": "hybrid",
+                                            "position_track": [
+                                                {
+                                                    "date_from": "2018-01-17",
+                                                    "date_to": "2018-03-17",
+                                                    "position": "Швец"
+                                                },
+                                                {
+                                                    "date_from": "2018-03-18",
+                                                    "date_to": "2018-05-18",
+                                                    "position": "Жнец"
+                                                },
+                                                {
+                                                    "date_from": "2018-05-19",
+                                                    "position": "На дуде игрец"
+                                                }
+                                            ],
+                                            "educations": [
+                                                {
+                                                    "id": 578,
+                                                    "has_scan": true,
+                                                    "number": "1030180354933",
+                                                    "date_to": "2015-01-01",
+                                                    "date_from": "2011-01-01",
+                                                    "issued_institution": "ФГБОУ ВО «Астраханский государственный университет им. В. Н. Татищева»",
+                                                    "program": "Связи с общественностью"
+                                                }
+                                            ],
+                                            "trainings": [
+                                                {
+                                                    "number": "A15/456878-456",
+                                                    "issued_institution": "Yandex Practicum",
+                                                    "program": "Advanced Go developer",
+                                                    "cost": 120000,
+                                                    "date_to": "2023-01-10",
+                                                    "date_from": "2023-07-10",
+                                                    "id": 95,
+                                                    "has_scan": true
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found response"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "user:2"
+                        ]
+                    }
+                ],
+                "operationId": "getUser",
+                "description": "Returns the employee full data based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchFullUser"
+                            },
+                            "examples": {
+                                "Path example": {
+                                    "value": {
+                                        "grade": "2",
+                                        "registration_address": "Moscow, Tverskaya street, building 32, apartment 17"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee updated response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": [
+                            "user:4"
+                        ]
+                    }
+                ],
+                "operationId": "patchUser",
+                "description": "Changes selected fields in the user structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "description": "employee ID",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
         }
     },
     "components": {
@@ -3225,76 +3179,6 @@
                     "valid_to": "2017-10-22",
                     "valid_from": "2017-09-08",
                     "number_entries": "1"
-                }
-            },
-            "ShortUser": {
-                "required": [],
-                "properties": {
-                    "first_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "last_name": {
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "middle_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "position": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "department": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "email": {
-                        "format": "email",
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "phone_numbers": {
-                        "$ref": "#/components/schemas/PhoneNumbers",
-                        "description": "",
-                        "maxLength": 15,
-                        "minLength": 2
-                    },
-                    "id": {
-                        "description": "",
-                        "type": "integer"
-                    }
-                },
-                "example": {
-                    "id": 1,
-                    "first_name": "Alexander",
-                    "last_name": "Pushkin",
-                    "middle_name": "Sergeyevich",
-                    "position": "Novelist",
-                    "department": "Collegium of Foreign Affairs",
-                    "email": "pushkin@dantes.net",
-                    "phone_numbers": [
-                        {
-                            "number": "799183712345",
-                            "type": "mobile"
-                        },
-                        {
-                            "number": "1837",
-                            "type": "office"
-                        }
-                    ]
                 }
             },
             "Vacation": {
@@ -3514,6 +3398,9 @@
             },
             "PersonalDataProcessing": {
                 "description": "",
+                "required": [
+                    "has_scan"
+                ],
                 "type": "object",
                 "properties": {
                     "has_scan": {
@@ -3727,93 +3614,6 @@
                     "has_scan": true
                 }
             },
-            "PatchFullUser": {
-                "minProperties": 1,
-                "required": [],
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/ShortUser"
-                    },
-                    {
-                        "properties": {
-                            "grade": {
-                                "description": "",
-                                "maxLength": 1,
-                                "minLength": 1,
-                                "type": "string"
-                            },
-                            "working_model": {
-                                "$ref": "#/components/schemas/WorkingModel",
-                                "description": ""
-                            },
-                            "date_of_birth": {
-                                "format": "date",
-                                "description": "",
-                                "type": "string"
-                            },
-                            "gender": {
-                                "enum": [
-                                    "male",
-                                    "female"
-                                ],
-                                "type": "string"
-                            },
-                            "place_of_birth": {
-                                "description": "",
-                                "maxLength": 150,
-                                "minLength": 2,
-                                "type": "string"
-                            },
-                            "registration_address": {
-                                "description": "",
-                                "maxLength": 150,
-                                "minLength": 2,
-                                "type": "string"
-                            },
-                            "residential_address": {
-                                "description": "",
-                                "maxLength": 150,
-                                "minLength": 2,
-                                "type": "string"
-                            },
-                            "nationality": {
-                                "description": "",
-                                "maxLength": 150,
-                                "minLength": 2,
-                                "type": "string"
-                            },
-                            "foreign_languages": {
-                                "description": "",
-                                "type": "array",
-                                "items": {
-                                    "maxLength": 50,
-                                    "minLength": 2,
-                                    "type": "string"
-                                }
-                            },
-                            "military": {
-                                "$ref": "#/components/schemas/Military",
-                                "description": ""
-                            },
-                            "taxpayer": {
-                                "$ref": "#/components/schemas/Taxpayer",
-                                "description": ""
-                            },
-                            "insurance": {
-                                "$ref": "#/components/schemas/Insurance"
-                            },
-                            "work_permit": {
-                                "$ref": "#/components/schemas/WorkPermit",
-                                "description": ""
-                            },
-                            "position_track": {
-                                "$ref": "#/components/schemas/PositionTrack",
-                                "description": ""
-                            }
-                        }
-                    }
-                ]
-            },
             "Passport": {
                 "description": "",
                 "required": [],
@@ -3865,11 +3665,151 @@
                     "type": "foreigners"
                 }
             },
-            "FullUser": {
+            "ChangePasswordRequest": {
+                "description": "",
+                "required": [
+                    "key",
+                    "password"
+                ],
+                "type": "object",
+                "properties": {
+                    "key": {
+                        "format": "byte",
+                        "description": "a special key sent to the employee’s email",
+                        "maxLength": 36,
+                        "minLength": 36,
+                        "type": "string"
+                    },
+                    "password": {
+                        "format": "password",
+                        "description": "a new employee password",
+                        "maxLength": 15,
+                        "minLength": 8,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "key": "0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM=",
+                    "password": "pa$$word"
+                }
+            },
+            "InitChangePasswordRequest": {
+                "description": "",
+                "required": [
+                    "login"
+                ],
+                "type": "object",
+                "properties": {
+                    "login": {
+                        "format": "email",
+                        "description": "employee login (email)",
+                        "maxLength": 50,
+                        "minLength": 5,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "login": "vasyapp@gazneft.ru"
+                }
+            },
+            "BaseShortUser": {
+                "properties": {
+                    "first_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "middle_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "position": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "department": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "email": {
+                        "format": "email",
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "phone_numbers": {
+                        "$ref": "#/components/schemas/PhoneNumbers",
+                        "description": "",
+                        "maxLength": 15,
+                        "minLength": 2
+                    },
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "id": 1,
+                    "first_name": "Alexander",
+                    "last_name": "Pushkin",
+                    "middle_name": "Sergeyevich",
+                    "position": "Novelist",
+                    "department": "Collegium of Foreign Affairs",
+                    "email": "pushkin@dantes.net",
+                    "phone_numbers": [
+                        {
+                            "number": "799183712345",
+                            "type": "mobile"
+                        },
+                        {
+                            "number": "1837",
+                            "type": "office"
+                        }
+                    ]
+                }
+            },
+            "ShortUser": {
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "middle_name",
+                    "position",
+                    "department",
+                    "phone_numbers",
+                    "email"
+                ],
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseShortUser"
+                    }
+                ]
+            },
+            "PatchFullUser": {
+                "minProperties": 1,
                 "required": [],
                 "allOf": [
                     {
-                        "$ref": "#/components/schemas/ShortUser"
+                        "$ref": "#/components/schemas/BaseFullUser"
+                    }
+                ]
+            },
+            "BaseFullUser": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseShortUser"
                     },
                     {
                         "properties": {
@@ -3928,98 +3868,57 @@
                                     "type": "string"
                                 }
                             },
-                            "finance": {
-                                "$ref": "#/components/schemas/UserFinance",
+                            "personal_data_processing": {
+                                "$ref": "#/components/schemas/PersonalDataProcessing",
+                                "description": "read-only field, the property is automatically changed after loading the scan",
                                 "readOnly": true
                             },
-                            "position_track": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/PositionTrack"
-                                    },
-                                    {
-                                        "required": [
-                                            "date_from",
-                                            "position"
-                                        ]
-                                    }
-                                ]
-                            },
                             "military": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/Military"
-                                    },
-                                    {
-                                        "required": [
-                                            "speciality",
-                                            "rank",
-                                            "comissariat",
-                                            "category",
-                                            "has_scan"
-                                        ]
-                                    }
-                                ]
+                                "$ref": "#/components/schemas/Military",
+                                "description": ""
                             },
                             "taxpayer": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/Taxpayer"
-                                    },
-                                    {
-                                        "required": [
-                                            "number",
-                                            "has_scan"
-                                        ]
-                                    }
-                                ]
+                                "$ref": "#/components/schemas/Taxpayer",
+                                "description": ""
                             },
                             "insurance": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/Insurance"
-                                    },
-                                    {
-                                        "required": [
-                                            "number",
-                                            "has_scan"
-                                        ]
-                                    }
-                                ]
+                                "$ref": "#/components/schemas/Insurance"
                             },
                             "work_permit": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/WorkPermit"
-                                    },
-                                    {
-                                        "required": [
-                                            "number",
-                                            "valid_to",
-                                            "has_scan"
-                                        ]
-                                    }
-                                ]
+                                "$ref": "#/components/schemas/WorkPermit",
+                                "description": ""
                             },
-                            "personal_data_processing": {
-                                "description": "",
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/PersonalDataProcessing"
-                                    },
-                                    {
-                                        "required": [
-                                            "has_scan"
-                                        ]
-                                    }
-                                ]
+                            "position_track": {
+                                "$ref": "#/components/schemas/PositionTrack",
+                                "description": ""
                             }
                         }
+                    }
+                ]
+            },
+            "FullUser": {
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "middle_name",
+                    "position",
+                    "department",
+                    "grade",
+                    "phone_numbers",
+                    "date_of_birth",
+                    "gender",
+                    "place_of_birth",
+                    "registration_address",
+                    "residential_address",
+                    "nationality",
+                    "taxpayer",
+                    "insurance",
+                    "email",
+                    "position_track"
+                ],
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/BaseFullUser"
                     }
                 ],
                 "example": {
@@ -4067,53 +3966,6 @@
                         "number": "08336732477",
                         "has_scan": true
                     }
-                }
-            },
-            "ChangePasswordRequest": {
-                "description": "",
-                "required": [
-                    "key",
-                    "password"
-                ],
-                "type": "object",
-                "properties": {
-                    "key": {
-                        "format": "byte",
-                        "description": "a special key sent to the employee’s email",
-                        "maxLength": 36,
-                        "minLength": 36,
-                        "type": "string"
-                    },
-                    "password": {
-                        "format": "password",
-                        "description": "a new employee password",
-                        "maxLength": 15,
-                        "minLength": 8,
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "key": "0LzQsNC80LAg0LzRi9C70LAg0YDQsNC80YM=",
-                    "password": "pa$$word"
-                }
-            },
-            "InitChangePasswordRequest": {
-                "description": "",
-                "required": [
-                    "login"
-                ],
-                "type": "object",
-                "properties": {
-                    "login": {
-                        "format": "email",
-                        "description": "employee login (email)",
-                        "maxLength": 50,
-                        "minLength": 5,
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "login": "vasyapp@gazneft.ru"
                 }
             }
         },

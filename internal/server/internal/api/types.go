@@ -169,14 +169,14 @@ type (
 
 // ShortUser represents short version of user data.
 type ShortUser struct {
-	Department   string                 `json:"department,omitempty"`
-	Email        string                 `json:"email,omitempty"`
+	Department   string                 `json:"department"`
+	Email        string                 `json:"email"`
 	FirstName    string                 `json:"first_name"`
 	ID           *int                   `json:"id,omitempty"`
 	LastName     string                 `json:"last_name"`
 	MiddleName   string                 `json:"middle_name,omitempty"`
 	PhoneNumbers map[string]PhoneNumber `json:"phone_numbers,omitempty"`
-	Position     string                 `json:"position,omitempty"`
+	Position     string                 `json:"position"`
 }
 
 // FullUser represents full version of user data.
@@ -186,16 +186,16 @@ type FullUser struct {
 	Finance                *UserFinance            `json:"finance,omitempty"`
 	ForeignLanguages       []string                `json:"foreign_languages,omitempty"`
 	Gender                 Gender                  `json:"gender"`
-	Grade                  string                  `json:"grade,omitempty"`
-	Insurance              *Insurance              `json:"insurance,omitempty"`
+	Grade                  string                  `json:"grade"`
+	Insurance              Insurance               `json:"insurance"`
 	Military               *Military               `json:"military,omitempty"`
-	Nationality            string                  `json:"nationality,omitempty"`
+	Nationality            string                  `json:"nationality"`
 	PersonalDataProcessing *PersonalDataProcessing `json:"personal_data_processing,omitempty"`
-	PlaceOfBirth           string                  `json:"place_of_birth,omitempty"`
-	PositionTrack          []PositionTrackItem     `json:"position_track,omitempty"`
-	RegistrationAddress    string                  `json:"registration_address,omitempty"`
-	ResidentialAddress     string                  `json:"residential_address,omitempty"`
-	Taxpayer               *Taxpayer               `json:"taxpayer,omitempty"`
+	PlaceOfBirth           string                  `json:"place_of_birth"`
+	PositionTrack          []PositionTrackItem     `json:"position_track"`
+	RegistrationAddress    string                  `json:"registration_address"`
+	ResidentialAddress     string                  `json:"residential_address"`
+	Taxpayer               Taxpayer                `json:"taxpayer"`
 	WorkPermit             *WorkPermit             `json:"work_permit,omitempty"`
 	WorkingModel           *WorkingModel           `json:"working_model,omitempty"`
 }
@@ -207,15 +207,11 @@ func (u FullUser) Validate(ctx context.Context, validator *vld.Validator) error 
 		vld.StringProperty("last_name", u.LastName, it.HasLengthBetween(2, 150)),
 		vld.StringProperty("middle_name", u.MiddleName, it.HasLengthBetween(2, 150)).
 			When(u.MiddleName != ""),
-		vld.StringProperty("position", u.Position, it.HasLengthBetween(2, 150)).
-			When(u.Position != ""),
-		vld.StringProperty("department", u.Department, it.HasLengthBetween(2, 150)).
-			When(u.Department != ""),
-		vld.StringProperty("email", u.Email, it.HasLengthBetween(5, 50), it.IsEmail()).
-			When(u.Email != ""),
+		vld.StringProperty("position", u.Position, it.HasLengthBetween(2, 150)),
+		vld.StringProperty("department", u.Department, it.HasLengthBetween(2, 150)),
+		vld.StringProperty("email", u.Email, it.HasLengthBetween(5, 50), it.IsEmail()),
 		vld.ValidMapProperty[PhoneNumber]("phone_numbers", u.PhoneNumbers),
-		vld.StringProperty("grade", u.Grade, it.HasExactLength(1)).
-			When(u.Grade != ""),
+		vld.StringProperty("grade", u.Grade, it.HasExactLength(1)),
 		vld.When(u.WorkingModel != nil).
 			At(vld.PropertyName("working_model")).
 			Then(vld.NilComparable(u.WorkingModel, it.IsOneOf[WorkingModel](
@@ -225,25 +221,17 @@ func (u FullUser) Validate(ctx context.Context, validator *vld.Validator) error 
 		vld.ComparableProperty[Gender]("gender",
 			u.Gender,
 			it.IsOneOf[Gender](GenderMale, GenderFemale)),
-		vld.StringProperty("place_of_birth", u.PlaceOfBirth, it.HasLengthBetween(2, 150)).
-			When(u.PlaceOfBirth != ""),
-		vld.StringProperty("registration_address", u.RegistrationAddress, it.HasLengthBetween(2, 150)).
-			When(u.RegistrationAddress != ""),
-		vld.StringProperty("residential_address", u.ResidentialAddress, it.HasLengthBetween(2, 150)).
-			When(u.ResidentialAddress != ""),
-		vld.StringProperty("nationality", u.Nationality, it.HasLengthBetween(2, 150)).
-			When(u.Nationality != ""),
+		vld.StringProperty("place_of_birth", u.PlaceOfBirth, it.HasLengthBetween(2, 150)),
+		vld.StringProperty("registration_address", u.RegistrationAddress, it.HasLengthBetween(2, 150)),
+		vld.StringProperty("residential_address", u.ResidentialAddress, it.HasLengthBetween(2, 150)),
+		vld.StringProperty("nationality", u.Nationality, it.HasLengthBetween(2, 150)),
 		vld.EachStringProperty("foreign_languages", u.ForeignLanguages, it.HasLengthBetween(2, 50)),
 		vld.ValidSliceProperty[PositionTrackItem]("position_track", u.PositionTrack),
 		vld.When(u.Military != nil).
 			At(vld.PropertyName("military")).
 			Then(vld.ValidProperty("military", u.Military)),
-		vld.When(u.Insurance != nil).
-			At(vld.PropertyName("insurance")).
-			Then(vld.ValidProperty("insurance", u.Insurance)),
-		vld.When(u.Taxpayer != nil).
-			At(vld.PropertyName("taxpayer")).
-			Then(vld.ValidProperty("taxpayer", u.Taxpayer)),
+		vld.ValidProperty("insurance", u.Insurance),
+		vld.ValidProperty("taxpayer", u.Taxpayer),
 		vld.When(u.WorkPermit != nil).
 			At(vld.PropertyName("work_permit")).
 			Then(vld.ValidProperty("work_permit", u.WorkPermit)),
@@ -554,6 +542,12 @@ func (lp ListUsersParams) Validate(ctx context.Context, validator *vld.Validator
 }
 
 type ListUsersParamsSortBy string
+
+// GetUserParams defines parameters for GetUser.
+type GetUserParams struct {
+	// Expanded whether to return detailed data on passports, contracts, vacations, etc. along with user data (default - no)
+	Expanded *bool `form:"expanded,omitempty" json:"expanded,omitempty"`
+}
 
 // ------------------------------------------------------------------
 // Custom requests
