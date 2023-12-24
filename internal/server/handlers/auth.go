@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"crypto/rand"
 	"database/sql"
+	"encoding/base64"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/muonsoft/validation/validator"
 
@@ -18,7 +21,7 @@ import (
 // @Param   body body api.Auth true ""
 // @Success 200 {object} api.Token
 // @Router  /login [post]
-func (h *handler) Login(w http.ResponseWriter, r *http.Request) {git add /
+func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var auth api.Auth
@@ -69,16 +72,26 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {git add /
 
 // @Router /login/change-password [get]
 func (h *handler) CheckKey(w http.ResponseWriter, r *http.Request, params api.CheckKeyParams) {
+	// TODO: ограничение количества запросов
 	ctx := r.Context()
 
 	if err := params.Validate(ctx, validator.Instance()); err != nil {
-		var _ api.BadRequestError
-		w.WriteHeader(http.StatusBadRequest)
-		// TODO: return error
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
+	//проверка наличия и срока действия ключа
+	login, err := h.keyRepository.Get(ctx, params.Key)
+	if err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+	if login == "" {
+		serr.ErrorMessage(w, r, http.StatusInternalServerError, "login lost", nil)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 // @Accept  application/json
@@ -89,16 +102,63 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 
 	var chPsw api.InitChangePasswordRequest
 
-	// TODO: decode InitChangePasswordRequest from request body
-
-	if err := chPsw.Validate(ctx, validator.Instance()); err != nil {
-		var _ api.BadRequestError
-		w.WriteHeader(http.StatusBadRequest)
-		// TODO: return error
+	err := request.DecodeJSON(w, r, &chPsw)
+	if err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
+	if err := chPsw.Validate(ctx, validator.Instance()); err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	//обращение к базе, проверка наличия пользователя с заданным логином
+	exist, err := h.dbRepository.ExistUser(ctx, chPsw.Login)
+	if err != nil {
+		serr.ReportError(r, err, false)
+		serr.ErrorMessage(w, r,
+			http.StatusInternalServerError,
+			http.StatusText(http.StatusInternalServerError),
+			nil)
+		return
+	}
+	if !exist {
+		serr.ErrorMessage(w, r, http.StatusNotFound, "employee not found", nil)
+		return
+	}
+
+	//генерация ключа
+	randBytes := make([]byte, 26)
+	_, err = rand.Read(randBytes)
+	if err != nil {
+		// TODO: return error
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	randString := base64.StdEncoding.EncodeToString(randBytes)
+
+	//сохранение ключа в мапе
+	err = h.keyRepository.Set(ctx, randString, chPsw.Login, time.Minute*30)
+	if err != nil {
+		// TODO: return error
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	//отправка письма
+	/*subject := "Запрос на восстановление доступа"
+		//TODO: домен
+		msg := fmt.Sprintf(`Для восстановления доступа к личному кабинету перейдите по ссылке:
+	%s/frontend/access-restore#/password-reset?key=%s`, domen, randString) //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+		if err := email.SendSSLMail(subject, msg, chPsw.Login); err != nil {
+			// TODO: return error
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}*/
+
+	w.WriteHeader(http.StatusOK)
 }
 
 // @Accept  application/json
@@ -109,14 +169,31 @@ func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 
 	var chPsw api.ChangePasswordRequest
 
-	// TODO: decode ChangePasswordRequest from request body
-
-	if err := chPsw.Validate(ctx, validator.Instance()); err != nil {
-		var _ api.BadRequestError
-		w.WriteHeader(http.StatusBadRequest)
-		// TODO: return error
+	err := request.DecodeJSON(w, r, &chPsw)
+	if err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
+	if err := chPsw.Validate(ctx, validator.Instance()); err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	//получение пользователя по ключу
+	login, err := h.keyRepository.Get(ctx, chPsw.Key)
+	if err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+	if login == "" {
+		serr.ErrorMessage(w, r, http.StatusInternalServerError, "login lost", nil)
+		return
+	}
+
+	//TODO: отправить в базу запрос на замену пароля
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	////serr.ErrorMessage(w, r, http.StatusNotFound, "employee not found", nil)
+
+	w.WriteHeader(http.StatusOK)
 }

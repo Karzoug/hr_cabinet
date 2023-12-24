@@ -12,6 +12,7 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/db/postgresql"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/s3"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/smap"
+	"github.com/Employee-s-file-cabinet/backend/internal/utils/email"
 	"github.com/Employee-s-file-cabinet/backend/internal/utils/token"
 )
 
@@ -35,7 +36,9 @@ func Run(pctx context.Context, cfg *config.Config, logger *slog.Logger) error {
 	keyStorage := smap.New(time.Minute)
 	defer keyStorage.Close()
 
-	srv := server.New(cfg.HTTP, db, s3Storage, tokenManager, keyStorage, logger)
+	mail := email.New(cfg.Mail)
+
+	srv := server.New(cfg.HTTP, db, s3Storage, tokenManager, keyStorage, mail, logger)
 
 	eg, ctx := errgroup.WithContext(pctx)
 	eg.Go(func() error {
