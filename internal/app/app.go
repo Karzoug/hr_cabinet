@@ -1,8 +1,6 @@
 package app
 
 import (
-	"backend/internal/storage/smap"
-	"backend/internal/utils/email"
 	"context"
 	"log/slog"
 	"time"

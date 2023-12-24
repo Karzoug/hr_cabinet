@@ -9,54 +9,48 @@ import (
 	"sync"
 )
 
-var (
+type Mail struct {
 	smtpHost  string
 	from      *mail.Address
 	auth      smtp.Auth
 	tlsconfig *tls.Config
-)
-
-type Config struct {
-	Name     string `env:"NAME" env-default:"Картотека сотрудника"`
-	FromMail string `env:"FROM_MAIL"`
-	Login    string `env:"LOGIN"`
-	AppPass  string `env:"APP_PASS"`
-	SMTPHost string `env:"SMTP_HOST"`
 }
 
-func EmailInit(cfg *Config) {
-	smtpHost = cfg.SMTPHost
-	from = &mail.Address{Name: cfg.Name, Address: cfg.FromMail}
-	auth = smtp.PlainAuth("", cfg.Login, cfg.AppPass, smtpHost)
-	tlsconfig = &tls.Config{
+func New(cfg *Config) *Mail {
+	var m Mail
+	m.smtpHost = cfg.SMTPHost
+	m.from = &mail.Address{Name: cfg.Name, Address: cfg.FromMail}
+	m.auth = smtp.PlainAuth("", cfg.Login, cfg.AppPass, m.smtpHost)
+	m.tlsconfig = &tls.Config{
 		InsecureSkipVerify: true,
-		ServerName:         smtpHost,
+		ServerName:         m.smtpHost,
 	}
+	return &m
 }
 
-func SendSSLMail(subject, msg, recipient string) error {
+func (m *Mail) SendSSLMail(subject, msg, recipient string) error {
 	to := mail.Address{Name: "", Address: recipient}
 	// Setup message
-	message := fmt.Sprintf("From: %s\nTo: %s\nSubject: %s\n\n%s", from.String(), to.String(), subject, msg)
+	message := fmt.Sprintf("From: %s\nTo: %s\nSubject: %s\n\n%s", m.from.String(), to.String(), subject, msg)
 
-	conn, err := tls.Dial("tcp", fmt.Sprintf("%s:%d", smtpHost, 465), tlsconfig)
+	conn, err := tls.Dial("tcp", fmt.Sprintf("%s:%d", m.smtpHost, 465), m.tlsconfig)
 	if err != nil {
 		log.Printf("conn error sending mail %v", err)
 		return err
 	}
 
-	c, err := smtp.NewClient(conn, smtpHost)
+	c, err := smtp.NewClient(conn, m.smtpHost)
 	if err != nil {
 		log.Printf("NewClient error sending mail %v", err)
 		return err
 	}
 	// Auth
-	if err = c.Auth(auth); err != nil {
+	if err = c.Auth(m.auth); err != nil {
 		log.Printf("auth error sending mail %v", err)
 		return err
 	}
 	// To && From
-	if err = c.Mail(from.Address); err != nil {
+	if err = c.Mail(m.from.Address); err != nil {
 		log.Printf("mail error sending mail %v", err)
 		return err
 	}
@@ -90,13 +84,13 @@ func SendSSLMail(subject, msg, recipient string) error {
 }
 
 // SendMails - concurrently sending mails to multiple recipients.
-func SendMails(subject, msg string, recipients []string) {
+func (m *Mail) SendMails(subject, msg string, recipients []string) {
 	var mailwg sync.WaitGroup
 	mailwg.Add(len(recipients))
 	for _, v := range recipients {
 		go func(recipient string) {
 			defer mailwg.Done()
-			SendSSLMail(subject, msg, recipient)
+			m.SendSSLMail(subject, msg, recipient)
 		}(v)
 	}
 	mailwg.Wait()

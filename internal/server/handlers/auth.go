@@ -18,7 +18,7 @@ import (
 // @Param   body body api.Auth true ""
 // @Success 200 {object} api.Token
 // @Router  /login [post]
-func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
+func (h *handler) Login(w http.ResponseWriter, r *http.Request) {git add /
 	ctx := r.Context()
 
 	var auth api.Auth
