@@ -144,7 +144,7 @@ linters-settings:
     require-explanation: true
     # Enable to require nolint directives to mention the specific linter being suppressed.
     # Default: false
-    require-specific: true
+    require-specific: false
 
   rowserrcheck:
     # database/sql is always checked
@@ -157,6 +157,12 @@ linters-settings:
     # Otherwise, only methods that take `*testing.T`, `*testing.B`, and `testing.TB` as arguments are checked.
     # Default: false
     all: true
+
+  revive:
+    rules:
+      - name: unexported-return
+        severity: warning
+        disabled: true
 
 
 linters:
@@ -219,7 +225,6 @@ linters:
     - stylecheck # is a replacement for golint
     - tenv # detects using os.Setenv instead of t.Setenv since Go1.17
     - testableexamples # checks if examples are testable (have an expected output)
-    - testpackage # makes you use a separate _test package
     - tparallel # detects inappropriate usage of t.Parallel() method in your Go test codes
     - unconvert # removes unnecessary type conversions
     - unparam # reports unused function parameters

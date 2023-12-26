@@ -13,6 +13,10 @@ install-dependencies:
 lint:
 	golangci-lint run ./...
 
+.PHONY: build-dev
+build-dev:
+	go build -o server -tags=dev  ./cmd/
+
 .PHONY: new-migration
 new-migration: ## Создание новой миграции (задать name=...)
 	migrate create -ext sql -dir migrations -seq $(name)

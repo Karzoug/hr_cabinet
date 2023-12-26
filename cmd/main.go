@@ -13,6 +13,7 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/logger/slog/sl"
 )
 
+// nolint:gochecknoglobals
 var (
 	buildVersion = "N/A"
 	buildDate    = "N/A"
@@ -27,7 +28,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	logger := buildLogger(os.Stdout, cfg.LogLevel, envMode)
+	logger := buildLogger(cfg.LogLevel, envMode)
 
 	logger.Info(
 		"starting app",

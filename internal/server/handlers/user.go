@@ -7,6 +7,7 @@ import (
 
 	"github.com/muonsoft/validation/validator"
 
+	serr "github.com/Employee-s-file-cabinet/backend/internal/server/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/request"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/s3"
@@ -43,7 +44,7 @@ func (h *handler) AddUser(w http.ResponseWriter, r *http.Request) {
 // @Produce application/json
 // @Success 200 {object} api.GetUserJSONResponseBody
 // @Router  /users/{user_id} [get]
-func (h *handler) GetUser(w http.ResponseWriter, r *http.Request, userId int, params api.GetUserParams) {
+func (h *handler) GetUser(w http.ResponseWriter, r *http.Request, userID int, params api.GetUserParams) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -73,9 +74,9 @@ func (h *handler) UploadPhoto(w http.ResponseWriter, r *http.Request, userID int
 	ctx := r.Context()
 
 	if !request.CheckContentType([]string{"image/png", "image/jpeg"}, r.Header) {
-		s.errorMessage(w, r,
+		serr.ErrorMessage(w, r,
 			http.StatusBadRequest,
-			ErrInvalidContentType.Error(),
+			serr.ErrInvalidContentType.Error(),
 			nil)
 		return
 	}
@@ -94,37 +95,37 @@ func (h *handler) UploadPhoto(w http.ResponseWriter, r *http.Request, userID int
 		}
 	}
 	if isBadContentLengthHeader {
-		s.errorMessage(w, r,
+		serr.ErrorMessage(w, r,
 			http.StatusBadRequest,
-			ErrBadContentLengthHeader.Error(),
+			serr.ErrBadContentLengthHeader.Error(),
 			nil)
 		return
 	}
 
 	if length > MaxPhotoSize {
-		s.errorMessage(w, r,
+		serr.ErrorMessage(w, r,
 			http.StatusBadRequest,
-			ErrLimitRequestBodySize.Error(),
+			serr.ErrLimitRequestBodySize.Error(),
 			nil)
 		return
 	}
 
-	if exist, err := s.userRepository.ExistUser(ctx, userID); err != nil {
-		s.reportServerError(r, err, false)
-		s.errorMessage(w, r,
+	if exist, err := h.dbRepository.ExistUser(ctx, userID); err != nil {
+		serr.ReportError(r, err, false)
+		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
 			http.StatusText(http.StatusInternalServerError),
 			nil)
 		return
 	} else if !exist {
-		s.errorMessage(w, r, http.StatusNotFound, "user not found", nil)
+		serr.ErrorMessage(w, r, http.StatusNotFound, "user not found", nil)
 		return
 	}
 
 	lr := http.MaxBytesReader(w, r.Body, MaxPhotoSize)
 	defer lr.Close()
 
-	if err := s.fileRepository.UploadFile(ctx, s3.File{
+	if err := h.fileRepository.UploadFile(ctx, s3.File{
 		Prefix:      strconv.Itoa(userID),
 		Name:        "photo",
 		Reader:      lr,
@@ -132,14 +133,14 @@ func (h *handler) UploadPhoto(w http.ResponseWriter, r *http.Request, userID int
 		ContentType: r.Header.Get("Content-Type"),
 	}); err != nil {
 		if errors.Is(err, new(http.MaxBytesError)) {
-			s.errorMessage(w, r,
+			serr.ErrorMessage(w, r,
 				http.StatusBadRequest,
-				ErrLimitRequestBodySize.Error(),
+				serr.ErrLimitRequestBodySize.Error(),
 				nil)
 			return
 		}
-		s.reportServerError(r, err, false)
-		s.errorMessage(w, r,
+		serr.ReportError(r, err, false)
+		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
 			http.StatusText(http.StatusInternalServerError),
 			nil)

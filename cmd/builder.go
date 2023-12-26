@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io"
 	"log/slog"
 	"os"
 	"time"
@@ -10,7 +9,7 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/logger/slog/pretty"
 )
 
-func buildLogger(out io.Writer, level string, envMode config.EnvType) *slog.Logger {
+func buildLogger(level string, envMode config.EnvType) *slog.Logger {
 	var (
 		logger    *slog.Logger
 		slogLevel slog.Level
@@ -26,7 +25,7 @@ func buildLogger(out io.Writer, level string, envMode config.EnvType) *slog.Logg
 		slogLevel = slog.LevelDebug
 	}
 
-	switch envMode {
+	switch envMode { // nolint:exhaustive
 	case config.EnvDevelopment:
 		opts := pretty.HandlerOptions{
 			SlogOpts: &slog.HandlerOptions{

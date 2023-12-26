@@ -8,8 +8,6 @@ import (
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
-
-	"github.com/Employee-s-file-cabinet/backend/pkg/e"
 )
 
 const (
@@ -38,7 +36,7 @@ func New(ctx context.Context, cfg Config) (*storage, error) {
 		Secure: cfg.UseSSL,
 	})
 	if err != nil {
-		return nil, e.Wrap(op, err)
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	s := &storage{
 		minioClient: minioClient,
@@ -47,12 +45,12 @@ func New(ctx context.Context, cfg Config) (*storage, error) {
 	// check to see if we already own the bucket
 	exists, err := minioClient.BucketExists(ctx, bucketName)
 	if err != nil {
-		return nil, e.Wrap(op, err)
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	if !exists {
 		if err := minioClient.MakeBucket(ctx,
 			bucketName, minio.MakeBucketOptions{}); err != nil {
-			return nil, e.Wrap(op, err)
+			return nil, fmt.Errorf("%s: %w", op, err)
 		} else {
 			slog.Debug(op, slog.String("bucket created", bucketName))
 		}
@@ -71,7 +69,7 @@ func (s *storage) UploadFile(ctx context.Context, f File) error {
 		f.Size,
 		minio.PutObjectOptions{ContentType: f.ContentType})
 	if err != nil {
-		return e.Wrap(op, err)
+		return fmt.Errorf("%s: %w", op, err)
 	}
 
 	return nil
@@ -86,12 +84,12 @@ func (s *storage) DownloadFile(ctx context.Context, prefix, name string) (File, 
 		minio.GetObjectOptions{},
 	)
 	if err != nil {
-		return File{}, nil, e.Wrap(op, err)
+		return File{}, nil, fmt.Errorf("%s: %w", op, err)
 	}
 
 	info, err := reader.Stat()
 	if err != nil {
-		return File{}, nil, e.Wrap(op, err)
+		return File{}, nil, fmt.Errorf("%s: %w", op, err)
 	}
 
 	return File{

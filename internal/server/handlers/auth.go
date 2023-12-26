@@ -1,11 +1,16 @@
 package handlers
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
 
 	"github.com/muonsoft/validation/validator"
 
+	"github.com/Employee-s-file-cabinet/backend/internal/model"
+	serr "github.com/Employee-s-file-cabinet/backend/internal/server/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
+	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/request"
 )
 
 // @Accept  application/json
@@ -17,16 +22,49 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var auth api.Auth
-	// TODO: decode auth from request body
+	err := request.DecodeJSON(w, r, &auth)
+	if err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
 
 	if err := auth.Validate(ctx, validator.Instance()); err != nil {
 		var _ api.BadRequestError
 		w.WriteHeader(http.StatusBadRequest)
-		// TODO: return error
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
-	w.WriteHeader(http.StatusNotImplemented)
+	authnData, err := h.dbRepository.GetAuthnData(ctx, auth.Login)
+	if errors.Is(err, sql.ErrNoRows) {
+		serr.ErrorMessage(w, r, http.StatusForbidden, serr.ErrLoginFailure.Error(), nil)
+		return
+	}
+	if err != nil {
+		serr.ErrorMessage(w, r, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	err = h.passwordVerification.Check(auth.Password, authnData.PasswordHash)
+	if err != nil {
+		serr.ErrorMessage(w, r, http.StatusForbidden, serr.ErrLoginFailure.Error(), nil)
+		return
+	}
+
+	token, _ := h.tokenManager.Create(
+		model.TokenData{
+			UserID: authnData.UserID,
+			RoleID: authnData.RoleID,
+		})
+
+	cookie := &http.Cookie{
+		Name:     "ecabinet-token",
+		Value:    token,
+		SameSite: http.SameSiteLaxMode,
+		Secure:   true,
+	}
+	http.SetCookie(w, cookie)
+	w.WriteHeader(http.StatusOK)
 }
 
 // @Router /login/change-password [get]

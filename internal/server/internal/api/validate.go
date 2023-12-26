@@ -1,3 +1,4 @@
+//nolint:gomnd // validation can have magic numbers
 package api
 
 import (
@@ -9,10 +10,7 @@ import (
 
 const base64 string = "^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{4})$"
 
-var (
-	rxBase64   = regexp.MustCompile(base64)
-	isNotDigit = func(c rune) bool { return c < '0' || c > '9' }
-)
+var rxBase64 = regexp.MustCompile(base64)
 
 var (
 	ErrInvalidOnlyNumbersFormat = vld.NewError(
@@ -25,6 +23,10 @@ var (
 		"invalid taxpayer checksum",
 		"This value has not the correct checksum.")
 )
+
+func isNotDigit(c rune) bool {
+	return c < '0' || c > '9'
+}
 
 func consistOnlyNumbersFormat() vld.StringFuncConstraint {
 	return vld.OfStringBy(func(s string) bool {
@@ -40,7 +42,7 @@ func hasCorrectInsuranceChecksum() vld.StringFuncConstraint {
 		WithMessage(ErrInvalidInsuranceChecksum.Message())
 }
 
-var checksumInsurance = func(s string) bool {
+func checksumInsurance(s string) bool {
 	var sum int
 	for i := 0; i < len(s)-2; i++ {
 		sum += (9 - i) * int(s[i]-'0')
@@ -61,7 +63,7 @@ func hasCorrectTaxpayerChecksum() vld.StringFuncConstraint {
 		WithMessage(ErrInvalidTaxpayerChecksum.Message())
 }
 
-var checksumTaxpayer = func(s string) bool {
+func checksumTaxpayer(s string) bool {
 	switch len(s) {
 	case 10:
 		n10 := ((2*int(s[0]-'0') + 4*int(s[1]-'0') +

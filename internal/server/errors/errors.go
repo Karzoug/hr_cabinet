@@ -18,9 +18,10 @@ var (
 	ErrInternalServerError    = errors.New("the server encountered a problem and could not process your request")
 	ErrNotFoundRoute          = errors.New("the requested resource could not be found")
 	ErrMethodNotAllowed       = errors.New("the method is not supported for this resource")
+	ErrLoginFailure           = errors.New("login failed: invalid user ID or password")
 )
 
-// ReportServerError logs the server error, with or without stack trace.
+// ReportError logs the server error, with or without stack trace.
 func ReportError(r *http.Request, err error, withStack bool) {
 	var (
 		message = err.Error()
