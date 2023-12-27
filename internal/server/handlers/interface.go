@@ -16,6 +16,7 @@ type S3FileRepository interface {
 type DBRepository interface {
 	ExistUser(ctx context.Context, userID int) (bool, error)
 	GetAuthnData(ctx context.Context, login string) (model.AuthnDAO, error)
+	ChangePass(ctx context.Context, login, hash string) error
 }
 
 type KeyRepository interface {

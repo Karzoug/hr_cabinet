@@ -191,9 +191,20 @@ func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: отправить в базу запрос на замену пароля
-	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	////serr.ErrorMessage(w, r, http.StatusNotFound, "employee not found", nil)
+	//TODO: проверка пароля на сложность 
+
+	passHash, err := h.passwordVerification.Hash(chPsw.Password)
+	if err != nil {
+		serr.ErrorMessage(w, r, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
+
+	err=h.dbRepository.ChangePass(ctx, chPsw.Login, passHash)
+	if err != nil {
+		//TODO: анализировать виды ошибок
+		serr.ErrorMessage(w, r, http.StatusNotFound, "employee not found", nil)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 }
