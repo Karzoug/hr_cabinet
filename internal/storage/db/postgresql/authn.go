@@ -21,6 +21,11 @@ func (s *storage) GetAuthnData(ctx context.Context, login string) (model.AuthnDA
 	return authnData, err
 }
 
+func (s *storage) ExistEmployee(ctx context.Context, userID int) (bool, error) {
+	//TODO: запрос на наличие пользователя
+	return false, fmt.Errorf("not implemented")
+}
+
 func (s *storage) ChangePass(ctx context.Context, login, hash string) error {
 	//TODO: запрос на смену пароля
 	return fmt.Errorf("not implemented")

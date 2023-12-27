@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -14,7 +15,11 @@ import (
 	serr "github.com/Employee-s-file-cabinet/backend/internal/server/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/request"
+	"github.com/Employee-s-file-cabinet/backend/internal/utils/email"
 )
+
+// TODO: перенести в переменые окружения
+const domen = "https://ecabinet.acceleratorpracticum.ru"
 
 // @Accept  application/json
 // @Produce application/json
@@ -114,7 +119,7 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//обращение к базе, проверка наличия пользователя с заданным логином
-	exist, err := h.dbRepository.ExistUser(ctx, chPsw.Login)
+	exist, err := h.dbRepository.ExistEmployee(ctx, chPsw.Login)
 	if err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
@@ -132,8 +137,7 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 	randBytes := make([]byte, 26)
 	_, err = rand.Read(randBytes)
 	if err != nil {
-		// TODO: return error
-		w.WriteHeader(http.StatusInternalServerError)
+		serr.ErrorMessage(w, r, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 	randString := base64.StdEncoding.EncodeToString(randBytes)
@@ -141,22 +145,19 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 	//сохранение ключа в мапе
 	err = h.keyRepository.Set(ctx, randString, chPsw.Login, time.Minute*30)
 	if err != nil {
-		// TODO: return error
-		w.WriteHeader(http.StatusInternalServerError)
+		serr.ErrorMessage(w, r, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
 	//отправка письма
-	/*subject := "Запрос на восстановление доступа"
-		//TODO: домен
-		msg := fmt.Sprintf(`Для восстановления доступа к личному кабинету перейдите по ссылке:
-	%s/frontend/access-restore#/password-reset?key=%s`, domen, randString) //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	subject := "Запрос на восстановление доступа"
+	msg := fmt.Sprintf(`Для восстановления доступа к личному кабинету перейдите по ссылке:
+	%s/access-restore/password-reset?key=%s`, domen, randString)
 
-		if err := email.SendSSLMail(subject, msg, chPsw.Login); err != nil {
-			// TODO: return error
-			w.WriteHeader(http.StatusInternalServerError)
-			return
-		}*/
+	if err := email.SendSSLMail(subject, msg, chPsw.Login); err != nil {
+		serr.ErrorMessage(w, r, http.StatusInternalServerError, err.Error(), nil)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 }
@@ -191,7 +192,7 @@ func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: проверка пароля на сложность 
+	//TODO: проверка пароля на сложность
 
 	passHash, err := h.passwordVerification.Hash(chPsw.Password)
 	if err != nil {
@@ -199,7 +200,7 @@ func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err=h.dbRepository.ChangePass(ctx, chPsw.Login, passHash)
+	err = h.dbRepository.ChangePass(ctx, chPsw.Login, passHash)
 	if err != nil {
 		//TODO: анализировать виды ошибок
 		serr.ErrorMessage(w, r, http.StatusNotFound, "employee not found", nil)
