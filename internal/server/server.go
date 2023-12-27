@@ -37,7 +37,7 @@ func New(cfg Config,
 	s3FileRepository handlers.S3FileRepository,
 	tokenManager handlers.TokenManager,
 	keyRepository handlers.KeyRepository,
-	mail email.Mail,
+	mail *email.Mail,
 	logger *slog.Logger) *server {
 
 	logger = logger.With(slog.String("from", "http-server"))

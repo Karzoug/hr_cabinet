@@ -16,7 +16,7 @@ type Mail struct {
 	tlsconfig *tls.Config
 }
 
-func New(cfg *Config) *Mail {
+func New(cfg Config) *Mail {
 	var m Mail
 	m.smtpHost = cfg.SMTPHost
 	m.from = &mail.Address{Name: cfg.Name, Address: cfg.FromMail}

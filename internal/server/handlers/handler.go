@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"context"
 	"log/slog"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
@@ -16,7 +15,7 @@ type handler struct {
 	passwordVerification PasswordVerification
 	tokenManager         TokenManager
 	keyRepository        KeyRepository
-	mail           		 email.Mail
+	mail                 *email.Mail
 	logger               *slog.Logger
 }
 
@@ -25,7 +24,7 @@ func New(dbRepository DBRepository,
 	passwordVerification PasswordVerification,
 	tokenManager TokenManager,
 	keyRepository KeyRepository,
-	mail email.Mail,
+	mail *email.Mail,
 	logger *slog.Logger) *handler {
 	logger = logger.With(slog.String("from", "handler"))
 
@@ -35,7 +34,7 @@ func New(dbRepository DBRepository,
 		passwordVerification: passwordVerification,
 		tokenManager:         tokenManager,
 		keyRepository:        keyRepository,
-		mail:           	  mail,
+		mail:                 mail,
 		logger:               logger,
 	}
 

@@ -21,7 +21,7 @@ func (s *storage) GetAuthnData(ctx context.Context, login string) (model.AuthnDA
 	return authnData, err
 }
 
-func (s *storage) ExistEmployee(ctx context.Context, userID int) (bool, error) {
+func (s *storage) ExistEmployee(ctx context.Context, workEmail string) (bool, error) {
 	//TODO: запрос на наличие пользователя
 	return false, fmt.Errorf("not implemented")
 }

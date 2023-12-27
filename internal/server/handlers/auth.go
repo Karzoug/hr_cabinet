@@ -15,7 +15,6 @@ import (
 	serr "github.com/Employee-s-file-cabinet/backend/internal/server/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/server/internal/request"
-	"github.com/Employee-s-file-cabinet/backend/internal/utils/email"
 )
 
 // TODO: перенести в переменые окружения
@@ -154,7 +153,7 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 	msg := fmt.Sprintf(`Для восстановления доступа к личному кабинету перейдите по ссылке:
 	%s/access-restore/password-reset?key=%s`, domen, randString)
 
-	if err := email.SendSSLMail(subject, msg, chPsw.Login); err != nil {
+	if err := h.mail.SendSSLMail(subject, msg, chPsw.Login); err != nil {
 		serr.ErrorMessage(w, r, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
@@ -200,7 +199,7 @@ func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.dbRepository.ChangePass(ctx, chPsw.Login, passHash)
+	err = h.dbRepository.ChangePass(ctx, login, passHash)
 	if err != nil {
 		//TODO: анализировать виды ошибок
 		serr.ErrorMessage(w, r, http.StatusNotFound, "employee not found", nil)
