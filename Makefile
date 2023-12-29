@@ -23,19 +23,19 @@ new-migration: ## Создание новой миграции (задать nam
 
 .PHONY: migrate-up
 migrate-up: ## Запуск миграции
-	migrate -path internal/storage/db/migrations -database "$(PG_DSN)" -verbose up
+	migrate -path migrations -database "$(PG_DSN)" -verbose up
 
 .PHONY: migrate-down
 migrate-down: ## Откат миграций
-	migrate -path internal/storage/db/migrations -database "$(PG_DSN)" -verbose down
+	migrate -path migrations -database "$(PG_DSN)" -verbose down
 
 .PHONY: test-migrate-up
 test-migrate-up: ## Запуск миграции на тестовую базу
-	migrate -path internal/storage/db/migrations -database "$(PG_DSN_TEST)" -verbose up
+	migrate -path migrations -database "$(PG_DSN_TEST)" -verbose up
 
 .PHONY: test-migrate-down
 test-migrate-down: ## Откат миграций тестовой базы
-	migrate -path internal/storage/db/migrations -database "$(PG_DSN_TEST)" -verbose down
+	migrate -path migrations -database "$(PG_DSN_TEST)" -verbose down
 
 .PHONY: test-env-up
 test-env-up: ## Запуск тестового окружения.

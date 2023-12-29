@@ -5,31 +5,18 @@ import (
 	"os"
 	"time"
 
-	"github.com/Employee-s-file-cabinet/backend/internal/config"
+	"github.com/Employee-s-file-cabinet/backend/internal/config/env"
 	"github.com/Employee-s-file-cabinet/backend/pkg/logger/slog/pretty"
 )
 
-func buildLogger(level string, envMode config.EnvType) *slog.Logger {
-	var (
-		logger    *slog.Logger
-		slogLevel slog.Level
-	)
-
-	switch level {
-	case "info":
-		slogLevel = slog.LevelInfo
-	case "error":
-		slogLevel = slog.LevelError
-	case "debug":
-	default:
-		slogLevel = slog.LevelDebug
-	}
+func buildLogger(level slog.Level, envMode env.Type) *slog.Logger {
+	var logger *slog.Logger
 
 	switch envMode { // nolint:exhaustive
-	case config.EnvDevelopment:
+	case env.Development:
 		opts := pretty.HandlerOptions{
 			SlogOpts: &slog.HandlerOptions{
-				Level: slogLevel,
+				Level: level,
 			},
 		}
 
@@ -39,7 +26,7 @@ func buildLogger(level string, envMode config.EnvType) *slog.Logger {
 		logger = slog.New(
 			slog.NewJSONHandler(os.Stdout,
 				&slog.HandlerOptions{
-					Level:       slogLevel,
+					Level:       level,
 					ReplaceAttr: rewriteSlogAttributes(),
 				}),
 		)

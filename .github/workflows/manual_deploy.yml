@@ -20,7 +20,7 @@ jobs:
         run: go mod download
 
       - name: Build app
-        run: GOOS=linux go build -o ./build/ecabinet -v ./cmd/
+        run: GOOS=linux go build -ldflags="-X 'main.buildCommit=${{ github.sha }}'" -o ./build/ecabinet -v ./cmd/
 
       - name: Copy app to server
         uses: appleboy/scp-action@v0.1.4
@@ -48,6 +48,8 @@ jobs:
             echo PG_DSN=${{ secrets.PG_DSN }}  >> .env
             echo S3_ACCESS_KEY_ID=${{ secrets.S3_ACCESS_KEY_ID }}  >> .env
             echo S3_SECRET_ACCESS_KEY=${{ secrets.S3_SECRET_ACCESS_KEY }}  >> .env
+            echo ENV_TYPE=testing  >> .env
+            echo LOG_LEVEL=debug  >> .env
             ls -lh
 
       - name: Restart app on server
