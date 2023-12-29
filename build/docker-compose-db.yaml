@@ -5,17 +5,65 @@ services:
     image: postgres:16.1-alpine3.19
     container_name: ecabinet_postgres
     restart: unless-stopped
+    command:
+      - "postgres"
+      - "-c"
+      - "max_connections=10"
+      - "-c"
+      - "shared_buffers=1GB"
+      - "-c"
+      - "temp_buffers=16MB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "effective_cache_size=1GB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+      - "-c"
+      - "wal_level=minimal"
+      - "-c"
+      - "max_wal_senders=0"
+      - "-c"
+      - "synchronous_commit=off"
+      - "-c"
+      - "checkpoint_timeout=20min"
+      - "-c"
+      - "max_wal_size=512MB"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "temp_file_limit=2GB"
+      - "-c"
+      - "log_min_duration_statement=200ms"
+      - "-c"
+      - "idle_in_transaction_session_timeout=10s"
+      - "-c"
+      - "lock_timeout=1s"
+      - "-c"
+      - "statement_timeout=60s"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "pg_stat_statements.max=1000"
+      - "-c"
+      - "pg_stat_statements.track=all"
     env_file:
       - secrets/db.dev.env
       - db.dev.env
     ports:
-      - "5432:5432"
+      - "${PG_PORT}:5432"
     volumes:
       - database-data-server:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
 volumes:
   database-data-server:
