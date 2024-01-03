@@ -1,7 +1,6 @@
 package model
 
 import (
-	"io"
 	"time"
 )
 
@@ -32,9 +31,3 @@ const (
 	GenderFemale Gender = "female"
 	GenderMale   Gender = "male"
 )
-
-type File struct {
-	ContentType string
-	Size        int64
-	Reader      io.Reader
-}

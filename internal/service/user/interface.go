@@ -15,5 +15,5 @@ type userRepository interface {
 
 type s3FileRepository interface {
 	Upload(context.Context, s3.File) error
-	Download(ctx context.Context, prefix, name string) (file s3.File, closeFn func() error, err error)
+	Download(ctx context.Context, prefix, name, etag string) (file s3.File, closeFn func() error, err error)
 }

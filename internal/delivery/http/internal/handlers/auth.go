@@ -52,7 +52,8 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	cookie := &http.Cookie{
 		Name:     "ecabinet-token",
 		Value:    token,
-		SameSite: http.SameSiteLaxMode,
+		Path:     "/",
+		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
 		Expires:  h.authService.Expires(),
 	}

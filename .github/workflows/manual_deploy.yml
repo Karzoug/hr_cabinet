@@ -37,7 +37,7 @@ jobs:
       - name: Build app
         run: |
           go mod download
-          GOOS=linux go build -ldflags="-X 'main.buildCommit=${{ github.sha }}'" -o ecabinet -v ./cmd/
+          GOOS=linux go build -ldflags="-X 'main.buildCommit=${{ github.sha }}' -X 'main.buildVersion=${{ github.event.inputs.tag }}' -X 'main.buildDate=$(date)'" -o ecabinet -v ./cmd/
 
       - name: Copy app to server
         env:

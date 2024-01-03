@@ -3,7 +3,6 @@ package handlers
 import (
 	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/muonsoft/validation/validator"
 	"github.com/oapi-codegen/runtime/types"
@@ -142,65 +141,6 @@ func (h *handler) PatchUser(w http.ResponseWriter, r *http.Request, userID uint6
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// @Accept  image/png
-// @Accept  image/jpeg
-// @Router  /users/{user_id}/photo [post]
-func (h *handler) UploadPhoto(w http.ResponseWriter, r *http.Request, userID uint64) {
-	ctx := r.Context()
-
-	var (
-		length                   int64
-		isBadContentLengthHeader bool
-	)
-	if lengthString := r.Header.Get("Content-Length"); lengthString == "" {
-		isBadContentLengthHeader = true
-	} else {
-		var err error
-		length, err = strconv.ParseInt(lengthString, 10, 64)
-		if err != nil {
-			isBadContentLengthHeader = true
-		}
-	}
-	if isBadContentLengthHeader {
-		serr.ErrorMessage(w, r,
-			http.StatusBadRequest,
-			serr.ErrBadContentLengthHeader.Error(),
-			nil)
-		return
-	}
-
-	if length > user.MaxPhotoSize {
-		serr.ErrorMessage(w, r,
-			http.StatusBadRequest,
-			serr.ErrLimitRequestBodySize.Error(),
-			nil)
-		return
-	}
-
-	lr := http.MaxBytesReader(w, r.Body, user.MaxPhotoSize)
-	defer lr.Close()
-
-	if err := h.userService.UploadPhoto(ctx, userID, model.File{
-		Reader:      lr,
-		Size:        length,
-		ContentType: r.Header.Get("Content-Type"),
-	}); err != nil {
-		if errors.Is(err, new(http.MaxBytesError)) {
-			serr.ErrorMessage(w, r,
-				http.StatusBadRequest,
-				serr.ErrLimitRequestBodySize.Error(),
-				nil)
-			return
-		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
-		return
-	}
 }
 
 func toAPIFullUser(u *model.User) api.FullUser {

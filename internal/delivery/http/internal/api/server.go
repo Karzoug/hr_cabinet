@@ -103,6 +103,9 @@ type ServerInterface interface {
 	// (PATCH /users/{user_id}/passports/{passport_id}/visas/{visa_id})
 	PatchVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64, visaID uint64)
 
+	// (GET /users/{user_id}/photo)
+	DownloadPhoto(w http.ResponseWriter, r *http.Request, userID uint64)
+
 	// (POST /users/{user_id}/photo)
 	UploadPhoto(w http.ResponseWriter, r *http.Request, userID uint64)
 
@@ -1097,6 +1100,32 @@ func (siw *ServerInterfaceWrapper) PatchVisa(w http.ResponseWriter, r *http.Requ
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
+// DownloadPhoto operation middleware
+func (siw *ServerInterfaceWrapper) DownloadPhoto(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "user_id" -------------
+	var userID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "user_id", runtime.ParamLocationPath, chi.URLParam(r, "user_id"), &userID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.DownloadPhoto(w, r, userID)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
 // UploadPhoto operation middleware
 func (siw *ServerInterfaceWrapper) UploadPhoto(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -1773,6 +1802,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Patch(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas/{visa_id}", wrapper.PatchVisa)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/users/{user_id}/photo", wrapper.DownloadPhoto)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/users/{user_id}/photo", wrapper.UploadPhoto)

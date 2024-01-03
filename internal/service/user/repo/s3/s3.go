@@ -4,10 +4,13 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"net/http"
+	"strings"
 
 	"github.com/minio/minio-go/v7"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/repo/s3"
+	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
 const (
@@ -58,13 +61,19 @@ func (s *storage) Upload(ctx context.Context, f s3.File) error {
 	return nil
 }
 
-func (s *storage) Download(ctx context.Context, prefix, name string) (s3.File, func() error, error) {
+func (s *storage) Download(ctx context.Context, prefix, name, etag string) (s3.File, func() error, error) {
 	const op = "s3 storage: download file"
 
+	opts := minio.GetObjectOptions{}
+	if etag != "" {
+		if err := opts.SetMatchETagExcept(etag); err != nil {
+			return s3.File{}, nil, fmt.Errorf("%s: %w", op, err)
+		}
+	}
 	reader, err := s.minioClient.GetObject(ctx,
 		bucketName,
 		prefix+"_"+name,
-		minio.GetObjectOptions{},
+		opts,
 	)
 	if err != nil {
 		return s3.File{}, nil, fmt.Errorf("%s: %w", op, err)
@@ -72,6 +81,9 @@ func (s *storage) Download(ctx context.Context, prefix, name string) (s3.File, f
 
 	info, err := reader.Stat()
 	if err != nil {
+		if strings.Contains(err.Error(), http.StatusText(http.StatusNotModified)) {
+			return s3.File{}, nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotModified)
+		}
 		return s3.File{}, nil, fmt.Errorf("%s: %w", op, err)
 	}
 
@@ -80,6 +92,7 @@ func (s *storage) Download(ctx context.Context, prefix, name string) (s3.File, f
 		Name:        name,
 		ContentType: info.ContentType,
 		Size:        info.Size,
+		ETag:        info.ETag,
 		Reader:      reader,
 	}, reader.Close, nil
 }
