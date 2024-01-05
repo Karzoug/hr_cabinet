@@ -18,6 +18,13 @@ func rightJSONTEstHelper(ctx context.Context, t *testing.T, s string, value vali
 	assert.NoError(t, value.Validate(ctx, validator.Instance()))
 }
 
+func wrongJSONTEstHelper(ctx context.Context, t *testing.T, s string, value validation.Validatable) {
+	if err := json.Unmarshal([]byte(s), value); err != nil {
+		require.NoError(t, err)
+	}
+	assert.Error(t, value.Validate(ctx, validator.Instance()))
+}
+
 func TestEducation_Validate(t *testing.T) {
 	edJSON := `{
 		"id": 578,
@@ -31,6 +38,16 @@ func TestEducation_Validate(t *testing.T) {
 
 	var ed Education
 	rightJSONTEstHelper(context.TODO(), t, edJSON, &ed)
+
+	edJSON2 := `{
+		"id": 578,
+		"date_to": "2015-01-01",
+		"date_from": "2011-01-01",
+		"issued_institution": "ФГБОУ ВО «Астраханский государственный университет им. В. Н. Татищева»",
+		"program": "Связи с общественностью"
+	  }`
+	var ed2 Education
+	wrongJSONTEstHelper(context.TODO(), t, edJSON2, &ed2)
 }
 
 func TestContract_Validate(t *testing.T) {
@@ -61,11 +78,22 @@ func TestFullUser_Validate(t *testing.T) {
 				"gender": "male",
 				"position": "Novelist",
 				"department": "Collegium of Foreign Affairs",
+				"place_of_birth": "Moscow",
+				"registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
+				"residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
+				"grade": "1",
 				"email": "pushkin@dantes.net",
 				"phone_numbers": {
 					"mobile": "79999999999",
 					"office": "123456"
 				},
+				"insurance": {
+					"number": "08336732477"
+				},
+				"taxpayer": {
+					"number": "500100732259"
+				},
+				"nationality": "russian",
 				"foreign_languages": [
 				  "english",
 				  "german"
@@ -113,6 +141,12 @@ func TestFullUser_Validate(t *testing.T) {
 				  "number": "77121034092",
 				  "valid_to": "2013-09-05",
 				  "has_scan": true
+				},
+				"insurance": {
+					"number": "08336732477"
+				},
+				"taxpayer": {
+					"number": "500100732259"
 				},
 				"grade": "2",
 				"working_model": "in-office",

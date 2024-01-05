@@ -18,8 +18,6 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/middleware"
 )
 
-const baseURL = "/api/v1"
-
 const (
 	defaultIdleTimeout    = time.Minute
 	defaultReadTimeout    = 5 * time.Second
@@ -76,7 +74,7 @@ func New(cfg Config, envType env.Type,
 	}
 
 	srv.Handler = api.HandlerWithOptions(handler, api.ChiServerOptions{
-		BaseURL:    baseURL,
+		BaseURL:    api.BaseURL,
 		BaseRouter: mux,
 	})
 

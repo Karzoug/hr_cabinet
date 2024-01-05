@@ -87,6 +87,28 @@ type listUser struct {
 	TotalCount int `db:"total_count"`
 }
 
-func converListUserToModelUser(lu *listUser) model.User {
-	return convertUserToModelUser(&lu.user)
+type education struct {
+	ID                uint64    `db:"id"`
+	Number            string    `db:"document_number"`
+	Program           string    `db:"title_of_program"`
+	IssuedInstitution string    `db:"title_of_institution"`
+	DateTo            time.Time `db:"year_of_end"`
+	DateFrom          time.Time `db:"year_of_begin"`
+}
+
+func convertEducationToModelEducation(ed education) model.Education {
+	return model.Education(ed)
+}
+
+type training struct {
+	ID                uint64    `db:"id"`
+	Program           string    `db:"title_of_program"`
+	IssuedInstitution string    `db:"title_of_institution"`
+	Cost              uint64    `db:"cost"`
+	DateTo            time.Time `db:"date_end"`
+	DateFrom          time.Time `db:"date_begin"`
+}
+
+func convertTrainingToModelTraining(tr training) model.Training {
+	return model.Training(tr)
 }

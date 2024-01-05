@@ -4,7 +4,6 @@ go 1.21.4
 
 require (
 	github.com/fatih/color v1.16.0
-	github.com/georgysavva/scany/v2 v2.0.0
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/henvic/pgq v0.0.2
 	github.com/ilyakaznacheev/cleanenv v1.5.0

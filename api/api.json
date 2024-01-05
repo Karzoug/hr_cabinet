@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.21.0",
+        "version": "0.22.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -1472,6 +1472,8 @@
                                                     "id",
                                                     "has_scan",
                                                     "date_from",
+                                                    "date_to",
+                                                    "program",
                                                     "issued_institution"
                                                 ]
                                             }
@@ -1516,7 +1518,9 @@
                                     {
                                         "required": [
                                             "date_from",
-                                            "issued_institution"
+                                            "date_to",
+                                            "issued_institution",
+                                            "program"
                                         ]
                                     }
                                 ]
@@ -1599,7 +1603,9 @@
                                                 "id",
                                                 "has_scan",
                                                 "date_from",
-                                                "issued_institution"
+                                                "date_to",
+                                                "issued_institution",
+                                                "program"
                                             ]
                                         }
                                     ]
@@ -1744,6 +1750,8 @@
                                                     "id",
                                                     "has_scan",
                                                     "date_from",
+                                                    "date_to",
+                                                    "cost",
                                                     "issued_institution",
                                                     "program"
                                                 ]
@@ -1789,6 +1797,8 @@
                                     {
                                         "required": [
                                             "date_from",
+                                            "date_to",
+                                            "cost",
                                             "issued_institution",
                                             "program"
                                         ]
@@ -1873,6 +1883,8 @@
                                                 "id",
                                                 "has_scan",
                                                 "date_from",
+                                                "date_to",
+                                                "cost",
                                                 "issued_institution",
                                                 "program"
                                             ]
@@ -2593,8 +2605,10 @@
                                                                 "required": [
                                                                     "id",
                                                                     "date_from",
+                                                                    "date_to",
                                                                     "issued_institution",
-                                                                    "has_scan"
+                                                                    "has_scan",
+                                                                    "program"
                                                                 ]
                                                             }
                                                         ]
@@ -2612,6 +2626,8 @@
                                                                 "required": [
                                                                     "id",
                                                                     "date_from",
+                                                                    "date_to",
+                                                                    "cost",
                                                                     "issued_institution",
                                                                     "program",
                                                                     "has_scan"
@@ -2754,7 +2770,6 @@
                                             ],
                                             "trainings": [
                                                 {
-                                                    "number": "A15/456878-456",
                                                     "issued_institution": "Yandex Practicum",
                                                     "program": "Advanced Go developer",
                                                     "cost": 120000,
@@ -3564,12 +3579,6 @@
                 "required": [],
                 "type": "object",
                 "properties": {
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
                     "issued_institution": {
                         "description": "",
                         "maxLength": 150,
@@ -3608,7 +3617,6 @@
                     }
                 },
                 "example": {
-                    "number": "A15/456878-456",
                     "issued_institution": "Yandex Practicum",
                     "program": "Advanced Go developer",
                     "cost": 120000,

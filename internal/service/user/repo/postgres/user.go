@@ -2,12 +2,11 @@ package postgresql
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"fmt"
 
-	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/henvic/pgq"
+	"github.com/jackc/pgx/v5"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
@@ -18,9 +17,9 @@ const LimitListUsers = 10
 func (s *storage) Exist(ctx context.Context, userID uint64) (bool, error) {
 	const op = "postrgresql user storage: exist user"
 
+	row := s.DB.QueryRow(ctx, "SELECT COUNT(1) FROM users WHERE id = $1", userID)
 	var count int
-	if err := pgxscan.Get(ctx, s.DB, &count,
-		"SELECT COUNT(1) FROM users WHERE id = $1", userID); err != nil {
+	if err := row.Scan(&count); err != nil {
 		return false, fmt.Errorf("%s: %w", op, err)
 	}
 
@@ -33,8 +32,7 @@ func (s *storage) Exist(ctx context.Context, userID uint64) (bool, error) {
 func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	const op = "postrgresql user storage: get user"
 
-	u := new(user)
-	if err := pgxscan.Get(ctx, s.DB, u,
+	rows, err := s.DB.Query(ctx,
 		`SELECT 
 		users.id AS id,lastname,firstname,middlename,gender,
 		date_of_birth,place_of_birth,grade,phone_numbers,
@@ -45,8 +43,13 @@ func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 		FROM users		 
 		JOIN departments ON users.department_id = departments.id
 		JOIN positions ON users.position_id = positions.id
-		WHERE users.id = $1`, userID); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+	 	WHERE users.id = $1`, userID)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	u, err := pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByNameLax[user])
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
 		}
 		return nil, fmt.Errorf("%s: %w", op, err)
@@ -91,20 +94,18 @@ func (s *storage) List(ctx context.Context, pms model.ListUsersParams) ([]model.
 	if err != nil {
 		return nil, 0, fmt.Errorf("%s: %w", op, err)
 	}
-	defer rows.Close()
-
-	users := make([]model.User, 0)
-	u := new(listUser)
-	for rows.Next() {
-		if err := pgxscan.ScanRow(u, rows); err != nil {
-			return nil, 0, fmt.Errorf("%s: %w", op, err)
-		}
-		users = append(users, converListUserToModelUser(u))
-	}
-
-	if err := rows.Err(); err != nil {
+	lu, err := pgx.CollectRows[listUser](rows, pgx.RowToStructByNameLax[listUser])
+	if err != nil {
 		return nil, 0, fmt.Errorf("%s: %w", op, err)
 	}
 
-	return users, u.TotalCount, nil
+	if len(lu) == 0 {
+		return []model.User{}, 0, nil
+	}
+
+	users := make([]model.User, len(lu))
+	for i, u := range lu {
+		users[i] = convertUserToModelUser(&u.user)
+	}
+	return users, lu[0].TotalCount, nil
 }
