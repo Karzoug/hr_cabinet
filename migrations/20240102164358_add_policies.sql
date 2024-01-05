@@ -1,3 +1,5 @@
+-- +goose Up
+-- +goose StatementBegin
 BEGIN;
 
 CREATE TABLE IF NOT EXISTS "policies"
@@ -13,3 +15,13 @@ CREATE TABLE IF NOT EXISTS "policies"
 );
 
 COMMIT;
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+BEGIN;
+
+DROP TABLE IF EXISTS policies;
+
+COMMIT;
+-- +goose StatementEnd

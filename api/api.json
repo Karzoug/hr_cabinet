@@ -2985,6 +2985,11 @@
                         "description": "The server returned an error"
                     }
                 },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
                 "operationId": "downloadPhoto"
             },
             "post": {

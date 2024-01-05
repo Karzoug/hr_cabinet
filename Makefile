@@ -19,15 +19,27 @@ build-dev:
 
 .PHONY: new-migration
 new-migration: ## Создание новой миграции (задать name=...)
-	migrate create -ext sql -dir migrations -seq $(name)
+	goose -dir migrations create $(name) sql
 
 .PHONY: migrate-up
-migrate-up: ## Запуск миграции
-	migrate -path migrations -database "$(PG_DSN)" -verbose up
+migrate-up: ## Запуск всех миграций (до последней версии)
+	goose -dir migrations postgres "$(PG_DSN)" up
+
+.PHONY: migrate-up-by-one
+migrate-up-by-one: ## Запуск миграций по одной
+	goose -dir migrations postgres "$(PG_DSN)" up-by-one
 
 .PHONY: migrate-down
-migrate-down: ## Откат миграций
-	migrate -path migrations -database "$(PG_DSN)" -verbose down
+migrate-down: ## Откат на одну миграцию
+	goose -dir migrations postgres "$(PG_DSN)" down
+
+.PHONY: migrate-reset
+migrate-reset: ## Откатить все миграции
+	goose -dir migrations postgres "$(PG_DSN)" reset
+
+.PHONY: migrate-status
+migrate-status: ## Откатить все миграции
+	goose -dir migrations postgres "$(PG_DSN)" status
 
 .PHONY: test-migrate-up
 test-migrate-up: ## Запуск миграции на тестовую базу
