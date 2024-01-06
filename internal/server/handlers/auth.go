@@ -85,13 +85,9 @@ func (h *handler) CheckKey(w http.ResponseWriter, r *http.Request, params api.Ch
 	}
 
 	//проверка наличия и срока действия ключа
-	login, err := h.keyRepository.Get(ctx, params.Key)
+	_, err := h.keyRepository.Get(ctx, params.Key)
 	if err != nil {
 		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
-		return
-	}
-	if login == "" {
-		serr.ErrorMessage(w, r, http.StatusInternalServerError, "login lost", nil)
 		return
 	}
 
@@ -118,7 +114,7 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//обращение к базе, проверка наличия пользователя с заданным логином
-	exist, err := h.dbRepository.ExistEmployee(ctx, chPsw.Login)
+	exist, userID, err := h.dbRepository.ExistEmployee(ctx, chPsw.Login)
 	if err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
@@ -142,7 +138,7 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 	randString := base64.StdEncoding.EncodeToString(randBytes)
 
 	//сохранение ключа в мапе
-	err = h.keyRepository.Set(ctx, randString, chPsw.Login, time.Minute*30)
+	err = h.keyRepository.Set(ctx, randString, userID, time.Minute*30)
 	if err != nil {
 		serr.ErrorMessage(w, r, http.StatusInternalServerError, err.Error(), nil)
 		return
@@ -181,13 +177,9 @@ func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//получение пользователя по ключу
-	login, err := h.keyRepository.Get(ctx, chPsw.Key)
+	userID, err := h.keyRepository.Get(ctx, chPsw.Key)
 	if err != nil {
 		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
-		return
-	}
-	if login == "" {
-		serr.ErrorMessage(w, r, http.StatusInternalServerError, "login lost", nil)
 		return
 	}
 
@@ -199,7 +191,7 @@ func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.dbRepository.ChangePass(ctx, login, passHash)
+	err = h.dbRepository.ChangePass(ctx, userID, passHash)
 	if err != nil {
 		//TODO: анализировать виды ошибок
 		serr.ErrorMessage(w, r, http.StatusNotFound, "employee not found", nil)

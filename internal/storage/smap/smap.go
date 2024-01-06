@@ -13,7 +13,7 @@ type smap struct {
 }
 
 type item struct {
-	data    string
+	data    int
 	expires int64
 }
 
@@ -53,7 +53,7 @@ func New(cleaningInterval time.Duration) *smap {
 }
 
 // Set sets value by key.
-func (smap *smap) Set(_ context.Context, key string, value string, duration time.Duration) error {
+func (smap *smap) Set(_ context.Context, key string, value int, duration time.Duration) error {
 	var expires int64
 
 	if duration > 0 {
@@ -69,20 +69,20 @@ func (smap *smap) Set(_ context.Context, key string, value string, duration time
 }
 
 // Get returns value by key.
-func (smap *smap) Get(_ context.Context, key string) (string, error) {
+func (smap *smap) Get(_ context.Context, key string) (int, error) {
 	const op = "sync map: get"
 
 	obj, exists := smap.items.Load(key)
 
 	if !exists {
-		return "", fmt.Errorf("record not found")
+		return 0, fmt.Errorf("record not found")
 	}
 
 	item := obj.(item)
 
 	if item.expires > 0 && time.Now().UnixNano() > item.expires {
 		smap.items.Delete(key)
-		return "", fmt.Errorf("record not found")
+		return 0, fmt.Errorf("record not found")
 	}
 
 	return item.data, nil

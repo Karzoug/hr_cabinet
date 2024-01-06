@@ -16,13 +16,13 @@ type S3FileRepository interface {
 type DBRepository interface {
 	ExistUser(ctx context.Context, userID int) (bool, error)
 	GetAuthnData(ctx context.Context, login string) (model.AuthnDAO, error)
-	ExistEmployee(ctx context.Context, workEmail string) (bool, error)
-	ChangePass(ctx context.Context, login, hash string) error
+	ExistEmployee(ctx context.Context, workEmail string) (bool, int, error)
+	ChangePass(ctx context.Context, userID int, hash string) error
 }
 
 type KeyRepository interface {
-	Set(ctx context.Context, key string, value string, duration time.Duration) error
-	Get(ctx context.Context, key string) (string, error)
+	Set(ctx context.Context, key string, value int, duration time.Duration) error
+	Get(ctx context.Context, key string) (int, error)
 	Delete(ctx context.Context, key string) error
 }
 
