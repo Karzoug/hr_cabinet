@@ -371,6 +371,7 @@ type Passport struct {
 	IssuedDate otypes.Date  `json:"issued_date"`
 	Number     string       `json:"number"`
 	Type       PassportType `json:"type"`
+	VisasCount uint         `json:"visas_count"`
 }
 
 func (p Passport) Validate(ctx context.Context, validator *vld.Validator) error {

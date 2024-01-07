@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/henvic/pgq"
 	"github.com/jackc/pgx/v5"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
@@ -20,7 +19,8 @@ func (s *storage) ListTrainings(ctx context.Context, userID uint64) ([]model.Tra
 	id, title_of_program, title_of_institution, 
 	cost, date_end, date_begin
 	FROM trainings
-	WHERE user_id = $1`, userID)
+	WHERE user_id = @user_id`,
+		pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -45,7 +45,8 @@ func (s *storage) GetTraining(ctx context.Context, trainingID uint64) (*model.Tr
 		id, title_of_program, title_of_institution, 
 		cost, date_end, date_begin 
 		FROM trainings
-		WHERE id = $1`, trainingID)
+		WHERE id = @training_id`,
+		pgx.NamedArgs{"training_id": trainingID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -61,16 +62,20 @@ func (s *storage) GetTraining(ctx context.Context, trainingID uint64) (*model.Tr
 func (s *storage) AddTraining(ctx context.Context, userID uint64, tr model.Training) (uint64, error) {
 	const op = "postrgresql user storage: add training"
 
-	qb := pgq.Insert("trainings").
-		Columns("user_id", "title_of_program", "title_of_institution", "cost", "date_end", "date_begin").
-		Values(userID, tr.Program, tr.IssuedInstitution, tr.Cost, tr.DateTo, tr.DateFrom).
-		Returning("id")
-	query, args, err := qb.SQL()
-	if err != nil {
-		return 0, fmt.Errorf("%s: %w", op, err)
-	}
+	row := s.DB.QueryRow(ctx, `INSERT INTO trainings
+		("user_id", "title_of_program", "title_of_institution", "cost", "date_end", "date_begin")
+		VALUES (@user_id, @title_of_program, @title_of_institution, @cost, @date_end, @date_begin)
+		RETURNING "id"`,
+		pgx.NamedArgs{
+			"user_id":              userID,
+			"title_of_program":     tr.Program,
+			"title_of_institution": tr.IssuedInstitution,
+			"cost":                 tr.Cost,
+			"date_end":             tr.DateTo,
+			"date_begin":           tr.DateFrom,
+		})
 
-	if err := s.DB.QueryRow(ctx, query, args...).Scan(&tr.ID); err != nil {
+	if err := row.Scan(&tr.ID); err != nil {
 		if strings.Contains(err.Error(), "23") && // Integrity Constraint Violation
 			strings.Contains(err.Error(), "user_id") {
 			return 0, fmt.Errorf("%s: the user does not exist: %w", op, repoerr.ErrRecordNotFound)

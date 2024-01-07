@@ -146,8 +146,8 @@ func convertEducationsToAPIEducations(eds []model.Education) []api.Education {
 
 func convertEducationToAPIEducation(med *model.Education) api.Education {
 	return api.Education{
-		DateFrom:          types.Date{med.DateFrom},
-		DateTo:            types.Date{med.DateTo},
+		DateFrom:          types.Date{Time: med.DateFrom},
+		DateTo:            types.Date{Time: med.DateTo},
 		ID:                &med.ID,
 		IssuedInstitution: med.IssuedInstitution,
 		Number:            med.Number,

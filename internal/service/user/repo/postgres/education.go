@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/henvic/pgq"
 	"github.com/jackc/pgx/v5"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
@@ -20,7 +19,8 @@ func (s *storage) ListEducations(ctx context.Context, userID uint64) ([]model.Ed
 	id, document_number, title_of_program, 
 	title_of_institution, year_of_end, year_of_begin 
 	FROM educations
-	WHERE user_id = $1`, userID)
+	WHERE user_id = @user_id`,
+		pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -40,12 +40,12 @@ func (s *storage) ListEducations(ctx context.Context, userID uint64) ([]model.Ed
 func (s *storage) GetEducation(ctx context.Context, educationID uint64) (*model.Education, error) {
 	const op = "postrgresql user storage: get education"
 
-	rows, err := s.DB.Query(ctx,
-		`SELECT 
+	rows, err := s.DB.Query(ctx, `SELECT 
 		id, document_number, title_of_program, 
 		title_of_institution, year_of_end, year_of_begin 
 		FROM educations
-		WHERE id = $1`, educationID)
+		WHERE id = @education_id`,
+		pgx.NamedArgs{"education_id": educationID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -61,16 +61,22 @@ func (s *storage) GetEducation(ctx context.Context, educationID uint64) (*model.
 func (s *storage) AddEducation(ctx context.Context, userID uint64, ed model.Education) (uint64, error) {
 	const op = "postrgresql user storage: add education"
 
-	qb := pgq.Insert("educations").
-		Columns("user_id", "document_number", "title_of_program", "title_of_institution", "year_of_end", "year_of_begin").
-		Values(userID, ed.Number, ed.Program, ed.IssuedInstitution, ed.DateTo, ed.DateFrom).
-		Returning("id")
-	query, args, err := qb.SQL()
-	if err != nil {
-		return 0, fmt.Errorf("%s: %w", op, err)
-	}
+	row := s.DB.QueryRow(ctx, `INSERT INTO educations
+		("user_id", "document_number", "title_of_program", 
+		"title_of_institution", "year_of_end", "year_of_begin") 
+		VALUES (@user_id, @education_number, @education_program, 
+		@education_issued_institution, @education_date_to, @education_date_from)
+		RETURNING "id"`,
+		pgx.NamedArgs{
+			"user_id":                      userID,
+			"education_number":             ed.Number,
+			"education_program":            ed.Program,
+			"education_issued_institution": ed.IssuedInstitution,
+			"education_date_to":            ed.DateTo,
+			"education_date_from":          ed.DateFrom,
+		})
 
-	if err := s.DB.QueryRow(ctx, query, args...).Scan(&ed.ID); err != nil {
+	if err := row.Scan(&ed.ID); err != nil {
 		if strings.Contains(err.Error(), "23") && // Integrity Constraint Violation
 			strings.Contains(err.Error(), "user_id") {
 			return 0, fmt.Errorf("%s: the user does not exist: %w", op, repoerr.ErrRecordNotFound)

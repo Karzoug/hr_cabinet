@@ -16,6 +16,8 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/handlers"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/middleware"
+	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
+	"github.com/Employee-s-file-cabinet/backend/pkg/logger/slog/sl"
 )
 
 const (
@@ -76,6 +78,18 @@ func New(cfg Config, envType env.Type,
 	srv.Handler = api.HandlerWithOptions(handler, api.ChiServerOptions{
 		BaseURL:    api.BaseURL,
 		BaseRouter: mux,
+		ErrorHandlerFunc: func(w http.ResponseWriter, r *http.Request, err error) {
+			logger.Debug("request error", sl.Error(err))
+
+			var msg string
+			var fmtErr *api.InvalidParamFormatError
+			if errors.As(err, &fmtErr) {
+				msg = "Invalid format for parameter: " + fmtErr.ParamName
+			} else {
+				msg = err.Error()
+			}
+			response.JSON(w, http.StatusBadRequest, api.Error{Message: msg})
+		},
 	})
 
 	return s, nil

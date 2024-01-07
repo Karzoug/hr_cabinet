@@ -17,7 +17,8 @@ const LimitListUsers = 10
 func (s *storage) Exist(ctx context.Context, userID uint64) (bool, error) {
 	const op = "postrgresql user storage: exist user"
 
-	row := s.DB.QueryRow(ctx, "SELECT COUNT(1) FROM users WHERE id = $1", userID)
+	row := s.DB.QueryRow(ctx, "SELECT COUNT(1) FROM users WHERE id = @user_id",
+		pgx.NamedArgs{"user_id": userID})
 	var count int
 	if err := row.Scan(&count); err != nil {
 		return false, fmt.Errorf("%s: %w", op, err)
@@ -43,7 +44,8 @@ func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 		FROM users		 
 		JOIN departments ON users.department_id = departments.id
 		JOIN positions ON users.position_id = positions.id
-	 	WHERE users.id = $1`, userID)
+	 	WHERE users.id = @user_id`,
+		pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}

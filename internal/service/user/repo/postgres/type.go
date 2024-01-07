@@ -112,3 +112,61 @@ type training struct {
 func convertTrainingToModelTraining(tr training) model.Training {
 	return model.Training(tr)
 }
+
+type passport struct {
+	ID         uint64       `db:"id"`
+	IssuedBy   string       `db:"issued_by"`
+	IssuedDate time.Time    `db:"issued_date"`
+	Number     string       `db:"number"`
+	Type       passportType `db:"type"`
+	VisasCount uint         `db:"visas_count"`
+}
+
+type passportType string
+
+const (
+	passportTypeExternal   passportType = "Заграничный"
+	passportTypeForeigners passportType = "Иностранного гражданина"
+	passportTypeInternal   passportType = "Внутренний"
+)
+
+func convertPassportToModelPassport(p passport) model.Passport {
+	var pt model.PassportType
+	switch p.Type {
+	case passportTypeExternal:
+		pt = model.PassportTypeExternal
+	case passportTypeInternal:
+		pt = model.PassportTypeInternal
+	case passportTypeForeigners:
+		pt = model.PassportTypeForeigners
+	}
+
+	return model.Passport{
+		ID:         p.ID,
+		IssuedBy:   p.IssuedBy,
+		IssuedDate: p.IssuedDate,
+		Number:     p.Number,
+		Type:       pt,
+		VisasCount: p.VisasCount,
+	}
+}
+
+func convertModelPassportToPassport(mp model.Passport) passport {
+	var t passportType
+	switch mp.Type {
+	case model.PassportTypeExternal:
+		t = passportTypeExternal
+	case model.PassportTypeInternal:
+		t = passportTypeInternal
+	case model.PassportTypeForeigners:
+		t = passportTypeForeigners
+	}
+
+	return passport{
+		ID:         mp.ID,
+		IssuedBy:   mp.IssuedBy,
+		IssuedDate: mp.IssuedDate,
+		Number:     mp.Number,
+		Type:       t,
+	}
+}

@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.22.0",
+        "version": "0.23.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -611,222 +611,6 @@
                 }
             ]
         },
-        "/users/{user_id}/passports/{passport_id}": {
-            "get": {
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/Passport"
-                                        },
-                                        {
-                                            "required": [
-                                                "id",
-                                                "number",
-                                                "issued_date",
-                                                "issued_by",
-                                                "type",
-                                                "has_scan"
-                                            ]
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "visas": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Visa"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "has_scan",
-                                                                    "number",
-                                                                    "issued_state",
-                                                                    "valid_to",
-                                                                    "valid_from",
-                                                                    "number_entries"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                },
-                                "examples": {
-                                    "Foreigners passport example": {
-                                        "value": {
-                                            "id": 75,
-                                            "visas": [
-                                                {
-                                                    "id": 3,
-                                                    "number": "33592222",
-                                                    "issued_state": "Russia",
-                                                    "valid_to": "2017-09-22",
-                                                    "valid_from": "2018-09-22",
-                                                    "number_entries": "mult",
-                                                    "has_scan": true
-                                                }
-                                            ],
-                                            "number": "33592222",
-                                            "issued_date": "2016-05-15",
-                                            "issued_by": "Washington D.C. U.S.A.",
-                                            "type": "foreigners",
-                                            "has_scan": false
-                                        }
-                                    },
-                                    "Internal passport example": {
-                                        "value": {
-                                            "id": 98,
-                                            "visas": [
-                                                {
-                                                    "id": 9,
-                                                    "number": "33592222",
-                                                    "issued_state": "Germany",
-                                                    "valid_to": "2017-09-22",
-                                                    "valid_from": "2017-10-08",
-                                                    "number_entries": "2",
-                                                    "has_scan": false
-                                                }
-                                            ],
-                                            "number": "4011364219",
-                                            "issued_date": "2016-05-15",
-                                            "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
-                                            "type": "internal",
-                                            "has_scan": false
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Employee passport response"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "404": {
-                        "description": "Employee/passport not found response"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        },
-                        "description": "The server returned an error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "getPassport",
-                "description": "Returns the employee's passport based on ID"
-            },
-            "delete": {
-                "responses": {
-                    "200": {
-                        "description": "Employee passport deleted response (empty)"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        },
-                        "description": "The server returned an error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "deletePassport",
-                "description": "Deletes the employee's passport based on ID"
-            },
-            "patch": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/Passport"
-                                    },
-                                    {
-                                        "minProperties": 1
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Employee passport updated response (empty)"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        },
-                        "description": "The server returned an error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "patchPassport",
-                "description": "Changes selected fields in the employee's passport structure based on ID"
-            },
-            "parameters": [
-                {
-                    "name": "user_id",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                },
-                {
-                    "name": "passport_id",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
         "/users/{user_id}/vacations/{vacation_id}": {
             "get": {
                 "responses": {
@@ -1304,154 +1088,6 @@
                 ],
                 "operationId": "listDepartments",
                 "description": "Returns a list of company departments with the number of employees"
-            }
-        },
-        "/users/{user_id}/passports": {
-            "get": {
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "allOf": [
-                                            {
-                                                "$ref": "#/components/schemas/Passport"
-                                            },
-                                            {
-                                                "required": [
-                                                    "id",
-                                                    "number",
-                                                    "issued_date",
-                                                    "issued_by",
-                                                    "type",
-                                                    "has_scan"
-                                                ]
-                                            },
-                                            {
-                                                "type": "object",
-                                                "properties": {
-                                                    "visas_count": {
-                                                        "description": "",
-                                                        "type": "integer"
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        },
-                        "description": "List employee passports"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "404": {
-                        "description": "Employee not found response"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        },
-                        "description": "The server returned an error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "listPassports",
-                "description": "Returns list of employee's passport"
-            },
-            "post": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/components/schemas/Passport"
-                                    },
-                                    {
-                                        "required": [
-                                            "number",
-                                            "issued_date",
-                                            "issued_by",
-                                            "type"
-                                        ]
-                                    }
-                                ]
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "parameters": [
-                    {
-                        "name": "user_id",
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "headers": {
-                            "Location": {
-                                "schema": {
-                                    "format": "uri",
-                                    "type": "string"
-                                }
-                            }
-                        },
-                        "description": "Passport added response, \nLocation header returns a new employee passport URL"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "409": {
-                        "description": "Add passport conflict response: the passport already exists"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        },
-                        "description": "The server returned an error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "addPassport",
-                "description": "Creates a new employee's passport"
             }
         },
         "/users/{user_id}/educations": {
@@ -2475,405 +2111,6 @@
                 "description": "Creates a new employe in the company"
             }
         },
-        "/users/{user_id}": {
-            "get": {
-                "parameters": [
-                    {
-                        "name": "expanded",
-                        "description": "whether to return detailed data on passports, contracts, vacations, etc. along with user data (default - no)",
-                        "schema": {
-                            "type": "boolean"
-                        },
-                        "in": "query",
-                        "required": false
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "required": [
-                                        "personal_data_processing"
-                                    ],
-                                    "allOf": [
-                                        {
-                                            "$ref": "#/components/schemas/FullUser"
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "description": "",
-                                                    "type": "integer"
-                                                },
-                                                "passports": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Passport"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "number",
-                                                                    "issued_date",
-                                                                    "issued_by",
-                                                                    "type",
-                                                                    "has_scan"
-                                                                ]
-                                                            },
-                                                            {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "visas": {
-                                                                        "description": "",
-                                                                        "type": "array",
-                                                                        "items": {
-                                                                            "allOf": [
-                                                                                {
-                                                                                    "$ref": "#/components/schemas/Visa"
-                                                                                },
-                                                                                {
-                                                                                    "required": [
-                                                                                        "id",
-                                                                                        "has_scan",
-                                                                                        "number",
-                                                                                        "issued_state",
-                                                                                        "valid_to",
-                                                                                        "valid_from",
-                                                                                        "number_entries"
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "contracts": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Contract"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "has_scan",
-                                                                    "date_from",
-                                                                    "type",
-                                                                    "number"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "vacations": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Vacation"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "date_to"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "educations": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Education"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "date_to",
-                                                                    "issued_institution",
-                                                                    "has_scan",
-                                                                    "program"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "trainings": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Training"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "date_to",
-                                                                    "cost",
-                                                                    "issued_institution",
-                                                                    "program",
-                                                                    "has_scan"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                },
-                                "examples": {
-                                    "Employee example (not expanded)": {
-                                        "value": {
-                                            "id": 5,
-                                            "first_name": "Alexander",
-                                            "last_name": "Pushkin",
-                                            "middle_name": "Sergeyevich",
-                                            "position": "Novelist",
-                                            "department": "Collegium of Foreign Affairs",
-                                            "email": "pushkin@dantes.net",
-                                            "phone_numbers": {
-                                                "mobile": "79999999999",
-                                                "office": "123456"
-                                            },
-                                            "grade": "1",
-                                            "working_model": "remote",
-                                            "date_of_birth": "1799-05-26",
-                                            "place_of_birth": "Москва",
-                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                                            "nationality": "Царская Россия",
-                                            "foreign_languages": [
-                                                "english",
-                                                "french"
-                                            ],
-                                            "military": {
-                                                "rank": "Старший лейтенант",
-                                                "speciality": "101182",
-                                                "category": "А2",
-                                                "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
-                                                "has_scan": true
-                                            },
-                                            "taxpayer": {
-                                                "number": "500100732259",
-                                                "has_scan": true
-                                            },
-                                            "insurance": {
-                                                "number": "08336732477",
-                                                "has_scan": true
-                                            },
-                                            "gender": "male"
-                                        }
-                                    },
-                                    "Foreigner example (expanded)": {
-                                        "value": {
-                                            "id": 93,
-                                            "first_name": "Улугбек",
-                                            "last_name": "Акрамов",
-                                            "middle_name": "Рашидович",
-                                            "position": "Строитель",
-                                            "department": "Инженерный отдел",
-                                            "email": "akramovur@rogakopyta.net",
-                                            "phone_numbers": {
-                                                "mobile": "79999999999",
-                                                "office": "123456"
-                                            },
-                                            "passports": [
-                                                {
-                                                    "id": 67,
-                                                    "number": "AZ0001055",
-                                                    "issued_date": "2010-05-23",
-                                                    "issued_by": "TOSHKENT SHAHAR IIBB",
-                                                    "type": "foreigners",
-                                                    "has_scan": true
-                                                }
-                                            ],
-                                            "contracts": [
-                                                {
-                                                    "date_from": "2013-08-01",
-                                                    "date_to": "2013-09-04",
-                                                    "type": "temporary",
-                                                    "number": "12345"
-                                                }
-                                            ],
-                                            "work_permit": {
-                                                "number": "77121034092",
-                                                "valid_to": "2013-09-05",
-                                                "has_scan": true
-                                            },
-                                            "grade": "2",
-                                            "working_model": "in-office",
-                                            "date_of_birth": "1994-05-26",
-                                            "place_of_birth": "Ташкент",
-                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
-                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
-                                            "nationality": "Узбекистан",
-                                            "gender": "male"
-                                        }
-                                    },
-                                    "Another expanded data": {
-                                        "value": {
-                                            "id": 9,
-                                            "first_name": "Сергей",
-                                            "last_name": "Сказочкин",
-                                            "middle_name": "Дмитриевич",
-                                            "gender": "male",
-                                            "position": "На дуде игрец",
-                                            "department": "Отдел развития фантазии",
-                                            "email": "sergei@fairy.com",
-                                            "date_of_birth": "1978-07-23",
-                                            "working_model": "hybrid",
-                                            "position_track": [
-                                                {
-                                                    "date_from": "2018-01-17",
-                                                    "date_to": "2018-03-17",
-                                                    "position": "Швец"
-                                                },
-                                                {
-                                                    "date_from": "2018-03-18",
-                                                    "date_to": "2018-05-18",
-                                                    "position": "Жнец"
-                                                },
-                                                {
-                                                    "date_from": "2018-05-19",
-                                                    "position": "На дуде игрец"
-                                                }
-                                            ],
-                                            "educations": [
-                                                {
-                                                    "id": 578,
-                                                    "has_scan": true,
-                                                    "number": "1030180354933",
-                                                    "date_to": "2015-01-01",
-                                                    "date_from": "2011-01-01",
-                                                    "issued_institution": "ФГБОУ ВО «Астраханский государственный университет им. В. Н. Татищева»",
-                                                    "program": "Связи с общественностью"
-                                                }
-                                            ],
-                                            "trainings": [
-                                                {
-                                                    "issued_institution": "Yandex Practicum",
-                                                    "program": "Advanced Go developer",
-                                                    "cost": 120000,
-                                                    "date_to": "2023-01-10",
-                                                    "date_from": "2023-07-10",
-                                                    "id": 95,
-                                                    "has_scan": true
-                                                }
-                                            ]
-                                        }
-                                    }
-                                }
-                            }
-                        },
-                        "description": "Employee response"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "404": {
-                        "description": "Employee not found response"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        },
-                        "description": "The server returned an error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "getUser",
-                "description": "Returns the employee full data based on ID"
-            },
-            "patch": {
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchFullUser"
-                            },
-                            "examples": {
-                                "Path example": {
-                                    "value": {
-                                        "grade": "2",
-                                        "registration_address": "Moscow, Tverskaya street, building 32, apartment 17"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Employee updated response (empty)"
-                    },
-                    "400": {
-                        "$ref": "#/components/responses/BadRequest"
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/UnauthorizedError"
-                    },
-                    "404": {
-                        "description": "Employee not found"
-                    },
-                    "default": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Error"
-                                }
-                            }
-                        },
-                        "description": "The server returned an error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
-                "operationId": "patchUser",
-                "description": "Changes selected fields in the user structure based on ID"
-            },
-            "parameters": [
-                {
-                    "name": "user_id",
-                    "description": "employee ID",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                }
-            ]
-        },
         "/users/{user_id}/scans/{scan_id}": {
             "get": {
                 "responses": {
@@ -3058,6 +2295,788 @@
             "parameters": [
                 {
                     "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/passports/{passport_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "expanded",
+                        "description": "whether to return visas along with user passport data (default - no)",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "in": "query",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Passport"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "number",
+                                                "issued_date",
+                                                "issued_by",
+                                                "type",
+                                                "has_scan",
+                                                "visas_count"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "visas": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Visa"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "has_scan",
+                                                                    "number",
+                                                                    "issued_state",
+                                                                    "valid_to",
+                                                                    "valid_from",
+                                                                    "number_entries"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "Internal passport example": {
+                                        "value": {
+                                            "id": 98,
+                                            "number": "4011364219",
+                                            "issued_date": "2016-05-15",
+                                            "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
+                                            "type": "internal",
+                                            "has_scan": false,
+                                            "visas_count": 1
+                                        }
+                                    },
+                                    "Foreigners passport example (expanded)": {
+                                        "value": {
+                                            "id": 75,
+                                            "visas": [
+                                                {
+                                                    "id": 3,
+                                                    "number": "33592222",
+                                                    "issued_state": "Russia",
+                                                    "valid_to": "2017-09-22",
+                                                    "valid_from": "2018-09-22",
+                                                    "number_entries": "mult",
+                                                    "has_scan": true
+                                                }
+                                            ],
+                                            "number": "33592222",
+                                            "issued_date": "2016-05-15",
+                                            "issued_by": "Washington D.C. U.S.A.",
+                                            "type": "foreigners",
+                                            "has_scan": false,
+                                            "visas_count": 1
+                                        }
+                                    },
+                                    "Internal passport example (expanded)": {
+                                        "value": {
+                                            "id": 98,
+                                            "visas": [
+                                                {
+                                                    "id": 9,
+                                                    "number": "33592222",
+                                                    "issued_state": "Germany",
+                                                    "valid_to": "2017-09-22",
+                                                    "valid_from": "2017-10-08",
+                                                    "number_entries": "2",
+                                                    "has_scan": false
+                                                }
+                                            ],
+                                            "number": "4011364219",
+                                            "issued_date": "2016-05-15",
+                                            "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
+                                            "type": "internal",
+                                            "has_scan": false,
+                                            "visas_count": 1
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee passport response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee/passport not found response"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "The server returned an error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getPassport",
+                "description": "Returns the employee's passport based on ID"
+            },
+            "delete": {
+                "responses": {
+                    "200": {
+                        "description": "Employee passport deleted response (empty)"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "The server returned an error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "deletePassport",
+                "description": "Deletes the employee's passport based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Passport"
+                                    },
+                                    {
+                                        "minProperties": 1
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee passport updated response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "The server returned an error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchPassport",
+                "description": "Changes selected fields in the employee's passport structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                },
+                {
+                    "name": "passport_id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users/{user_id}/passports": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "allOf": [
+                                            {
+                                                "$ref": "#/components/schemas/Passport"
+                                            },
+                                            {
+                                                "required": [
+                                                    "id",
+                                                    "number",
+                                                    "issued_date",
+                                                    "issued_by",
+                                                    "type",
+                                                    "has_scan",
+                                                    "visas_count"
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        },
+                        "description": "List employee passports"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found response"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "The server returned an error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "listPassports",
+                "description": "Returns list of employee's passport"
+            },
+            "post": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Passport"
+                                    },
+                                    {
+                                        "required": [
+                                            "number",
+                                            "issued_date",
+                                            "issued_by",
+                                            "type"
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "headers": {
+                            "Location": {
+                                "schema": {
+                                    "format": "uri",
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "description": "Passport added response, \nLocation header returns a new employee passport URL"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "409": {
+                        "description": "Add passport conflict response: the passport already exists"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "The server returned an error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "addPassport",
+                "description": "Creates a new employee's passport"
+            }
+        },
+        "/users/{user_id}": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "expanded",
+                        "description": "whether to return detailed data on passports, contracts, vacations, etc. along with user data (default - no)",
+                        "schema": {
+                            "type": "boolean"
+                        },
+                        "in": "query",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "required": [
+                                        "personal_data_processing"
+                                    ],
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/FullUser"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "",
+                                                    "type": "integer"
+                                                },
+                                                "passports": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Passport"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "number",
+                                                                    "issued_date",
+                                                                    "issued_by",
+                                                                    "type",
+                                                                    "has_scan",
+                                                                    "visas_count"
+                                                                ]
+                                                            },
+                                                            {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "visas": {
+                                                                        "description": "",
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "allOf": [
+                                                                                {
+                                                                                    "$ref": "#/components/schemas/Visa"
+                                                                                },
+                                                                                {
+                                                                                    "required": [
+                                                                                        "id",
+                                                                                        "has_scan",
+                                                                                        "number",
+                                                                                        "issued_state",
+                                                                                        "valid_to",
+                                                                                        "valid_from",
+                                                                                        "number_entries"
+                                                                                    ]
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "contracts": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Contract"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "has_scan",
+                                                                    "date_from",
+                                                                    "type",
+                                                                    "number"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "vacations": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Vacation"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "date_from",
+                                                                    "date_to"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "educations": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Education"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "date_from",
+                                                                    "date_to",
+                                                                    "issued_institution",
+                                                                    "has_scan",
+                                                                    "program"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                                "trainings": {
+                                                    "description": "",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "allOf": [
+                                                            {
+                                                                "$ref": "#/components/schemas/Training"
+                                                            },
+                                                            {
+                                                                "required": [
+                                                                    "id",
+                                                                    "date_from",
+                                                                    "date_to",
+                                                                    "cost",
+                                                                    "issued_institution",
+                                                                    "program",
+                                                                    "has_scan"
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
+                                "examples": {
+                                    "Employee example (not expanded)": {
+                                        "value": {
+                                            "id": 5,
+                                            "first_name": "Alexander",
+                                            "last_name": "Pushkin",
+                                            "middle_name": "Sergeyevich",
+                                            "position": "Novelist",
+                                            "department": "Collegium of Foreign Affairs",
+                                            "email": "pushkin@dantes.net",
+                                            "phone_numbers": {
+                                                "mobile": "79999999999",
+                                                "office": "123456"
+                                            },
+                                            "grade": "1",
+                                            "working_model": "remote",
+                                            "date_of_birth": "1799-05-26",
+                                            "place_of_birth": "Москва",
+                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                                            "nationality": "Царская Россия",
+                                            "foreign_languages": [
+                                                "english",
+                                                "french"
+                                            ],
+                                            "military": {
+                                                "rank": "Старший лейтенант",
+                                                "speciality": "101182",
+                                                "category": "А2",
+                                                "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
+                                                "has_scan": true
+                                            },
+                                            "taxpayer": {
+                                                "number": "500100732259",
+                                                "has_scan": true
+                                            },
+                                            "insurance": {
+                                                "number": "08336732477",
+                                                "has_scan": true
+                                            },
+                                            "gender": "male"
+                                        }
+                                    },
+                                    "Foreigner example (expanded)": {
+                                        "value": {
+                                            "id": 93,
+                                            "first_name": "Улугбек",
+                                            "last_name": "Акрамов",
+                                            "middle_name": "Рашидович",
+                                            "position": "Строитель",
+                                            "department": "Инженерный отдел",
+                                            "email": "akramovur@rogakopyta.net",
+                                            "phone_numbers": {
+                                                "mobile": "79999999999",
+                                                "office": "123456"
+                                            },
+                                            "passports": [
+                                                {
+                                                    "id": 67,
+                                                    "number": "AZ0001055",
+                                                    "issued_date": "2010-05-23",
+                                                    "issued_by": "TOSHKENT SHAHAR IIBB",
+                                                    "type": "foreigners",
+                                                    "has_scan": true,
+                                                    "visas_count": 1
+                                                }
+                                            ],
+                                            "contracts": [
+                                                {
+                                                    "date_from": "2013-08-01",
+                                                    "date_to": "2013-09-04",
+                                                    "type": "temporary",
+                                                    "number": "12345"
+                                                }
+                                            ],
+                                            "work_permit": {
+                                                "number": "77121034092",
+                                                "valid_to": "2013-09-05",
+                                                "has_scan": true
+                                            },
+                                            "grade": "2",
+                                            "working_model": "in-office",
+                                            "date_of_birth": "1994-05-26",
+                                            "place_of_birth": "Ташкент",
+                                            "registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                                            "residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                                            "nationality": "Узбекистан",
+                                            "gender": "male"
+                                        }
+                                    },
+                                    "Another expanded data": {
+                                        "value": {
+                                            "id": 9,
+                                            "first_name": "Сергей",
+                                            "last_name": "Сказочкин",
+                                            "middle_name": "Дмитриевич",
+                                            "gender": "male",
+                                            "position": "На дуде игрец",
+                                            "department": "Отдел развития фантазии",
+                                            "email": "sergei@fairy.com",
+                                            "date_of_birth": "1978-07-23",
+                                            "working_model": "hybrid",
+                                            "position_track": [
+                                                {
+                                                    "date_from": "2018-01-17",
+                                                    "date_to": "2018-03-17",
+                                                    "position": "Швец"
+                                                },
+                                                {
+                                                    "date_from": "2018-03-18",
+                                                    "date_to": "2018-05-18",
+                                                    "position": "Жнец"
+                                                },
+                                                {
+                                                    "date_from": "2018-05-19",
+                                                    "position": "На дуде игрец"
+                                                }
+                                            ],
+                                            "educations": [
+                                                {
+                                                    "id": 578,
+                                                    "has_scan": true,
+                                                    "number": "1030180354933",
+                                                    "date_to": "2015-01-01",
+                                                    "date_from": "2011-01-01",
+                                                    "issued_institution": "ФГБОУ ВО «Астраханский государственный университет им. В. Н. Татищева»",
+                                                    "program": "Связи с общественностью"
+                                                }
+                                            ],
+                                            "trainings": [
+                                                {
+                                                    "issued_institution": "Yandex Practicum",
+                                                    "program": "Advanced Go developer",
+                                                    "cost": 120000,
+                                                    "date_to": "2023-01-10",
+                                                    "date_from": "2023-07-10",
+                                                    "id": 95,
+                                                    "has_scan": true
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Employee response"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found response"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "The server returned an error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "getUser",
+                "description": "Returns the employee full data based on ID"
+            },
+            "patch": {
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchFullUser"
+                            },
+                            "examples": {
+                                "Path example": {
+                                    "value": {
+                                        "grade": "2",
+                                        "registration_address": "Moscow, Tverskaya street, building 32, apartment 17"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Employee updated response (empty)"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/UnauthorizedError"
+                    },
+                    "404": {
+                        "description": "Employee not found"
+                    },
+                    "default": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        },
+                        "description": "The server returned an error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "operationId": "patchUser",
+                "description": "Changes selected fields in the user structure based on ID"
+            },
+            "parameters": [
+                {
+                    "name": "user_id",
+                    "description": "employee ID",
                     "schema": {
                         "type": "integer"
                     },
@@ -3626,57 +3645,6 @@
                     "has_scan": true
                 }
             },
-            "Passport": {
-                "description": "",
-                "required": [],
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "issued_date": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "issued_by": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "type": {
-                        "description": "",
-                        "default": "internal",
-                        "enum": [
-                            "internal",
-                            "external",
-                            "foreigners"
-                        ],
-                        "type": "string"
-                    },
-                    "id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "has_scan": {
-                        "description": "",
-                        "type": "boolean",
-                        "readOnly": true
-                    }
-                },
-                "example": {
-                    "id": 547,
-                    "has_scan": false,
-                    "number": "33592222",
-                    "issued_date": "2016-05-15",
-                    "issued_by": "Washington D.C. U.S.A.",
-                    "type": "foreigners"
-                }
-            },
             "ChangePasswordRequest": {
                 "description": "",
                 "required": [
@@ -3978,6 +3946,61 @@
                         "number": "08336732477",
                         "has_scan": true
                     }
+                }
+            },
+            "Passport": {
+                "description": "",
+                "required": [],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_date": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "issued_by": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "",
+                        "default": "internal",
+                        "enum": [
+                            "internal",
+                            "external",
+                            "foreigners"
+                        ],
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "visas_count": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "id": 547,
+                    "has_scan": false,
+                    "number": "33592222",
+                    "issued_date": "2016-05-15",
+                    "issued_by": "Washington D.C. U.S.A.",
+                    "type": "foreigners"
                 }
             }
         },

@@ -147,8 +147,8 @@ func convertTrainingsToAPITrainings(eds []model.Training) []api.Training {
 func convertTrainingToAPITraining(mtr *model.Training) api.Training {
 	return api.Training{
 		Cost:              (api.Money)(mtr.Cost),
-		DateFrom:          types.Date{mtr.DateFrom},
-		DateTo:            types.Date{mtr.DateTo},
+		DateFrom:          types.Date{Time: mtr.DateFrom},
+		DateTo:            types.Date{Time: mtr.DateTo},
 		ID:                &mtr.ID,
 		IssuedInstitution: mtr.IssuedInstitution,
 		Program:           mtr.Program,

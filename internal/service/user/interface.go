@@ -19,6 +19,10 @@ type userRepository interface {
 	ListTrainings(ctx context.Context, userID uint64) ([]model.Training, error)
 	GetTraining(ctx context.Context, trainingID uint64) (*model.Training, error)
 	AddTraining(ctx context.Context, userID uint64, tr model.Training) (uint64, error)
+
+	ListPassports(ctx context.Context, userID uint64) ([]model.Passport, error)
+	GetPassport(ctx context.Context, passportID uint64) (*model.Passport, error)
+	AddPassport(ctx context.Context, userID uint64, p model.Passport) (uint64, error)
 }
 
 type s3FileRepository interface {
