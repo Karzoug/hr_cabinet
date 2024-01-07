@@ -41,3 +41,7 @@ func (s *service) Login(ctx context.Context, login, password string) (string, er
 func (s *service) Expires() time.Time {
 	return s.tokenManager.Expires()
 }
+
+func (s *service) Payload(token string) (*token.Payload, error) {
+	return s.tokenManager.Verify(token)
+}

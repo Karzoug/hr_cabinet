@@ -6,10 +6,12 @@ import (
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model/token"
+	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/repo/sqlxadapter"
 )
 
 type authRepository interface {
 	Get(ctx context.Context, login string) (model.AuthnDAO, error)
+	PolicyAdapter() *sqlxadapter.Adapter
 }
 
 // passwordVerification абстракция хеширования и проверки паролей.

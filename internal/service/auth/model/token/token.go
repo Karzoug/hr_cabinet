@@ -11,8 +11,8 @@ var (
 )
 
 type Data struct {
-	UserID int
-	RoleID int
+	UserID string
+	RoleID string
 }
 
 // Payload содержит полезную нагрузку для токена.
@@ -35,8 +35,4 @@ func (p *Payload) Valid() error {
 		return ErrExpiredToken
 	}
 	return nil
-}
-
-func (p *Payload) GetData() Data {
-	return p.Data
 }

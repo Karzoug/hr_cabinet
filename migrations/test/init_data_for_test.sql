@@ -3,6 +3,7 @@ BEGIN;
 
 TRUNCATE TABLE users RESTART IDENTITY CASCADE;
 TRUNCATE TABLE authorizations RESTART IDENTITY CASCADE;
+TRUNCATE TABLE educations RESTART IDENTITY CASCADE;
 TRUNCATE TABLE roles RESTART IDENTITY CASCADE;
 TRUNCATE TABLE organization_structure RESTART IDENTITY CASCADE;
 TRUNCATE TABLE positions RESTART IDENTITY CASCADE;
@@ -70,11 +71,32 @@ VALUES  (1, 1, '$2a$12$rrNnco5DWbaFxKMq457MouwkzL/R2XFoe1MrpoX9bN0ms09Zgk6ee', 1
         (9, 9, '$2a$12$rrNnco5DWbaFxKMq457MouwkzL/R2XFoe1MrpoX9bN0ms09Zgk6ee', 3),
         (10, 10, '$2a$12$rrNnco5DWbaFxKMq457MouwkzL/R2XFoe1MrpoX9bN0ms09Zgk6ee', 3);
 
+-- Insert roles:
+-- ptype = 'p'
+-- v0 - 'sub' from policy_definition = role_id
+-- v1 - 'obj' from policy_definition = REST resource (endpoint)
+-- v2 - 'act' from policy_definition = available HTTP methods for this role
 INSERT INTO public.policies (ptype, v0, v1, v2)
-VALUES ('p', 'employee', '/users/{user_id}', 'GET'),
-       ('p', 'hr', '/users', '*'),
-       ('p', 'hr', '/users/*', '*'),
-       ('p', 'admin', '/accounts', '*');
+VALUES ('p', '4', '/users/{user_id}', 'GET'),
+       ('p', '2', '/users', '*'),
+       ('p', '2', '/users/*', '*'),
+       ('p', '1', '/accounts', '*');
+
+-- Insert users:
+-- ptype = 'g'
+-- v0 - user_id
+-- v1- role_id
+INSERT INTO public.policies (ptype, v0, v1)
+VALUES ('g', '1', '1'),
+       ('g', '2', '2'),
+       ('g', '3', '3'),
+       ('g', '4', '4'),
+       ('g', '5', '4'),
+       ('g', '6', '4'),
+       ('g', '7', '2'),
+       ('g', '8', '2'),
+       ('g', '9', '3'),
+       ('g', '10', '3');
 
 -- commit the change
 COMMIT;

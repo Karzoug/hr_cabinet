@@ -6,10 +6,10 @@ import (
 
 	"github.com/muonsoft/validation/validator"
 
-	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
+	srvErrors "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
-	autherr "github.com/Employee-s-file-cabinet/backend/internal/service/auth"
+	authErrors "github.com/Employee-s-file-cabinet/backend/internal/service/auth"
 )
 
 // @Accept  application/json
@@ -23,30 +23,31 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	var auth api.Auth
 	err := request.DecodeJSON(w, r, &auth)
 	if err != nil {
-		srverr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		srvErrors.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
 	if err := auth.Validate(ctx, validator.Instance()); err != nil {
 		var _ api.BadRequestError
 		w.WriteHeader(http.StatusBadRequest)
-		srverr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		srvErrors.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
 	}
 
 	token, err := h.authService.Login(ctx, auth.Login, auth.Password)
 	if err != nil {
 		switch {
-		case errors.Is(err, autherr.ErrForbidden):
-			srverr.ErrorMessage(w, r,
+		case errors.Is(err, authErrors.ErrForbidden):
+			srvErrors.ErrorMessage(w, r,
 				http.StatusForbidden,
-				srverr.ErrLoginFailure.Error(), nil)
+				srvErrors.ErrLoginFailure.Error(), nil)
 		default:
-			srverr.ReportError(r, err, false)
-			srverr.ErrorMessage(w, r,
+			srvErrors.ReportError(r, err, false)
+			srvErrors.ErrorMessage(w, r,
 				http.StatusInternalServerError,
 				http.StatusText(http.StatusInternalServerError), nil)
 		}
+		return
 	}
 
 	cookie := &http.Cookie{

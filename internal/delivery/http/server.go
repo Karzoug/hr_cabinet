@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"time"
 
+	_ "github.com/jackc/pgx/stdlib" // use as driver for sqlx
+
 	"github.com/go-chi/chi/v5"
 	"github.com/jub0bs/fcors"
 
@@ -56,9 +58,12 @@ func New(cfg Config, envType env.Type,
 	mux := chi.NewRouter()
 	mux.NotFound(srvErrors.NotFound)
 	mux.MethodNotAllowed(srvErrors.MethodNotAllowed)
+
+	// Add middlewares
 	mux.Use(middleware.LogAccess)
 	mux.Use(middleware.RecoverPanic)
 
+	// CORS middleware
 	switch envType {
 	case env.Development, env.Testing:
 		cors, err := fcors.AllowAccessWithCredentials(
@@ -74,6 +79,18 @@ func New(cfg Config, envType env.Type,
 		mux.Use(cors)
 	default:
 	}
+
+	// Authorization middleware
+	e, err := authService.PolicyEnforcer()
+	if err != nil {
+		return nil, fmt.Errorf("failed to create authorization middleware: %w", err)
+	}
+
+	authz := middleware.Authorizer{
+		TokenManager: authService,
+		Enforcer:     e,
+	}
+	mux.Use(authz.AuthorizeMiddleware)
 
 	srv.Handler = api.HandlerWithOptions(handler, api.ChiServerOptions{
 		BaseURL:    api.BaseURL,

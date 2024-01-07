@@ -56,3 +56,7 @@ test-env-up: ## Запуск тестового окружения.
 .PHONY: test-env-down
 test-env-down: ## Останов и очистка тестового окружения.
 	docker compose -f 'docker-compose-test.yaml' down -v
+
+.PHONY: run-tests
+run-tests: ## Запуск unit-тестов
+	go test -count 1 -coverpkg=./... -race -v ./...

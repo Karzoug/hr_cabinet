@@ -1,26 +1,27 @@
 package token_test
 
 import (
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/brianvoe/gofakeit/v6"
 	"github.com/stretchr/testify/require"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model/token"
-	"github.com/Employee-s-file-cabinet/backend/pkg/rndtest"
 )
 
 func TestPasetoMaker(t *testing.T) {
 	data := token.Data{
-		UserID: rndtest.Int(1, 100),
-		RoleID: rndtest.Int(1, 100),
+		UserID: gofakeit.Numerify("###"),
+		RoleID: gofakeit.Numerify("###"),
 	}
 	duration := time.Minute
 
 	var maker *token.PasetoMaker
 	var err error
 	t.Run("create token maker", func(t *testing.T) {
-		maker, err = token.NewPasetoMaker(rndtest.String(32), duration)
+		maker, err = token.NewPasetoMaker(gofakeit.Lexify(strings.Repeat("?", 32)), duration)
 		require.NoError(t, err)
 	})
 
@@ -36,19 +37,19 @@ func TestPasetoMaker(t *testing.T) {
 		require.NoError(t, err)
 		require.NotEmpty(t, payload)
 
-		require.Equal(t, data, payload.GetData())
+		require.Equal(t, data, payload.Data)
 	})
 }
 
 func TestExpiredPasetoToken(t *testing.T) {
 	var err error
 
-	maker, err := token.NewPasetoMaker(rndtest.String(32), -time.Minute)
+	maker, err := token.NewPasetoMaker(gofakeit.Lexify(strings.Repeat("?", 32)), -time.Minute)
 	require.NoError(t, err)
 
 	data := token.Data{
-		UserID: rndtest.Int(1, 100),
-		RoleID: rndtest.Int(1, 100),
+		UserID: gofakeit.Numerify("###"),
+		RoleID: gofakeit.Numerify("###"),
 	}
 
 	var testToken string

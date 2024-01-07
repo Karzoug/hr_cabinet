@@ -4,6 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/casbin/casbin/v2"
+
+	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model/token"
 	umodel "github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
 
@@ -29,4 +32,6 @@ type UserService interface {
 type AuthService interface {
 	Login(ctx context.Context, login, password string) (string, error)
 	Expires() time.Time
+	Payload(token string) (*token.Payload, error)
+	PolicyEnforcer() (*casbin.Enforcer, error)
 }
