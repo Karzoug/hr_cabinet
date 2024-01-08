@@ -17,8 +17,7 @@ import (
 var (
 	buildVersion = "N/A"
 	buildDate    = "N/A"
-
-	envMode = config.EnvProduction
+	buildCommit  = "N/A"
 )
 
 func main() {
@@ -28,13 +27,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	logger := buildLogger(cfg.LogLevel, envMode)
+	logger := buildLogger(cfg.LogLevel, cfg.EnvType)
 
 	logger.Info(
 		"starting app",
-		slog.String("env", envMode.String()),
+		slog.String("environment type", cfg.EnvType.String()),
 		slog.String("build version", buildVersion),
 		slog.String("build date", buildDate),
+		slog.String("build commit", buildCommit),
 	)
 
 	ctx, stop := signal.NotifyContext(context.Background(),

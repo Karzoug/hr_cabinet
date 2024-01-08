@@ -19,3 +19,7 @@ vendor/
 
 # docker files
 pg_data
+
+# binaries
+server
+*.exe

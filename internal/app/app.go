@@ -8,41 +8,71 @@ import (
 	"golang.org/x/sync/errgroup"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/config"
-	"github.com/Employee-s-file-cabinet/backend/internal/server"
-	"github.com/Employee-s-file-cabinet/backend/internal/storage/db/postgresql"
-	"github.com/Employee-s-file-cabinet/backend/internal/storage/s3"
+	httpsrv "github.com/Employee-s-file-cabinet/backend/internal/delivery/http"
+	repopg "github.com/Employee-s-file-cabinet/backend/internal/repo/postgresql"
+	repos3 "github.com/Employee-s-file-cabinet/backend/internal/repo/s3"
 	"github.com/Employee-s-file-cabinet/backend/internal/storage/smap"
 	"github.com/Employee-s-file-cabinet/backend/internal/utils/email"
-	"github.com/Employee-s-file-cabinet/backend/internal/utils/token"
+	"github.com/Employee-s-file-cabinet/backend/internal/service/auth"
+	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model/password"
+	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model/token"
+	authdb "github.com/Employee-s-file-cabinet/backend/internal/service/auth/repo/postgres"
+	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
+	userdb "github.com/Employee-s-file-cabinet/backend/internal/service/user/repo/postgres"
+	users3 "github.com/Employee-s-file-cabinet/backend/internal/service/user/repo/s3"
 )
 
-func Run(pctx context.Context, cfg *config.Config, logger *slog.Logger) error {
-	db, err := postgresql.NewStorage(cfg.PG)
+func Run(ctx context.Context, cfg *config.Config, logger *slog.Logger) error {
+	db, err := repopg.New(ctx, cfg.PG)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
 
-	s3Storage, err := s3.New(pctx, cfg.S3)
+	s3Client, err := repos3.NewClient(cfg.S3)
 	if err != nil {
 		return err
 	}
 
-	tokenManager, err := token.NewPasetoMaker(cfg.HTTP.Token.SecretKey, cfg.HTTP.Token.Lifetime)
+	// create user service
+	userDBRepo, err := userdb.NewStorage(db)
 	if err != nil {
 		return err
 	}
+	userFileRepo, err := users3.New(ctx, s3Client)
+	if err != nil {
+		return err
+	}
+	userService := user.NewService(userDBRepo, userFileRepo)
 
+	// create auth service
+	tokenMng, err := token.NewPasetoMaker(cfg.HTTP.Token.SecretKey, cfg.HTTP.Token.Lifetime)
+	if err != nil {
+		return err
+	}
+	authDBRepo, err := authdb.NewStorage(db)
+	if err != nil {
+		return err
+	}
+	authService := auth.NewService(authDBRepo, password.New(), tokenMng)
+
+	// merged --->
+	// TODO: время перенести в конфиг
 	keyStorage := smap.New(time.Minute)
 	defer keyStorage.Close()
-
+	// TODO: добавить MailService interface
 	mail := email.New(cfg.Mail)
+	//<---
 
-	srv := server.New(cfg.HTTP, db, s3Storage, tokenManager, keyStorage, mail, logger)
+	// TODO: keyStorage и mail передавались в параметры srv
+	srv, err := httpsrv.New(cfg.HTTP, cfg.EnvType, userService, authService, logger)
+	if err != nil {
+		return err
+	}
 
-	eg, ctx := errgroup.WithContext(pctx)
+	eg, ectx := errgroup.WithContext(ctx)
 	eg.Go(func() error {
-		return srv.Run(ctx)
+		return srv.Run(ectx)
 	})
 
 	return eg.Wait()

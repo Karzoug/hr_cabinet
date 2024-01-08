@@ -1,0 +1,16 @@
+[Unit]
+Description=Employee's cabinet service
+After=network.target
+
+[Service]
+User=root
+Type=simple
+Restart=always
+RestartSec=5s
+WorkingDirectory=/srv
+ExecStart=/srv/ecabinet
+StandardOutput=inherit
+EnvironmentFile=/srv/.env
+
+[Install]
+WantedBy=multi-user.target
