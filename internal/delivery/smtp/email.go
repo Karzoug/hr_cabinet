@@ -1,4 +1,4 @@
-package email
+package smtp
 
 import (
 	"crypto/tls"
@@ -9,31 +9,32 @@ import (
 	"sync"
 )
 
-type Mail struct {
+type email struct {
 	smtpHost  string
+	smtpPort  int
 	from      *mail.Address
 	auth      smtp.Auth
 	tlsconfig *tls.Config
 }
 
-func New(cfg Config) *Mail {
-	var m Mail
+func New(cfg Config) *email {
+	var m email
 	m.smtpHost = cfg.SMTPHost
-	m.from = &mail.Address{Name: cfg.Name, Address: cfg.FromMail}
+	m.smtpPort = cfg.SMTPPort
+	m.from = &mail.Address{Name: cfg.Name, Address: cfg.From}
 	m.auth = smtp.PlainAuth("", cfg.Login, cfg.AppPass, m.smtpHost)
 	m.tlsconfig = &tls.Config{
-		InsecureSkipVerify: true,
-		ServerName:         m.smtpHost,
+		ServerName: m.smtpHost,
 	}
 	return &m
 }
 
-func (m *Mail) SendSSLMail(subject, msg, recipient string) error {
+func (m *email) SendMessage(recipient, subject, msg string) error {
 	to := mail.Address{Name: "", Address: recipient}
-	// Setup message
+
 	message := fmt.Sprintf("From: %s\nTo: %s\nSubject: %s\n\n%s", m.from.String(), to.String(), subject, msg)
 
-	conn, err := tls.Dial("tcp", fmt.Sprintf("%s:%d", m.smtpHost, 465), m.tlsconfig)
+	conn, err := tls.Dial("tcp", fmt.Sprintf("%s:%d", m.smtpHost, m.smtpPort), m.tlsconfig)
 	if err != nil {
 		log.Printf("conn error sending mail %v", err)
 		return err
@@ -44,12 +45,12 @@ func (m *Mail) SendSSLMail(subject, msg, recipient string) error {
 		log.Printf("NewClient error sending mail %v", err)
 		return err
 	}
-	// Auth
+
 	if err = c.Auth(m.auth); err != nil {
 		log.Printf("auth error sending mail %v", err)
 		return err
 	}
-	// To && From
+
 	if err = c.Mail(m.from.Address); err != nil {
 		log.Printf("mail error sending mail %v", err)
 		return err
@@ -59,7 +60,7 @@ func (m *Mail) SendSSLMail(subject, msg, recipient string) error {
 		log.Printf("rcpt error sending mail %v", err)
 		return err
 	}
-	// Data
+
 	w, err := c.Data()
 	if err != nil {
 		log.Printf("data error sending mail %v", err)
@@ -83,15 +84,15 @@ func (m *Mail) SendSSLMail(subject, msg, recipient string) error {
 	return nil
 }
 
-// SendMails - concurrently sending mails to multiple recipients.
-func (m *Mail) SendMails(subject, msg string, recipients []string) {
-	var mailwg sync.WaitGroup
-	mailwg.Add(len(recipients))
+// SendMessageToMany - concurrently sending mails to multiple recipients.
+func (m *email) SendMessageToMany(subject, msg string, recipients []string) {
+	var mailWG sync.WaitGroup
+	mailWG.Add(len(recipients))
 	for _, v := range recipients {
 		go func(recipient string) {
-			defer mailwg.Done()
-			m.SendSSLMail(subject, msg, recipient)
+			defer mailWG.Done()
+			m.SendMessage(subject, msg, recipient)
 		}(v)
 	}
-	mailwg.Wait()
+	mailWG.Wait()
 }

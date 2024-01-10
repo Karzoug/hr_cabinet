@@ -7,6 +7,8 @@ import (
 	"github.com/casbin/casbin/v2"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model/token"
+	"github.com/Employee-s-file-cabinet/backend/internal/service/recovery/model"
+	rmodel "github.com/Employee-s-file-cabinet/backend/internal/service/recovery/model"
 	umodel "github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
 
@@ -34,4 +36,12 @@ type AuthService interface {
 	Expires() time.Time
 	Payload(token string) (*token.Payload, error)
 	PolicyEnforcer() (*casbin.Enforcer, error)
+}
+
+type PasswordRecoveryService interface {
+	GetUser(ctx context.Context, login string) (*rmodel.User, error)
+	GenerateKey(ctx context.Context, userID int) (string, error)
+	SendRecoveryMessage(ctx context.Context, data model.MessageData) error
+	Check(ctx context.Context, key string) error
+	ChangePassword(ctx context.Context, key, newPassword string) error
 }

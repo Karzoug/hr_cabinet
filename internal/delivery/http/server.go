@@ -37,6 +37,7 @@ type server struct {
 func New(cfg Config, envType env.Type,
 	userService handlers.UserService,
 	authService handlers.AuthService,
+	passwordRecoveryService handlers.PasswordRecoveryService,
 	logger *slog.Logger) (*server, error) {
 	logger = logger.With(slog.String("from", "http-server"))
 
@@ -53,7 +54,7 @@ func New(cfg Config, envType env.Type,
 		logger:     logger,
 	}
 
-	handler := handlers.New(userService, authService, logger)
+	handler := handlers.New(userService, authService, passwordRecoveryService, logger)
 
 	mux := chi.NewRouter()
 	mux.NotFound(srvErrors.NotFound)

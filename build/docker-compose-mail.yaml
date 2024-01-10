@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  mailhog:
+    image: mailhog/mailhog
+    restart: always
+    environment:
+      MH_SMTP_BIND_ADDR: "0.0.0.0:1025"
+      MH_UI_BIND_ADDR: "0.0.0.0:8025"
+      MH_STORAGE: "maildir"
+    volumes:
+      - maildir:/maildir
+    ports:
+      - ${MAIL_SMTP_PORT}:1025
+      - ${MAIL_UI_PORT}:8025
+
+volumes:
+  maildir:

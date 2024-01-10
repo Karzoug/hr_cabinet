@@ -1,9 +1,10 @@
-package email
+package smtp
 
 type Config struct {
 	Name     string `env:"NAME" env-default:"Картотека сотрудника"`
-	FromMail string `env:"FROM_MAIL"`
+	From     string `env:"FROM"`
 	Login    string `env:"LOGIN"`
 	AppPass  string `env:"APP_PASS"`
-	SMTPHost string `env:"SMTP_HOST"`
+	SMTPHost string `env:"SMTP_HOST" env-required:"true"`
+	SMTPPort int    `env:"SMTP_PORT" env-required:"true"`
 }

@@ -9,17 +9,20 @@ import (
 var _ api.ServerInterface = (*handler)(nil)
 
 type handler struct {
-	userService UserService
-	authService AuthService
-	logger      *slog.Logger
+	userService             UserService
+	authService             AuthService
+	passwordRecoveryService PasswordRecoveryService
+	logger                  *slog.Logger
 }
 
 func New(userService UserService,
 	authService AuthService,
+	passwordRecoveryService PasswordRecoveryService,
 	logger *slog.Logger) *handler {
 	return &handler{
-		logger:      logger,
-		userService: userService,
-		authService: authService,
+		logger:                  logger,
+		userService:             userService,
+		authService:             authService,
+		passwordRecoveryService: passwordRecoveryService,
 	}
 }

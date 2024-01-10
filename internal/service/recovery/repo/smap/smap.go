@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"sync"
 	"time"
+
+	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
 type smap struct {
@@ -75,7 +77,7 @@ func (smap *smap) Get(_ context.Context, key string) (int, error) {
 	obj, exists := smap.items.Load(key)
 
 	if !exists {
-		return 0, fmt.Errorf("record not found")
+		return 0, repoerr.ErrRecordNotFound
 	}
 
 	item := obj.(item)
