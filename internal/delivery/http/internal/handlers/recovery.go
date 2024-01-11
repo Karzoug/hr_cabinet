@@ -9,7 +9,6 @@ import (
 	srvErrors "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
-	rmodel "github.com/Employee-s-file-cabinet/backend/internal/service/recovery/model"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
@@ -32,8 +31,7 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.passwordRecoveryService.GetUser(ctx, initChngPswdReq.Login)
-	if err != nil {
+	if err = h.passwordRecoveryService.InitChangePassword(ctx, initChngPswdReq.Login); err != nil {
 		switch {
 		case errors.Is(err, repoerr.ErrRecordNotFound):
 			srvErrors.ErrorMessage(w, r,
@@ -47,28 +45,6 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 				http.StatusText(http.StatusInternalServerError),
 				nil)
 		}
-		return
-	}
-
-	key, err := h.passwordRecoveryService.GenerateKey(ctx, user.ID)
-	if err != nil {
-		srvErrors.ReportError(r, err, false)
-		srvErrors.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
-		return
-	}
-
-	recoveryData := rmodel.MessageData{
-		User: user,
-		Key:  key,
-	}
-	if err = h.passwordRecoveryService.SendRecoveryMessage(ctx, recoveryData); err != nil {
-		srvErrors.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			err.Error(),
-			nil)
 		return
 	}
 

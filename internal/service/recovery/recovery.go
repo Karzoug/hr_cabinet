@@ -10,7 +10,7 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/service/recovery/model"
 )
 
-func (s *service) GetUser(ctx context.Context, login string) (*model.User, error) {
+func (s *service) getUser(ctx context.Context, login string) (*model.User, error) {
 	const op = "recovery service: get user"
 
 	user, err := s.recoveryRepository.CheckAndReturnUser(ctx, login)
@@ -21,7 +21,7 @@ func (s *service) GetUser(ctx context.Context, login string) (*model.User, error
 	return user, nil
 }
 
-func (s *service) GenerateKey(ctx context.Context, userID int) (string, error) {
+func (s *service) generateKey(ctx context.Context, userID int) (string, error) {
 	const op = "recovery service: generate key"
 
 	randBytes := make([]byte, 26)
@@ -40,7 +40,7 @@ func (s *service) GenerateKey(ctx context.Context, userID int) (string, error) {
 	return key, nil
 }
 
-func (s *service) SendRecoveryMessage(ctx context.Context, data model.MessageData) error {
+func (s *service) sendRecoveryMessage(ctx context.Context, data model.MessageData) error {
 	const op = "recovery service: send recovery message"
 
 	// TODO: сообщение можно формировать с помощью text/template (или html/template)
@@ -57,11 +57,24 @@ func (s *service) SendRecoveryMessage(ctx context.Context, data model.MessageDat
 	return nil
 }
 
-func (s *service) Check(ctx context.Context, key string) error {
-	const op = "recovery service: check key"
+func (s *service) InitChangePassword(ctx context.Context, login string) error {
+	user, err := s.getUser(ctx, login)
+	if err != nil {
+		return err
+	}
 
-	if _, err := s.keyRepository.Get(ctx, key); err != nil {
-		return fmt.Errorf("%s: %w", op, err)
+	key, err := s.generateKey(ctx, user.ID)
+	if err != nil {
+		return err
+	}
+
+	recoveryData := model.MessageData{
+		User: user,
+		Key:  key,
+	}
+
+	if err = s.sendRecoveryMessage(ctx, recoveryData); err != nil {
+		return err
 	}
 
 	return nil
@@ -89,6 +102,16 @@ func (s *service) ChangePassword(ctx context.Context, key, newPassword string) e
 	}
 
 	// TODO: присылать сообщение об успешной смене пароля
+
+	return nil
+}
+
+func (s *service) Check(ctx context.Context, key string) error {
+	const op = "recovery service: check key"
+
+	if _, err := s.keyRepository.Get(ctx, key); err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
 
 	return nil
 }

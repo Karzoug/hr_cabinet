@@ -19,10 +19,15 @@ func NewMock(cfg Config) *mock {
 }
 
 func (m *mock) SendMessage(recipient, subject, message string) error {
+	const op = "mock email: send message"
+
 	to := mail.Address{Name: "", Address: recipient}
 
 	msg := fmt.Sprintf("From: %s\nTo: %s\nSubject: %s\n\n%s", m.from.String(), to.String(), subject, message)
 
-	err := smtp.SendMail(m.smtpAddr, nil, m.from.String(), []string{recipient}, []byte(msg))
-	return err
+	if err := smtp.SendMail(m.smtpAddr, nil, m.from.String(), []string{recipient}, []byte(msg)); err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
 }
