@@ -170,3 +170,20 @@ func convertModelPassportToPassport(mp model.Passport) passport {
 		Type:       t,
 	}
 }
+
+type visa struct {
+	ID            uint64                  `db:"id"`
+	Number        string                  `db:"number"`
+	IssuedState   string                  `db:"issued_state"`
+	ValidTo       time.Time               `db:"valid_to"`
+	ValidFrom     time.Time               `db:"valid_from"`
+	NumberEntries model.VisaNumberEntries `db:"number_entries"`
+}
+
+func convertVisaToModelVisa(v visa) model.Visa {
+	return model.Visa(v)
+}
+
+func convertModelVisaToVisa(mv model.Visa) visa {
+	return visa(mv)
+}

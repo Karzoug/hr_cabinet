@@ -9,10 +9,10 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-func (s *service) GetEducation(ctx context.Context, educationID uint64) (*model.Education, error) {
+func (s *service) GetEducation(ctx context.Context, userID, educationID uint64) (*model.Education, error) {
 	const op = "user service: get education"
 
-	ed, err := s.userRepository.GetEducation(ctx, educationID)
+	ed, err := s.userRepository.GetEducation(ctx, userID, educationID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return nil, fmt.Errorf("%s: %w", op, ErrEducationNotFound)

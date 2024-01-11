@@ -29,23 +29,26 @@ func (s *storage) ListPassports(ctx context.Context, userID uint64) ([]model.Pas
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	passport := make([]model.Passport, len(psps))
+	passports := make([]model.Passport, len(psps))
 	for i, ed := range psps {
-		passport[i] = convertPassportToModelPassport(ed)
+		passports[i] = convertPassportToModelPassport(ed)
 	}
 
-	return passport, nil
+	return passports, nil
 }
 
-func (s *storage) GetPassport(ctx context.Context, passportID uint64) (*model.Passport, error) {
+func (s *storage) GetPassport(ctx context.Context, userID, passportID uint64) (*model.Passport, error) {
 	const op = "postrgresql user storage: get passport"
 
 	rows, err := s.DB.Query(ctx,
 		`SELECT id, number, type, issued_date, issued_by,
 		(SELECT COUNT(*) FROM visas WHERE visas.passport_id = passports.id) AS visas_count 
 		FROM passports
-		WHERE id = @passport_id`,
-		pgx.NamedArgs{"passport_id": passportID})
+		WHERE id = @passport_id AND user_id = @user_id`,
+		pgx.NamedArgs{
+			"passport_id": passportID,
+			"user_id":     userID,
+		})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}

@@ -37,7 +37,7 @@ func (s *storage) ListTrainings(ctx context.Context, userID uint64) ([]model.Tra
 	return trainings, nil
 }
 
-func (s *storage) GetTraining(ctx context.Context, trainingID uint64) (*model.Training, error) {
+func (s *storage) GetTraining(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
 	const op = "postrgresql user storage: get training"
 
 	rows, err := s.DB.Query(ctx,
@@ -45,8 +45,11 @@ func (s *storage) GetTraining(ctx context.Context, trainingID uint64) (*model.Tr
 		id, title_of_program, title_of_institution, 
 		cost, date_end, date_begin 
 		FROM trainings
-		WHERE id = @training_id`,
-		pgx.NamedArgs{"training_id": trainingID})
+		WHERE id = @training_id AND user_id = @user_id`,
+		pgx.NamedArgs{
+			"training_id": trainingID,
+			"user_id":     userID,
+		})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
