@@ -8,12 +8,16 @@ import (
 
 	"github.com/Employee-s-file-cabinet/backend/internal/config"
 	httpsrv "github.com/Employee-s-file-cabinet/backend/internal/delivery/http"
+	"github.com/Employee-s-file-cabinet/backend/internal/delivery/smtp"
 	repopg "github.com/Employee-s-file-cabinet/backend/internal/repo/postgresql"
 	repos3 "github.com/Employee-s-file-cabinet/backend/internal/repo/s3"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/auth"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model/password"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model/token"
 	authdb "github.com/Employee-s-file-cabinet/backend/internal/service/auth/repo/postgres"
+	"github.com/Employee-s-file-cabinet/backend/internal/service/recovery"
+	recoverydb "github.com/Employee-s-file-cabinet/backend/internal/service/recovery/repo/postgres"
+	recoverykey "github.com/Employee-s-file-cabinet/backend/internal/service/recovery/repo/smap"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
 	userdb "github.com/Employee-s-file-cabinet/backend/internal/service/user/repo/postgres"
 	users3 "github.com/Employee-s-file-cabinet/backend/internal/service/user/repo/s3"
@@ -51,9 +55,20 @@ func Run(ctx context.Context, cfg *config.Config, logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
-	authService := auth.NewService(authDBRepo, password.New(), tokenMng)
+	passVerification := password.New()
+	authService := auth.NewService(authDBRepo, passVerification, tokenMng)
 
-	srv, err := httpsrv.New(cfg.HTTP, cfg.EnvType, userService, authService, logger)
+	// create recovery service
+	recoveryKeyRepo := recoverykey.New(cfg.RecoveryKeyLifetime)
+	defer recoveryKeyRepo.Close()
+	recoveryDBRepo, err := recoverydb.NewStorage(db)
+	if err != nil {
+		return err
+	}
+	smtpClient := smtp.NewMock(cfg.Mail)
+	recoveryService := recovery.NewService(recoveryDBRepo, recoveryKeyRepo, smtpClient, passVerification, cfg.Domain)
+
+	srv, err := httpsrv.New(cfg.HTTP, cfg.EnvType, userService, authService, recoveryService, logger)
 	if err != nil {
 		return err
 	}

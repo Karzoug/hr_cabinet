@@ -28,7 +28,6 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := auth.Validate(ctx, validator.Instance()); err != nil {
-		var _ api.BadRequestError
 		w.WriteHeader(http.StatusBadRequest)
 		srvErrors.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
@@ -60,58 +59,4 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	http.SetCookie(w, cookie)
 	w.WriteHeader(http.StatusOK)
-}
-
-// @Router /login/change-password [get]
-func (h *handler) CheckKey(w http.ResponseWriter, r *http.Request, params api.CheckKeyParams) {
-	ctx := r.Context()
-
-	if err := params.Validate(ctx, validator.Instance()); err != nil {
-		var _ api.BadRequestError
-		w.WriteHeader(http.StatusBadRequest)
-		// TODO: return error
-		return
-	}
-
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// @Accept  application/json
-// @Param   body body api.InitChangePasswordRequest true ""
-// @Router  /login/init-change-password [post]
-func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	var chPsw api.InitChangePasswordRequest
-
-	// TODO: decode InitChangePasswordRequest from request body
-
-	if err := chPsw.Validate(ctx, validator.Instance()); err != nil {
-		var _ api.BadRequestError
-		w.WriteHeader(http.StatusBadRequest)
-		// TODO: return error
-		return
-	}
-
-	w.WriteHeader(http.StatusNotImplemented)
-}
-
-// @Accept  application/json
-// @Param   body body api.ChangePasswordRequest true ""
-// @Router  /login/change-password [post]
-func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-
-	var chPsw api.ChangePasswordRequest
-
-	// TODO: decode ChangePasswordRequest from request body
-
-	if err := chPsw.Validate(ctx, validator.Instance()); err != nil {
-		var _ api.BadRequestError
-		w.WriteHeader(http.StatusBadRequest)
-		// TODO: return error
-		return
-	}
-
-	w.WriteHeader(http.StatusNotImplemented)
 }

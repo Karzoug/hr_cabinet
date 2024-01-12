@@ -39,3 +39,9 @@ type AuthService interface {
 	Payload(token string) (*token.Payload, error)
 	PolicyEnforcer() (*casbin.Enforcer, error)
 }
+
+type PasswordRecoveryService interface {
+	InitChangePassword(ctx context.Context, login string) error
+	ChangePassword(ctx context.Context, key, newPassword string) error
+	Check(ctx context.Context, key string) error
+}
