@@ -2,6 +2,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
@@ -43,6 +44,9 @@ type ServerInterface interface {
 	// (PATCH /users/{user_id})
 	PatchUser(w http.ResponseWriter, r *http.Request, userID uint64)
 
+	// (PUT /users/{user_id})
+	PutUser(w http.ResponseWriter, r *http.Request, userID uint64)
+
 	// (GET /users/{user_id}/contracts)
 	ListContracts(w http.ResponseWriter, r *http.Request, userID uint64)
 
@@ -50,13 +54,16 @@ type ServerInterface interface {
 	AddContract(w http.ResponseWriter, r *http.Request, userID uint64)
 
 	// (DELETE /users/{user_id}/contracts/{contract_id})
-	DeleteContract(w http.ResponseWriter, r *http.Request, userID uint64, contractID uint64)
+	DeleteContract(w http.ResponseWriter, r *http.Request, userID, contractID uint64)
 
 	// (GET /users/{user_id}/contracts/{contract_id})
-	GetContract(w http.ResponseWriter, r *http.Request, userID uint64, contractID uint64)
+	GetContract(w http.ResponseWriter, r *http.Request, userID, contractID uint64)
 
 	// (PATCH /users/{user_id}/contracts/{contract_id})
-	PatchContract(w http.ResponseWriter, r *http.Request, userID uint64, contractID uint64)
+	PatchContract(w http.ResponseWriter, r *http.Request, userID, contractID uint64)
+
+	// (PUT /users/{user_id}/contracts/{contract_id})
+	PutContract(w http.ResponseWriter, r *http.Request, userID, contractID uint64)
 
 	// (GET /users/{user_id}/educations)
 	ListEducations(w http.ResponseWriter, r *http.Request, userID uint64)
@@ -65,13 +72,16 @@ type ServerInterface interface {
 	AddEducation(w http.ResponseWriter, r *http.Request, userID uint64)
 
 	// (DELETE /users/{user_id}/educations/{education_id})
-	DeleteEducation(w http.ResponseWriter, r *http.Request, userID uint64, educationID uint64)
+	DeleteEducation(w http.ResponseWriter, r *http.Request, userID, educationID uint64)
 
 	// (GET /users/{user_id}/educations/{education_id})
-	GetEducation(w http.ResponseWriter, r *http.Request, userID uint64, educationID uint64)
+	GetEducation(w http.ResponseWriter, r *http.Request, userID, educationID uint64)
 
 	// (PATCH /users/{user_id}/educations/{education_id})
-	PatchEducation(w http.ResponseWriter, r *http.Request, userID uint64, educationID uint64)
+	PatchEducation(w http.ResponseWriter, r *http.Request, userID, educationID uint64)
+
+	// (PUT /users/{user_id}/educations/{education_id})
+	PutEducation(w http.ResponseWriter, r *http.Request, userID, educationID uint64)
 
 	// (GET /users/{user_id}/passports)
 	ListPassports(w http.ResponseWriter, r *http.Request, userID uint64)
@@ -80,28 +90,34 @@ type ServerInterface interface {
 	AddPassport(w http.ResponseWriter, r *http.Request, userID uint64)
 
 	// (DELETE /users/{user_id}/passports/{passport_id})
-	DeletePassport(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64)
+	DeletePassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
 
 	// (GET /users/{user_id}/passports/{passport_id})
-	GetPassport(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64)
+	GetPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64, params GetPassportParams)
 
 	// (PATCH /users/{user_id}/passports/{passport_id})
-	PatchPassport(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64)
+	PatchPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
+
+	// (PUT /users/{user_id}/passports/{passport_id})
+	PutPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
 
 	// (GET /users/{user_id}/passports/{passport_id}/visas)
-	ListVisas(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64)
+	ListVisas(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
 
 	// (POST /users/{user_id}/passports/{passport_id}/visas)
-	AddVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64)
+	AddVisa(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
 
 	// (DELETE /users/{user_id}/passports/{passport_id}/visas/{visa_id})
-	DeleteVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64, visaID uint64)
+	DeleteVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64)
 
 	// (GET /users/{user_id}/passports/{passport_id}/visas/{visa_id})
-	GetVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64, visaID uint64)
+	GetVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64)
 
 	// (PATCH /users/{user_id}/passports/{passport_id}/visas/{visa_id})
-	PatchVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64, visaID uint64)
+	PatchVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64)
+
+	// (PUT /users/{user_id}/passports/{passport_id}/visas/{visa_id})
+	PutVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64)
 
 	// (GET /users/{user_id}/photo)
 	DownloadPhoto(w http.ResponseWriter, r *http.Request, userID uint64)
@@ -116,10 +132,10 @@ type ServerInterface interface {
 	UploadScan(w http.ResponseWriter, r *http.Request, userID uint64)
 
 	// (DELETE /users/{user_id}/scans/{scan_id})
-	DeleteScan(w http.ResponseWriter, r *http.Request, userID uint64, scanID uint64)
+	DeleteScan(w http.ResponseWriter, r *http.Request, userID, scanID uint64)
 
 	// (GET /users/{user_id}/scans/{scan_id})
-	GetScan(w http.ResponseWriter, r *http.Request, userID uint64, scanID uint64)
+	GetScan(w http.ResponseWriter, r *http.Request, userID, scanID uint64)
 
 	// (GET /users/{user_id}/trainings)
 	ListTrainings(w http.ResponseWriter, r *http.Request, userID uint64)
@@ -128,13 +144,16 @@ type ServerInterface interface {
 	AddTraining(w http.ResponseWriter, r *http.Request, userID uint64)
 
 	// (DELETE /users/{user_id}/trainings/{training_id})
-	DeleteTraining(w http.ResponseWriter, r *http.Request, userID uint64, trainingId uint64)
+	DeleteTraining(w http.ResponseWriter, r *http.Request, userID, trainingID uint64)
 
 	// (GET /users/{user_id}/trainings/{training_id})
-	GetTraining(w http.ResponseWriter, r *http.Request, userID uint64, trainingId uint64)
+	GetTraining(w http.ResponseWriter, r *http.Request, userID, trainingID uint64)
 
 	// (PATCH /users/{user_id}/trainings/{training_id})
-	PatchTraining(w http.ResponseWriter, r *http.Request, userID uint64, trainingId uint64)
+	PatchTraining(w http.ResponseWriter, r *http.Request, userID, trainingID uint64)
+
+	// (PUT /users/{user_id}/trainings/{training_id})
+	PutTraining(w http.ResponseWriter, r *http.Request, userID, trainingID uint64)
 
 	// (GET /users/{user_id}/vacations)
 	ListVacations(w http.ResponseWriter, r *http.Request, userID uint64)
@@ -143,13 +162,16 @@ type ServerInterface interface {
 	AddVacation(w http.ResponseWriter, r *http.Request, userID uint64)
 
 	// (DELETE /users/{user_id}/vacations/{vacation_id})
-	DeleteVacation(w http.ResponseWriter, r *http.Request, userID uint64, vacationID uint64)
+	DeleteVacation(w http.ResponseWriter, r *http.Request, userID, vacationID uint64)
 
 	// (GET /users/{user_id}/vacations/{vacation_id})
-	GetVacation(w http.ResponseWriter, r *http.Request, userID uint64, vacationID uint64)
+	GetVacation(w http.ResponseWriter, r *http.Request, userID, vacationID uint64)
 
 	// (PATCH /users/{user_id}/vacations/{vacation_id})
-	PatchVacation(w http.ResponseWriter, r *http.Request, userID uint64, vacationID uint64)
+	PatchVacation(w http.ResponseWriter, r *http.Request, userID, vacationID uint64)
+
+	// (PUT /users/{user_id}/vacations/{vacation_id})
+	PutVacation(w http.ResponseWriter, r *http.Request, userID, vacationID uint64)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -165,6 +187,8 @@ type MiddlewareFunc func(http.Handler) http.Handler
 func (siw *ServerInterfaceWrapper) ListDepartments(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListDepartments(w, r)
 	}))
@@ -176,7 +200,7 @@ func (siw *ServerInterfaceWrapper) ListDepartments(w http.ResponseWriter, r *htt
 	handler.ServeHTTP(w, r.WithContext(ctx))
 }
 
-// ListDepartments operation middleware
+// Health operation middleware
 func (siw *ServerInterfaceWrapper) Health(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -283,6 +307,8 @@ func (siw *ServerInterfaceWrapper) ListUsers(w http.ResponseWriter, r *http.Requ
 
 	var err error
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	// Parameter object where we will unmarshal all parameters from the context
 	var params ListUsersParams
 
@@ -333,6 +359,8 @@ func (siw *ServerInterfaceWrapper) ListUsers(w http.ResponseWriter, r *http.Requ
 func (siw *ServerInterfaceWrapper) AddUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddUser(w, r)
 	}))
@@ -360,6 +388,8 @@ func (siw *ServerInterfaceWrapper) GetUser(w http.ResponseWriter, r *http.Reques
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetUserParams
@@ -398,8 +428,40 @@ func (siw *ServerInterfaceWrapper) PatchUser(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchUser(w, r, userID)
+	}))
+
+	handler = chimwr.AllowContentType("application/json")(handler)
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// PutUser operation middleware
+func (siw *ServerInterfaceWrapper) PutUser(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "user_id" -------------
+	var userID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "user_id", runtime.ParamLocationPath, chi.URLParam(r, "user_id"), &userID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutUser(w, r, userID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -426,6 +488,8 @@ func (siw *ServerInterfaceWrapper) ListContracts(w http.ResponseWriter, r *http.
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListContracts(w, r, userID)
 	}))
@@ -451,6 +515,8 @@ func (siw *ServerInterfaceWrapper) AddContract(w http.ResponseWriter, r *http.Re
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddContract(w, r, userID)
@@ -489,6 +555,8 @@ func (siw *ServerInterfaceWrapper) DeleteContract(w http.ResponseWriter, r *http
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteContract(w, r, userID, contractID)
 	}))
@@ -523,6 +591,8 @@ func (siw *ServerInterfaceWrapper) GetContract(w http.ResponseWriter, r *http.Re
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contract_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetContract(w, r, userID, contractID)
@@ -559,8 +629,49 @@ func (siw *ServerInterfaceWrapper) PatchContract(w http.ResponseWriter, r *http.
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchContract(w, r, userID, contractID)
+	}))
+
+	handler = chimwr.AllowContentType("application/json")(handler)
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// PutContract operation middleware
+func (siw *ServerInterfaceWrapper) PutContract(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "user_id" -------------
+	var userID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "user_id", runtime.ParamLocationPath, chi.URLParam(r, "user_id"), &userID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "contract_id" -------------
+	var contractID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "contract_id", runtime.ParamLocationPath, chi.URLParam(r, "contract_id"), &contractID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "contract_id", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutContract(w, r, userID, contractID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -587,6 +698,8 @@ func (siw *ServerInterfaceWrapper) ListEducations(w http.ResponseWriter, r *http
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListEducations(w, r, userID)
 	}))
@@ -612,6 +725,8 @@ func (siw *ServerInterfaceWrapper) AddEducation(w http.ResponseWriter, r *http.R
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddEducation(w, r, userID)
@@ -650,6 +765,8 @@ func (siw *ServerInterfaceWrapper) DeleteEducation(w http.ResponseWriter, r *htt
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteEducation(w, r, userID, educationID)
 	}))
@@ -684,6 +801,8 @@ func (siw *ServerInterfaceWrapper) GetEducation(w http.ResponseWriter, r *http.R
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "education_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetEducation(w, r, userID, educationID)
@@ -720,8 +839,49 @@ func (siw *ServerInterfaceWrapper) PatchEducation(w http.ResponseWriter, r *http
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchEducation(w, r, userID, educationID)
+	}))
+
+	handler = chimwr.AllowContentType("application/json")(handler)
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// PutEducation operation middleware
+func (siw *ServerInterfaceWrapper) PutEducation(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "user_id" -------------
+	var userID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "user_id", runtime.ParamLocationPath, chi.URLParam(r, "user_id"), &userID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "education_id" -------------
+	var educationID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "education_id", runtime.ParamLocationPath, chi.URLParam(r, "education_id"), &educationID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "education_id", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutEducation(w, r, userID, educationID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -748,6 +908,8 @@ func (siw *ServerInterfaceWrapper) ListPassports(w http.ResponseWriter, r *http.
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListPassports(w, r, userID)
 	}))
@@ -773,6 +935,8 @@ func (siw *ServerInterfaceWrapper) AddPassport(w http.ResponseWriter, r *http.Re
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddPassport(w, r, userID)
@@ -811,6 +975,8 @@ func (siw *ServerInterfaceWrapper) DeletePassport(w http.ResponseWriter, r *http
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeletePassport(w, r, userID, passportID)
 	}))
@@ -846,8 +1012,21 @@ func (siw *ServerInterfaceWrapper) GetPassport(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetPassportParams
+
+	// ------------- Optional query parameter "expanded" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "expanded", r.URL.Query(), &params.Expanded)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "expanded", Err: err})
+		return
+	}
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetPassport(w, r, userID, passportID)
+		siw.Handler.GetPassport(w, r, userID, passportID, params)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -881,8 +1060,49 @@ func (siw *ServerInterfaceWrapper) PatchPassport(w http.ResponseWriter, r *http.
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchPassport(w, r, userID, passportID)
+	}))
+
+	handler = chimwr.AllowContentType("application/json")(handler)
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// PutPassport operation middleware
+func (siw *ServerInterfaceWrapper) PutPassport(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "user_id" -------------
+	var userID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "user_id", runtime.ParamLocationPath, chi.URLParam(r, "user_id"), &userID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "passport_id" -------------
+	var passportID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "passport_id", runtime.ParamLocationPath, chi.URLParam(r, "passport_id"), &passportID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "passport_id", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutPassport(w, r, userID, passportID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -918,6 +1138,8 @@ func (siw *ServerInterfaceWrapper) ListVisas(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListVisas(w, r, userID, passportID)
 	}))
@@ -952,6 +1174,8 @@ func (siw *ServerInterfaceWrapper) AddVisa(w http.ResponseWriter, r *http.Reques
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "passport_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddVisa(w, r, userID, passportID)
@@ -999,6 +1223,8 @@ func (siw *ServerInterfaceWrapper) DeleteVisa(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteVisa(w, r, userID, passportID, visaID)
 	}))
@@ -1042,6 +1268,8 @@ func (siw *ServerInterfaceWrapper) GetVisa(w http.ResponseWriter, r *http.Reques
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "visa_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetVisa(w, r, userID, passportID, visaID)
@@ -1087,8 +1315,58 @@ func (siw *ServerInterfaceWrapper) PatchVisa(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchVisa(w, r, userID, passportID, visaID)
+	}))
+
+	handler = chimwr.AllowContentType("application/json")(handler)
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// PutVisa operation middleware
+func (siw *ServerInterfaceWrapper) PutVisa(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "user_id" -------------
+	var userID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "user_id", runtime.ParamLocationPath, chi.URLParam(r, "user_id"), &userID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "passport_id" -------------
+	var passportID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "passport_id", runtime.ParamLocationPath, chi.URLParam(r, "passport_id"), &passportID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "passport_id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "visa_id" -------------
+	var visaID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "visa_id", runtime.ParamLocationPath, chi.URLParam(r, "visa_id"), &visaID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "visa_id", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutVisa(w, r, userID, passportID, visaID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -1115,6 +1393,8 @@ func (siw *ServerInterfaceWrapper) DownloadPhoto(w http.ResponseWriter, r *http.
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DownloadPhoto(w, r, userID)
 	}))
@@ -1140,6 +1420,8 @@ func (siw *ServerInterfaceWrapper) UploadPhoto(w http.ResponseWriter, r *http.Re
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UploadPhoto(w, r, userID)
@@ -1169,6 +1451,8 @@ func (siw *ServerInterfaceWrapper) ListScans(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListScans(w, r, userID)
 	}))
@@ -1194,6 +1478,8 @@ func (siw *ServerInterfaceWrapper) UploadScan(w http.ResponseWriter, r *http.Req
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.UploadScan(w, r, userID)
@@ -1232,6 +1518,8 @@ func (siw *ServerInterfaceWrapper) DeleteScan(w http.ResponseWriter, r *http.Req
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteScan(w, r, userID, scanID)
 	}))
@@ -1267,6 +1555,8 @@ func (siw *ServerInterfaceWrapper) GetScan(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetScan(w, r, userID, scanID)
 	}))
@@ -1293,6 +1583,8 @@ func (siw *ServerInterfaceWrapper) ListTrainings(w http.ResponseWriter, r *http.
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListTrainings(w, r, userID)
 	}))
@@ -1318,6 +1610,8 @@ func (siw *ServerInterfaceWrapper) AddTraining(w http.ResponseWriter, r *http.Re
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddTraining(w, r, userID)
@@ -1356,6 +1650,8 @@ func (siw *ServerInterfaceWrapper) DeleteTraining(w http.ResponseWriter, r *http
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteTraining(w, r, userID, trainingID)
 	}))
@@ -1390,6 +1686,8 @@ func (siw *ServerInterfaceWrapper) GetTraining(w http.ResponseWriter, r *http.Re
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "training_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetTraining(w, r, userID, trainingID)
@@ -1426,8 +1724,49 @@ func (siw *ServerInterfaceWrapper) PatchTraining(w http.ResponseWriter, r *http.
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchTraining(w, r, userID, trainingID)
+	}))
+
+	handler = chimwr.AllowContentType("application/json")(handler)
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// PutTraining operation middleware
+func (siw *ServerInterfaceWrapper) PutTraining(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "user_id" -------------
+	var userID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "user_id", runtime.ParamLocationPath, chi.URLParam(r, "user_id"), &userID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "training_id" -------------
+	var trainingID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "training_id", runtime.ParamLocationPath, chi.URLParam(r, "training_id"), &trainingID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "training_id", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutTraining(w, r, userID, trainingID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -1454,6 +1793,8 @@ func (siw *ServerInterfaceWrapper) ListVacations(w http.ResponseWriter, r *http.
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.ListVacations(w, r, userID)
 	}))
@@ -1479,6 +1820,8 @@ func (siw *ServerInterfaceWrapper) AddVacation(w http.ResponseWriter, r *http.Re
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddVacation(w, r, userID)
@@ -1517,6 +1860,8 @@ func (siw *ServerInterfaceWrapper) DeleteVacation(w http.ResponseWriter, r *http
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.DeleteVacation(w, r, userID, vacationID)
 	}))
@@ -1551,6 +1896,8 @@ func (siw *ServerInterfaceWrapper) GetVacation(w http.ResponseWriter, r *http.Re
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vacation_id", Err: err})
 		return
 	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetVacation(w, r, userID, vacationID)
@@ -1587,8 +1934,49 @@ func (siw *ServerInterfaceWrapper) PatchVacation(w http.ResponseWriter, r *http.
 		return
 	}
 
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.PatchVacation(w, r, userID, vacationID)
+	}))
+
+	handler = chimwr.AllowContentType("application/json")(handler)
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r.WithContext(ctx))
+}
+
+// PutVacation operation middleware
+func (siw *ServerInterfaceWrapper) PutVacation(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var err error
+
+	// ------------- Path parameter "user_id" -------------
+	var userID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "user_id", runtime.ParamLocationPath, chi.URLParam(r, "user_id"), &userID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "user_id", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "vacation_id" -------------
+	var vacationID uint64
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "vacation_id", runtime.ParamLocationPath, chi.URLParam(r, "vacation_id"), &vacationID)
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "vacation_id", Err: err})
+		return
+	}
+
+	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.PutVacation(w, r, userID, vacationID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -1714,10 +2102,10 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	}
 
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/health", wrapper.Health)
+		r.Get(options.BaseURL+"/departments", wrapper.ListDepartments)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/departments", wrapper.ListDepartments)
+		r.Get(options.BaseURL+"/health", wrapper.Health)
 	})
 	r.Group(func(r chi.Router) {
 		r.Post(options.BaseURL+"/login", wrapper.Login)
@@ -1744,6 +2132,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Patch(options.BaseURL+"/users/{user_id}", wrapper.PatchUser)
 	})
 	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/users/{user_id}", wrapper.PutUser)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/users/{user_id}/contracts", wrapper.ListContracts)
 	})
 	r.Group(func(r chi.Router) {
@@ -1757,6 +2148,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Patch(options.BaseURL+"/users/{user_id}/contracts/{contract_id}", wrapper.PatchContract)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/users/{user_id}/contracts/{contract_id}", wrapper.PutContract)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/users/{user_id}/educations", wrapper.ListEducations)
@@ -1774,6 +2168,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Patch(options.BaseURL+"/users/{user_id}/educations/{education_id}", wrapper.PatchEducation)
 	})
 	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/users/{user_id}/educations/{education_id}", wrapper.PutEducation)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/users/{user_id}/passports", wrapper.ListPassports)
 	})
 	r.Group(func(r chi.Router) {
@@ -1789,6 +2186,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Patch(options.BaseURL+"/users/{user_id}/passports/{passport_id}", wrapper.PatchPassport)
 	})
 	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/users/{user_id}/passports/{passport_id}", wrapper.PutPassport)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas", wrapper.ListVisas)
 	})
 	r.Group(func(r chi.Router) {
@@ -1802,6 +2202,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Patch(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas/{visa_id}", wrapper.PatchVisa)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas/{visa_id}", wrapper.PutVisa)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/users/{user_id}/photo", wrapper.DownloadPhoto)
@@ -1837,6 +2240,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Patch(options.BaseURL+"/users/{user_id}/trainings/{training_id}", wrapper.PatchTraining)
 	})
 	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/users/{user_id}/trainings/{training_id}", wrapper.PutTraining)
+	})
+	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/users/{user_id}/vacations", wrapper.ListVacations)
 	})
 	r.Group(func(r chi.Router) {
@@ -1850,6 +2256,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Patch(options.BaseURL+"/users/{user_id}/vacations/{vacation_id}", wrapper.PatchVacation)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/users/{user_id}/vacations/{vacation_id}", wrapper.PutVacation)
 	})
 
 	return r

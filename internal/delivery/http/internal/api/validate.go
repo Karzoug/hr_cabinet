@@ -101,7 +101,7 @@ func checksumTaxpayer(s string) bool {
 
 func ValidationErrorMessage(err error) string {
 	if violations, ok := vld.UnwrapViolationList(err); ok {
-		return violations.String()
+		return strings.ReplaceAll(violations.String(), `"`, "'")
 	}
 	return "validation error"
 }

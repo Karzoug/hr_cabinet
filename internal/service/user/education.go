@@ -47,3 +47,18 @@ func (s *service) AddEducation(ctx context.Context, userID uint64, ed model.Educ
 	}
 	return id, nil
 }
+
+func (s *service) UpdateEducation(ctx context.Context, userID uint64, ed model.Education) error {
+	const op = "user service: update education"
+
+	err := s.userRepository.UpdateEducation(ctx, userID, ed)
+	if err != nil {
+		switch {
+		case errors.Is(err, repoerr.ErrRecordNotFound):
+			return ErrEducationNotFound
+		default:
+			return fmt.Errorf("%s: %w", op, err)
+		}
+	}
+	return nil
+}

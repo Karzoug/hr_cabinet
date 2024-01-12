@@ -8,7 +8,7 @@ type storage struct {
 	*pq.DB
 }
 
-func NewStorage(db *pq.DB) (*storage, error) {
+func NewUserStorage(db *pq.DB) (*storage, error) {
 	return &storage{
 		DB: db,
 	}, nil

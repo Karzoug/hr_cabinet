@@ -88,3 +88,34 @@ func (s *storage) AddPassport(ctx context.Context, userID uint64, mp model.Passp
 
 	return p.ID, nil
 }
+
+func (s *storage) UpdatePassport(ctx context.Context, userID uint64, mp model.Passport) error {
+	const op = "postrgresql user storage: update passport"
+
+	p := convertModelPassportToPassport(mp)
+
+	tag, err := s.DB.Exec(ctx, `UPDATE passports
+	SET number=@number, 
+	type=@type, 
+	issued_date=@issued_date, 
+	issued_by=@issued_by
+	WHERE id=@id AND user_id=@user_id`,
+		pgx.NamedArgs{
+			"user_id":     userID,
+			"id":          p.ID,
+			"number":      p.Number,
+			"type":        p.Type,
+			"issued_date": p.IssuedDate,
+			"issued_by":   p.IssuedBy,
+		})
+
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	if tag.RowsAffected() == 0 { // it's ok for pgx
+		return fmt.Errorf("%s: %w and %w", op,
+			repoerr.ErrRecordNotModified,
+			repoerr.ErrRecordNotFound)
+	}
+	return nil
+}

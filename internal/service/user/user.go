@@ -40,12 +40,44 @@ func (s *service) GetExpanded(ctx context.Context, userID uint64) (*model.Expand
 	return eu, nil
 }
 
-func (s *service) List(ctx context.Context, params model.ListUsersParams) ([]model.User, int, error) {
+func (s *service) ListShortUserInfo(ctx context.Context, params model.ListUsersParams) ([]model.ShortUserInfo, int, error) {
 	const op = "user service: list users"
 
-	users, count, err := s.userRepository.List(ctx, params)
+	users, count, err := s.userRepository.ListShortUserInfo(ctx, params)
 	if err != nil {
 		return nil, 0, fmt.Errorf("%s: %w", op, err)
 	}
 	return users, count, nil
+}
+
+func (s *service) Add(ctx context.Context, u model.User) (uint64, error) {
+	const op = "user service: add user"
+
+	id, err := s.userRepository.Add(ctx, u)
+	if err != nil {
+		switch {
+		case errors.Is(err, repoerr.ErrRecordNotFound):
+			return 0, fmt.Errorf("%s: %w", op, ErrDepartmentOrPositionNotFound)
+		default:
+			return 0, fmt.Errorf("%s: %w", op, err)
+		}
+	}
+	return id, nil
+}
+
+func (s *service) Update(ctx context.Context, user model.User) error {
+	const op = "user service: update user"
+
+	err := s.userRepository.Update(ctx, user)
+	if err != nil {
+		switch {
+		case errors.Is(err, repoerr.ErrRecordNotModified):
+			return ErrUserNotFound
+		case errors.Is(err, repoerr.ErrRecordNotFound):
+			return ErrDepartmentOrPositionNotFound
+		default:
+			return fmt.Errorf("%s: %w", op, err)
+		}
+	}
+	return nil
 }

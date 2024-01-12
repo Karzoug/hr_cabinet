@@ -47,3 +47,18 @@ func (s *service) AddVisa(ctx context.Context, userID, passportID uint64, mv mod
 	}
 	return id, nil
 }
+
+func (s *service) UpdateVisa(ctx context.Context, userID, passportID uint64, v model.Visa) error {
+	const op = "user service: update visa"
+
+	err := s.userRepository.UpdateVisa(ctx, userID, passportID, v)
+	if err != nil {
+		switch {
+		case errors.Is(err, repoerr.ErrRecordNotFound):
+			return ErrVisaNotFound
+		default:
+			return fmt.Errorf("%s: %w", op, err)
+		}
+	}
+	return nil
+}

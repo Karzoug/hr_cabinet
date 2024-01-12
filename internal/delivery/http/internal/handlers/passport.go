@@ -16,7 +16,7 @@ import (
 )
 
 // @Produce application/json
-// @Success 200 {array} api.Passport
+// @Success 200 {object} api.ListPassportsResponse
 // @Router  /users/{user_id}/passports [get]
 func (h *handler) ListPassports(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
@@ -35,7 +35,7 @@ func (h *handler) ListPassports(w http.ResponseWriter, r *http.Request, userID u
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convert.ToAPIPassports(psps)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIListPassports(psps)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -45,13 +45,13 @@ func (h *handler) ListPassports(w http.ResponseWriter, r *http.Request, userID u
 }
 
 // @Accept  application/json
-// @Param   body body api.Passport true ""
+// @Param   body body api.AddPassportJSONRequestBody true ""
 // @Failure 409  {object} api.Error "passport already exists"
 // @Router  /users/{user_id}/passports [post]
 func (h *handler) AddPassport(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
 
-	var p api.Passport
+	var p api.AddPassportJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &p); err != nil {
 		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
@@ -63,7 +63,7 @@ func (h *handler) AddPassport(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	id, err := h.userService.AddPassport(ctx, userID, convert.ToModelPassport(p))
+	id, err := h.userService.AddPassport(ctx, userID, convert.FromAPIAddPassportRequest(p))
 	if err != nil {
 		if errors.Is(err, user.ErrUserNotFound) {
 			serr.ErrorMessage(w, r, http.StatusConflict, user.ErrUserNotFound.Error(), nil)
@@ -88,10 +88,16 @@ func (h *handler) DeletePassport(w http.ResponseWriter, r *http.Request, userID 
 }
 
 // @Produce application/json
-// @Success 200 {object} api.Passport
+// @Success 200 {object} api.GetPassportResponse
 // @Router  /users/{user_id}/passports/{passport_id} [get]
-func (h *handler) GetPassport(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64) {
+func (h *handler) GetPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64, params api.GetPassportParams) {
 	ctx := r.Context()
+
+	if params.Expanded != nil && *params.Expanded {
+		// TODO: implement this
+		w.WriteHeader(http.StatusNotImplemented)
+		return
+	}
 
 	p, err := h.userService.GetPassport(ctx, userID, passportID)
 	if err != nil {
@@ -107,7 +113,7 @@ func (h *handler) GetPassport(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convert.ToAPIPassport(p)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIGetPassportResponse(p)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -132,4 +138,37 @@ func (h *handler) PatchPassport(w http.ResponseWriter, r *http.Request, userID u
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// @Accept  application/json
+// @Param   body body api.PutPassportJSONRequestBody true ""
+// @Router  /users/{user_id}/passports/{passport_id} [put]
+func (h *handler) PutPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64) {
+	ctx := r.Context()
+
+	var p api.PutPassportJSONRequestBody
+	if err := request.DecodeJSONStrict(w, r, &p); err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	if err := p.Validate(ctx, validator.Instance()); err != nil {
+		msg := api.ValidationErrorMessage(err)
+		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		return
+	}
+
+	err := h.userService.UpdatePassport(ctx, userID, convert.FromAPIPutPassportRequest(passportID, p))
+	if err != nil {
+		if errors.Is(err, user.ErrPassportNotFound) {
+			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrPassportNotFound.Error(), nil)
+			return
+		}
+		serr.ReportError(r, err, false)
+		serr.ErrorMessage(w, r,
+			http.StatusInternalServerError,
+			http.StatusText(http.StatusInternalServerError),
+			nil)
+		return
+	}
 }

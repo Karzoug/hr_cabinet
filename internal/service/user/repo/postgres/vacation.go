@@ -19,10 +19,10 @@ func (s *storage) GetVacation(ctx context.Context, userID, vacationID uint64) (*
 		`SELECT 
 		id, date_begin, date_end 
 		FROM vacations
-		WHERE id = @vacation_id AND user_id = @user_id`,
+		WHERE id = @id AND user_id = @user_id`,
 		pgx.NamedArgs{
-			"vacation_id": vacationID,
-			"user_id":     userID,
+			"id":      vacationID,
+			"user_id": userID,
 		})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
@@ -38,15 +38,15 @@ func (s *storage) GetVacation(ctx context.Context, userID, vacationID uint64) (*
 	return &mv, nil
 }
 
+var listVacationsQuery = `SELECT 
+		id, date_begin, date_end 
+		FROM vacations
+		WHERE user_id = @user_id`
+
 func (s *storage) ListVacations(ctx context.Context, userID uint64) ([]model.Vacation, error) {
 	const op = "postgresql user storage: list vacations"
 
-	rows, err := s.DB.Query(ctx,
-		`SELECT 
-		id, date_begin, date_end 
-		FROM vacations
-		WHERE user_id = @user_id`,
-		pgx.NamedArgs{"user_id": userID})
+	rows, err := s.DB.Query(ctx, listVacationsQuery, pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -87,4 +87,28 @@ func (s *storage) AddVacation(ctx context.Context, userID uint64, v model.Vacati
 	}
 
 	return v.ID, nil
+}
+
+func (s *storage) UpdateVacation(ctx context.Context, userID uint64, v model.Vacation) error {
+	const op = "postrgresql user storage: update vacation"
+
+	tag, err := s.DB.Exec(ctx, `UPDATE vacations
+	SET date_begin=@date_begin, date_end=@date_end
+	WHERE id=@id AND user_id=@user_id`,
+		pgx.NamedArgs{
+			"user_id":    userID,
+			"id":         v.ID,
+			"date_begin": v.DateBegin,
+			"date_end":   v.DateEnd,
+		})
+
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	if tag.RowsAffected() == 0 { // it's ok for pgx
+		return fmt.Errorf("%s: %w and %w", op,
+			repoerr.ErrRecordNotModified,
+			repoerr.ErrRecordNotFound)
+	}
+	return nil
 }

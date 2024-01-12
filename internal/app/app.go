@@ -36,7 +36,7 @@ func Run(ctx context.Context, cfg *config.Config, logger *slog.Logger) error {
 	}
 
 	// create user service
-	userDBRepo, err := userdb.NewStorage(db)
+	userDBRepo, err := userdb.NewUserStorage(db)
 	if err != nil {
 		return err
 	}

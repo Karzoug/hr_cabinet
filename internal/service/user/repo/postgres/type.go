@@ -9,24 +9,30 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
 
+type shortUserInfo struct {
+	ID           uint64       `db:"id"`
+	LastName     string       `db:"lastname"`
+	FirstName    string       `db:"firstname"`
+	MiddleName   string       `db:"middlename"`
+	Position     string       `db:"position"`
+	Department   string       `db:"department"`
+	Email        string       `db:"work_email"`
+	PhoneNumbers phoneNumbers `db:"phone_numbers"`
+}
+
 type user struct {
-	ID                  uint64       `db:"id"`
-	LastName            string       `db:"lastname"`
-	FirstName           string       `db:"firstname"`
-	MiddleName          string       `db:"middlename"`
-	Gender              gender       `db:"gender"`
-	DateOfBirth         time.Time    `db:"date_of_birth"`
-	PlaceOfBirth        string       `db:"place_of_birth"`
-	Grade               string       `db:"grade"`
-	PhoneNumbers        phoneNumbers `db:"phone_numbers"`
-	Email               string       `db:"work_email"`
-	RegistrationAddress string       `db:"registration_address"`
-	ResidentialAddress  string       `db:"residential_address"`
-	Nationality         string       `db:"nationality"`
-	InsuranceNumber     string       `db:"insurance_number"`
-	TaxpayerNumber      string       `db:"taxpayer_number"`
-	Position            string       `db:"position"`
-	Department          string       `db:"department"`
+	shortUserInfo
+	Gender              gender    `db:"gender"`
+	DateOfBirth         time.Time `db:"date_of_birth"`
+	PlaceOfBirth        string    `db:"place_of_birth"`
+	Grade               string    `db:"grade"`
+	RegistrationAddress string    `db:"registration_address"`
+	ResidentialAddress  string    `db:"residential_address"`
+	Nationality         string    `db:"nationality"`
+	InsuranceNumber     string    `db:"insurance_number"`
+	TaxpayerNumber      string    `db:"taxpayer_number"`
+	PositionID          uint64    `db:"position_id"`
+	DepartmentID        uint64    `db:"department_id"`
 }
 
 type gender string
@@ -52,38 +58,78 @@ func (ph *phoneNumbers) Value() (driver.Value, error) {
 	return json.Marshal(ph)
 }
 
-func convertUserToModelUser(user *user) model.User {
-	var gr model.Gender
-	switch user.Gender {
-	case genderMale:
-		gr = model.GenderMale
-	case genderFemale:
-		gr = model.GenderFemale
+func convertShortUserInfoToModelShortUserInfo(info shortUserInfo) model.ShortUserInfo {
+	return model.ShortUserInfo{
+		ID:           info.ID,
+		Department:   info.Department,
+		Email:        info.Email,
+		FirstName:    info.FirstName,
+		LastName:     info.LastName,
+		MiddleName:   info.MiddleName,
+		PhoneNumbers: info.PhoneNumbers,
+		Position:     info.Position,
 	}
+}
 
-	return model.User{
-		ID:                  user.ID,
-		LastName:            user.LastName,
-		FirstName:           user.FirstName,
-		MiddleName:          user.MiddleName,
-		Gender:              gr,
+func convertUserToModelUser(user *user) model.User {
+	mu := model.User{
+		ShortUserInfo:       convertShortUserInfoToModelShortUserInfo(user.shortUserInfo),
 		DateOfBirth:         user.DateOfBirth,
 		PlaceOfBirth:        user.PlaceOfBirth,
 		Grade:               user.Grade,
-		PhoneNumbers:        user.PhoneNumbers,
-		Email:               user.Email,
 		RegistrationAddress: user.RegistrationAddress,
 		ResidentialAddress:  user.ResidentialAddress,
 		Nationality:         user.Nationality,
 		InsuranceNumber:     user.InsuranceNumber,
 		TaxpayerNumber:      user.TaxpayerNumber,
-		Position:            user.Position,
-		Department:          user.Department,
+		PositionID:          user.PositionID,
+		DepartmentID:        user.DepartmentID,
+	}
+	switch user.Gender {
+	case genderMale:
+		mu.Gender = model.GenderMale
+	case genderFemale:
+		mu.Gender = model.GenderFemale
+	}
+	return mu
+}
+
+func convertModelUserToUser(u *model.User) user {
+	var gr gender
+	switch u.Gender {
+	case model.GenderMale:
+		gr = genderMale
+	case model.GenderFemale:
+		gr = genderFemale
+	}
+
+	return user{
+		shortUserInfo: shortUserInfo{
+			ID:           u.ID,
+			LastName:     u.LastName,
+			FirstName:    u.FirstName,
+			MiddleName:   u.MiddleName,
+			Position:     u.Position,
+			Department:   u.Department,
+			Email:        u.Email,
+			PhoneNumbers: u.PhoneNumbers,
+		},
+		Gender:              gr,
+		DateOfBirth:         u.DateOfBirth,
+		PlaceOfBirth:        u.PlaceOfBirth,
+		Grade:               u.Grade,
+		RegistrationAddress: u.RegistrationAddress,
+		ResidentialAddress:  u.ResidentialAddress,
+		Nationality:         u.Nationality,
+		InsuranceNumber:     u.InsuranceNumber,
+		TaxpayerNumber:      u.TaxpayerNumber,
+		PositionID:          u.PositionID,
+		DepartmentID:        u.DepartmentID,
 	}
 }
 
 type listUser struct {
-	user
+	shortUserInfo
 	TotalCount int `db:"total_count"`
 }
 

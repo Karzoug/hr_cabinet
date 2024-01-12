@@ -16,12 +16,12 @@ import (
 )
 
 // @Produce application/json
-// @Success 200 {array} api.Training
+// @Success 200 {object} api.ListTrainingsResponse
 // @Router  /users/{user_id}/trainings [get]
 func (h *handler) ListTrainings(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
 
-	eds, err := h.userService.ListTrainings(ctx, userID)
+	trs, err := h.userService.ListTrainings(ctx, userID)
 	if err != nil {
 		if errors.Is(err, user.ErrUserNotFound) {
 			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrUserNotFound.Error(), nil)
@@ -35,7 +35,7 @@ func (h *handler) ListTrainings(w http.ResponseWriter, r *http.Request, userID u
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convert.ToAPITrainings(eds)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIListTrainings(trs)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -45,13 +45,13 @@ func (h *handler) ListTrainings(w http.ResponseWriter, r *http.Request, userID u
 }
 
 // @Accept  application/json
-// @Param   body body api.Training true ""
+// @Param   body body api.AddTrainingJSONRequestBody true ""
 // @Failure 409  {object} api.Error "training already exists"
 // @Router  /users/{user_id}/trainings [post]
 func (h *handler) AddTraining(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
 
-	var tr api.Training
+	var tr api.AddTrainingJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &tr); err != nil {
 		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
@@ -63,7 +63,7 @@ func (h *handler) AddTraining(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	id, err := h.userService.AddTraining(ctx, userID, convert.ToModelTraining(tr))
+	id, err := h.userService.AddTraining(ctx, userID, convert.FromAPIAddTrainingRequest(tr))
 	if err != nil {
 		if errors.Is(err, user.ErrUserNotFound) {
 			serr.ErrorMessage(w, r, http.StatusConflict, user.ErrUserNotFound.Error(), nil)
@@ -88,12 +88,12 @@ func (h *handler) DeleteTraining(w http.ResponseWriter, r *http.Request, userID 
 }
 
 // @Produce application/json
-// @Success 200 {object} api.Training
+// @Success 200 {object} api.GetTrainingResponse
 // @Router  /users/{user_id}/trainings/{training_id} [get]
 func (h *handler) GetTraining(w http.ResponseWriter, r *http.Request, userID uint64, trainingID uint64) {
 	ctx := r.Context()
 
-	ed, err := h.userService.GetTraining(ctx, userID, trainingID)
+	tr, err := h.userService.GetTraining(ctx, userID, trainingID)
 	if err != nil {
 		if errors.Is(err, user.ErrTrainingNotFound) {
 			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrTrainingNotFound.Error(), nil)
@@ -107,7 +107,7 @@ func (h *handler) GetTraining(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convert.ToAPITraining(ed)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIGetTrainingResponse(tr)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -135,4 +135,37 @@ func (h *handler) PatchTraining(w http.ResponseWriter, r *http.Request, userID u
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// @Accept  application/json
+// @Param   body body api.PutTrainingJSONRequestBody true ""
+// @Router  /users/{user_id}/trainings/{training_id} [put]
+func (h *handler) PutTraining(w http.ResponseWriter, r *http.Request, userID, trainingID uint64) {
+	ctx := r.Context()
+
+	var tr api.PutTrainingJSONRequestBody
+	if err := request.DecodeJSONStrict(w, r, &tr); err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	if err := tr.Validate(ctx, validator.Instance()); err != nil {
+		msg := api.ValidationErrorMessage(err)
+		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		return
+	}
+
+	err := h.userService.UpdateTraining(ctx, userID, convert.FromAPIPutTrainingRequest(trainingID, tr))
+	if err != nil {
+		if errors.Is(err, user.ErrTrainingNotFound) {
+			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrTrainingNotFound.Error(), nil)
+			return
+		}
+		serr.ReportError(r, err, false)
+		serr.ErrorMessage(w, r,
+			http.StatusInternalServerError,
+			http.StatusText(http.StatusInternalServerError),
+			nil)
+		return
+	}
 }

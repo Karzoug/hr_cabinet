@@ -14,13 +14,12 @@ import (
 
 // @Accept  application/json
 // @Produce application/json
-// @Param   body body api.Auth true ""
-// @Success 200 {object} api.Token
+// @Param   body body api.LoginJSONRequestBody true ""
 // @Router  /login [post]
 func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	var auth api.Auth
+	var auth api.LoginJSONRequestBody
 	err := request.DecodeJSON(w, r, &auth)
 	if err != nil {
 		srvErrors.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
@@ -33,7 +32,7 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authService.Login(ctx, auth.Login, auth.Password)
+	token, err := h.authService.Login(ctx, string(auth.Login), auth.Password)
 	if err != nil {
 		switch {
 		case errors.Is(err, authErrors.ErrForbidden):

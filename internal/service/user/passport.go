@@ -47,3 +47,18 @@ func (s *service) AddPassport(ctx context.Context, userID uint64, mp model.Passp
 	}
 	return id, nil
 }
+
+func (s *service) UpdatePassport(ctx context.Context, userID uint64, p model.Passport) error {
+	const op = "user service: update passport"
+
+	err := s.userRepository.UpdatePassport(ctx, userID, p)
+	if err != nil {
+		switch {
+		case errors.Is(err, repoerr.ErrRecordNotFound):
+			return ErrPassportNotFound
+		default:
+			return fmt.Errorf("%s: %w", op, err)
+		}
+	}
+	return nil
+}

@@ -16,7 +16,7 @@ import (
 )
 
 // @Produce application/json
-// @Success 200 {array} api.Visa
+// @Success 200 {object} api.ListVisasResponse
 // @Router  /users/{user_id}/passports/{passport_id}/visas [get]
 func (h *handler) ListVisas(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64) {
 	ctx := r.Context()
@@ -35,7 +35,7 @@ func (h *handler) ListVisas(w http.ResponseWriter, r *http.Request, userID uint6
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convert.ToAPIVisas(vs)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIListVisas(vs)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -45,13 +45,13 @@ func (h *handler) ListVisas(w http.ResponseWriter, r *http.Request, userID uint6
 }
 
 // @Accept application/json
-// @Param   body body api.Visa true ""
+// @Param   body body api.AddVisaJSONRequestBody true ""
 // @Failure 409  {object} api.Error "visa already exists"
 // @Router  /users/{user_id}/passports/{passport_id}/visas [post]
 func (h *handler) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64) {
 	ctx := r.Context()
 
-	var v api.Visa
+	var v api.AddVisaJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &v); err != nil {
 		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 		return
@@ -63,7 +63,7 @@ func (h *handler) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 		return
 	}
 
-	id, err := h.userService.AddVisa(ctx, userID, passportID, convert.ToModelVisa(v))
+	id, err := h.userService.AddVisa(ctx, userID, passportID, convert.FromAPIAddVisaRequest(v))
 	if err != nil {
 		if errors.Is(err, user.ErrUserOrPassportNotFound) {
 			serr.ErrorMessage(w, r, http.StatusConflict, user.ErrUserOrPassportNotFound.Error(), nil)
@@ -89,12 +89,12 @@ func (h *handler) DeleteVisa(w http.ResponseWriter, r *http.Request, userID uint
 }
 
 // @Produce application/json
-// @Success 200 {object} api.Visa
+// @Success 200 {object} api.GetVisaResponse
 // @Router  /users/{user_id}/passports/{passport_id}/visas/{visa_id} [get]
 func (h *handler) GetVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64, visaID uint64) {
 	ctx := r.Context()
 
-	p, err := h.userService.GetVisa(ctx, userID, passportID, visaID)
+	v, err := h.userService.GetVisa(ctx, userID, passportID, visaID)
 	if err != nil {
 		if errors.Is(err, user.ErrVisaNotFound) {
 			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrVisaNotFound.Error(), nil)
@@ -108,7 +108,7 @@ func (h *handler) GetVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convert.ToAPIVisa(p)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIGetVisaResponse(v)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -120,7 +120,7 @@ func (h *handler) GetVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 // @Accept application/json
 // @Param   body body api.PatchVisaJSONRequestBody true ""
 // @Router  /users/{user_id}/passports/{passport_id}/visas/{visa_id} [patch]
-func (h *handler) PatchVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64, visaID uint64) {
+func (h *handler) PatchVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64) {
 	ctx := r.Context()
 
 	var patch api.PatchVisaJSONRequestBody
@@ -133,4 +133,37 @@ func (h *handler) PatchVisa(w http.ResponseWriter, r *http.Request, userID uint6
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// @Accept  application/json
+// @Param   body body api.PutVisaJSONRequestBody true ""
+// @Router  /users/{user_id}/visas/{visa_id} [put]
+func (h *handler) PutVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64) {
+	ctx := r.Context()
+
+	var v api.PutVisaJSONRequestBody
+	if err := request.DecodeJSONStrict(w, r, &v); err != nil {
+		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		return
+	}
+
+	if err := v.Validate(ctx, validator.Instance()); err != nil {
+		msg := api.ValidationErrorMessage(err)
+		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		return
+	}
+
+	err := h.userService.UpdateVisa(ctx, userID, passportID, convert.FromAPIPutVisaRequest(visaID, v))
+	if err != nil {
+		if errors.Is(err, user.ErrVisaNotFound) {
+			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrVisaNotFound.Error(), nil)
+			return
+		}
+		serr.ReportError(r, err, false)
+		serr.ErrorMessage(w, r,
+			http.StatusInternalServerError,
+			http.StatusText(http.StatusInternalServerError),
+			nil)
+		return
+	}
 }

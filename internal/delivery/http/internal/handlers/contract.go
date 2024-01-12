@@ -10,20 +10,20 @@ import (
 )
 
 // @Produce application/json
-// @Success 200 {array} api.Contract
+// @Success 200 {object} api.ListContractsJSONRequestBody
 // @Router  /users/{user_id}/contracts [get]
 func (h *handler) ListContracts(w http.ResponseWriter, r *http.Request, userID uint64) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Accept  application/json
-// @Param   body body api.Contract true ""
+// @Param   body body api.AddContractJSONRequestBody true ""
 // @Failure 409  {object} api.Error "contract already exists"
 // @Router  /users/{user_id}/contracts [post]
 func (h *handler) AddContract(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
 
-	var c api.Contract
+	var c api.AddContractJSONRequestBody
 	// TODO: decode contract from request body
 
 	if err := c.Validate(ctx, validator.Instance()); err != nil {
@@ -41,7 +41,7 @@ func (h *handler) DeleteContract(w http.ResponseWriter, r *http.Request, userID 
 }
 
 // @Produce application/json
-// @Success 200 {object} api.Contract
+// @Success 200 {object} api.GetContractJSONRequestBody
 // @Router  /users/{user_id}/contracts/{contract_id} [get]
 func (h *handler) GetContract(w http.ResponseWriter, r *http.Request, userID uint64, contractID uint64) {
 	w.WriteHeader(http.StatusNotImplemented)
@@ -62,5 +62,12 @@ func (h *handler) PatchContract(w http.ResponseWriter, r *http.Request, userID u
 		return
 	}
 
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// @Accept  application/json
+// @Param   body body api.PutContractJSONRequestBody true ""
+// @Router  /users/{user_id}/contracts/{contract_id} [put]
+func (h *handler) PutContract(w http.ResponseWriter, r *http.Request, userID uint64, contractID uint64) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

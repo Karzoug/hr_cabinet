@@ -47,3 +47,18 @@ func (s *service) AddTraining(ctx context.Context, userID uint64, ed model.Train
 	}
 	return id, nil
 }
+
+func (s *service) UpdateTraining(ctx context.Context, userID uint64, tr model.Training) error {
+	const op = "user service: update training"
+
+	err := s.userRepository.UpdateTraining(ctx, userID, tr)
+	if err != nil {
+		switch {
+		case errors.Is(err, repoerr.ErrRecordNotFound):
+			return ErrTrainingNotFound
+		default:
+			return fmt.Errorf("%s: %w", op, err)
+		}
+	}
+	return nil
+}

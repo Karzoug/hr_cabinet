@@ -31,7 +31,7 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = h.passwordRecoveryService.InitChangePassword(ctx, initChngPswdReq.Login); err != nil {
+	if err = h.passwordRecoveryService.InitChangePassword(ctx, string(initChngPswdReq.Login)); err != nil {
 		switch {
 		case errors.Is(err, repoerr.ErrRecordNotFound):
 			srvErrors.ErrorMessage(w, r,

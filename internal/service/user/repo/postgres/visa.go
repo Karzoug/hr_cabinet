@@ -74,9 +74,9 @@ func (s *storage) AddVisa(ctx context.Context, userID, passportID uint64, mv mod
 		`INSERT INTO visas
 			("user_id", "passport_id", "number", 
 			"issued_state", "valid_from", "valid_to", "number_entries")
-			VALUES (@user_id, @passport_id, @number, @issued_state, 
+		VALUES (@user_id, @passport_id, @number, @issued_state, 
 			@valid_from, @valid_to, @number_entries)
-			RETURNING "id"`,
+		RETURNING "id"`,
 		pgx.NamedArgs{
 			"user_id":        userID,
 			"passport_id":    passportID,
@@ -100,4 +100,35 @@ func (s *storage) AddVisa(ctx context.Context, userID, passportID uint64, mv mod
 	}
 
 	return v.ID, nil
+}
+
+func (s *storage) UpdateVisa(ctx context.Context, userID, passportID uint64, mv model.Visa) error {
+	const op = "postrgresql user storage: update visa"
+
+	v := convertModelVisaToVisa(mv)
+
+	tag, err := s.DB.Exec(ctx, `UPDATE visas
+	SET number=@number, issued_state=@issued_state, 
+	valid_from=@valid_from, valid_to=@valid_to, number_entries=@number_entries
+	WHERE id=@id AND user_id=@user_id AND passport_id=@passport_id`,
+		pgx.NamedArgs{
+			"user_id":        userID,
+			"passport_id":    passportID,
+			"id":             v.ID,
+			"number":         v.Number,
+			"issued_state":   v.IssuedState,
+			"valid_to":       v.ValidTo,
+			"valid_from":     v.ValidFrom,
+			"number_entries": v.NumberEntries,
+		})
+
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	if tag.RowsAffected() == 0 { // it's ok for pgx
+		return fmt.Errorf("%s: %w and %w", op,
+			repoerr.ErrRecordNotModified,
+			repoerr.ErrRecordNotFound)
+	}
+	return nil
 }

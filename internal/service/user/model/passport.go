@@ -18,3 +18,8 @@ const (
 	PassportTypeForeigners PassportType = "foreigners"
 	PassportTypeInternal   PassportType = "internal"
 )
+
+type ExpandedPassport struct {
+	Passport
+	Visas []Visa
+}

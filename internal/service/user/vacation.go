@@ -47,3 +47,18 @@ func (s *service) AddVacation(ctx context.Context, userID uint64, v model.Vacati
 	}
 	return id, nil
 }
+
+func (s *service) UpdateVacation(ctx context.Context, userID uint64, v model.Vacation) error {
+	const op = "user service: update vacation"
+
+	err := s.userRepository.UpdateVacation(ctx, userID, v)
+	if err != nil {
+		switch {
+		case errors.Is(err, repoerr.ErrRecordNotFound):
+			return ErrVacationNotFound
+		default:
+			return fmt.Errorf("%s: %w", op, err)
+		}
+	}
+	return nil
+}
