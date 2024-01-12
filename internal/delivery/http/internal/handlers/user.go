@@ -5,10 +5,10 @@ import (
 	"net/http"
 
 	"github.com/muonsoft/validation/validator"
-	"github.com/oapi-codegen/runtime/types"
 
 	serr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
+	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/convert"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
@@ -60,7 +60,7 @@ func (h *handler) ListUsers(w http.ResponseWriter, r *http.Request, params api.L
 			nil)
 		return
 	}
-	ulist := convertUsersToAPIShortUsers(users)
+	ulist := convert.ToAPIShortUsers(users)
 	if err := response.JSON(w,
 		http.StatusOK,
 		api.ListUsersJSONResponseBody{
@@ -100,6 +100,14 @@ func (h *handler) AddUser(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} api.GetUserJSONResponseBody
 // @Router  /users/{user_id} [get]
 func (h *handler) GetUser(w http.ResponseWriter, r *http.Request, userID uint64, params api.GetUserParams) {
+	if params.Expanded != nil && *params.Expanded {
+		h.getExpandedUser(w, r, userID)
+		return
+	}
+	h.getUser(w, r, userID)
+}
+
+func (h *handler) getUser(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
 
 	u, err := h.userService.Get(ctx, userID)
@@ -116,7 +124,33 @@ func (h *handler) GetUser(w http.ResponseWriter, r *http.Request, userID uint64,
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, toAPIFullUser(u)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIFullUser(u)); err != nil {
+		serr.ReportError(r, err, false)
+		serr.ErrorMessage(w, r,
+			http.StatusInternalServerError,
+			http.StatusText(http.StatusInternalServerError),
+			nil)
+	}
+}
+
+func (h *handler) getExpandedUser(w http.ResponseWriter, r *http.Request, userID uint64) {
+	ctx := r.Context()
+
+	u, err := h.userService.GetExpanded(ctx, userID)
+	if err != nil {
+		if errors.Is(err, user.ErrUserNotFound) {
+			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrUserNotFound.Error(), nil)
+			return
+		}
+		serr.ReportError(r, err, false)
+		serr.ErrorMessage(w, r,
+			http.StatusInternalServerError,
+			http.StatusText(http.StatusInternalServerError),
+			nil)
+		return
+	}
+
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIExpandedFullUser(u)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -141,60 +175,4 @@ func (h *handler) PatchUser(w http.ResponseWriter, r *http.Request, userID uint6
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
-}
-
-func toAPIFullUser(u *model.User) api.FullUser {
-	var gr api.Gender
-	switch u.Gender {
-	case model.GenderFemale:
-		gr = api.GenderFemale
-	case model.GenderMale:
-		gr = api.GenderMale
-	}
-	return api.FullUser{
-		ShortUser: convertUserToAPIShortUser(u),
-		DateOfBirth: types.Date{
-			Time: u.DateOfBirth,
-		},
-		Gender: gr,
-		Grade:  u.Grade,
-		Insurance: api.Insurance{
-			Number: u.InsuranceNumber,
-		},
-		Nationality:         u.Nationality,
-		PlaceOfBirth:        u.PlaceOfBirth,
-		RegistrationAddress: u.RegistrationAddress,
-		ResidentialAddress:  u.ResidentialAddress,
-		Taxpayer: api.Taxpayer{
-			Number: u.TaxpayerNumber,
-		},
-	}
-}
-
-func convertUsersToAPIShortUsers(users []model.User) []api.ShortUser {
-	res := make([]api.ShortUser, len(users))
-	for i := 0; i < len(users); i++ {
-		res[i] = convertUserToAPIShortUser(&users[i])
-	}
-	return res
-}
-
-func convertUserToAPIShortUser(u *model.User) api.ShortUser {
-	var phn map[string]api.PhoneNumber
-	if u.PhoneNumbers != nil {
-		phn = make(map[string]api.PhoneNumber, len(u.PhoneNumbers))
-		for k, v := range u.PhoneNumbers {
-			phn[k] = api.PhoneNumber(v)
-		}
-	}
-	return api.ShortUser{
-		ID:           &u.ID,
-		FirstName:    u.FirstName,
-		LastName:     u.LastName,
-		MiddleName:   u.MiddleName,
-		Email:        u.Email,
-		Position:     u.Position,
-		Department:   u.Department,
-		PhoneNumbers: phn,
-	}
 }

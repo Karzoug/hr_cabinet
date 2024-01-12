@@ -6,14 +6,13 @@ import (
 	"strconv"
 
 	"github.com/muonsoft/validation/validator"
-	"github.com/oapi-codegen/runtime/types"
 
 	serr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
+	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/convert"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
-	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
 
 // @Produce application/json
@@ -36,7 +35,7 @@ func (h *handler) ListPassports(w http.ResponseWriter, r *http.Request, userID u
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convertPassportsToAPIPassports(psps)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIPassports(psps)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -64,7 +63,7 @@ func (h *handler) AddPassport(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	id, err := h.userService.AddPassport(ctx, userID, convertAPIPassportToPassport(p))
+	id, err := h.userService.AddPassport(ctx, userID, convert.ToModelPassport(p))
 	if err != nil {
 		if errors.Is(err, user.ErrUserNotFound) {
 			serr.ErrorMessage(w, r, http.StatusConflict, user.ErrUserNotFound.Error(), nil)
@@ -108,7 +107,7 @@ func (h *handler) GetPassport(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convertPassportToAPIPassport(p)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIPassport(p)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -133,53 +132,4 @@ func (h *handler) PatchPassport(w http.ResponseWriter, r *http.Request, userID u
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
-}
-
-func convertPassportsToAPIPassports(psps []model.Passport) []api.Passport {
-	res := make([]api.Passport, len(psps))
-	for i := 0; i < len(psps); i++ {
-		res[i] = convertPassportToAPIPassport(&psps[i])
-	}
-	return res
-}
-
-func convertPassportToAPIPassport(mp *model.Passport) api.Passport {
-	var pt api.PassportType
-	switch mp.Type {
-	case model.PassportTypeInternal:
-		pt = api.PassportTypeInternal
-	case model.PassportTypeExternal:
-		pt = api.PassportTypeExternal
-	case model.PassportTypeForeigners:
-		pt = api.PassportTypeForeigners
-	}
-
-	return api.Passport{
-		ID:         &mp.ID,
-		IssuedBy:   mp.IssuedBy,
-		IssuedDate: types.Date{Time: mp.IssuedDate},
-		Number:     mp.Number,
-		Type:       pt,
-		VisasCount: mp.VisasCount,
-	}
-}
-
-func convertAPIPassportToPassport(p api.Passport) model.Passport {
-	var pt model.PassportType
-	switch p.Type {
-	case api.PassportTypeInternal:
-		pt = model.PassportTypeInternal
-	case api.PassportTypeExternal:
-		pt = model.PassportTypeExternal
-	case api.PassportTypeForeigners:
-		pt = model.PassportTypeForeigners
-	}
-
-	mp := model.Passport{
-		IssuedBy:   p.IssuedBy,
-		IssuedDate: p.IssuedDate.Time,
-		Number:     p.Number,
-		Type:       pt,
-	}
-	return mp
 }

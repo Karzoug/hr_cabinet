@@ -31,3 +31,18 @@ const (
 	GenderFemale Gender = "female"
 	GenderMale   Gender = "male"
 )
+
+// ExpandedUser represents summary information about the user.
+type ExpandedUser struct {
+	User
+	Educations []Education
+	Trainings  []Training
+	Passports  []PassportWithVisas
+	// Contracts []Contract
+	// Vacations  []Vacation
+}
+
+type PassportWithVisas struct {
+	Passport
+	Visas []Visa
+}

@@ -6,14 +6,13 @@ import (
 	"strconv"
 
 	"github.com/muonsoft/validation/validator"
-	"github.com/oapi-codegen/runtime/types"
 
 	serr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
+	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/convert"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
-	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
 
 // @Produce application/json
@@ -36,7 +35,7 @@ func (h *handler) ListEducations(w http.ResponseWriter, r *http.Request, userID 
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convertEducationsToAPIEducations(eds)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIEducations(eds)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -64,7 +63,7 @@ func (h *handler) AddEducation(w http.ResponseWriter, r *http.Request, userID ui
 		return
 	}
 
-	id, err := h.userService.AddEducation(ctx, userID, convertAPIEducationToEducation(e))
+	id, err := h.userService.AddEducation(ctx, userID, convert.ToModelEducation(e))
 	if err != nil {
 		if errors.Is(err, user.ErrUserNotFound) {
 			serr.ErrorMessage(w, r, http.StatusConflict, user.ErrUserNotFound.Error(), nil)
@@ -106,7 +105,7 @@ func (h *handler) GetEducation(w http.ResponseWriter, r *http.Request, userID ui
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convertEducationToAPIEducation(ed)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIEducation(ed)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -134,34 +133,4 @@ func (h *handler) PatchEducation(w http.ResponseWriter, r *http.Request, userID 
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
-}
-
-func convertEducationsToAPIEducations(eds []model.Education) []api.Education {
-	res := make([]api.Education, len(eds))
-	for i := 0; i < len(eds); i++ {
-		res[i] = convertEducationToAPIEducation(&eds[i])
-	}
-	return res
-}
-
-func convertEducationToAPIEducation(med *model.Education) api.Education {
-	return api.Education{
-		DateFrom:          types.Date{Time: med.DateFrom},
-		DateTo:            types.Date{Time: med.DateTo},
-		ID:                &med.ID,
-		IssuedInstitution: med.IssuedInstitution,
-		Number:            med.Number,
-		Program:           med.Program,
-	}
-}
-
-func convertAPIEducationToEducation(e api.Education) model.Education {
-	med := model.Education{
-		DateFrom:          e.DateFrom.Time,
-		DateTo:            e.DateTo.Time,
-		IssuedInstitution: e.IssuedInstitution,
-		Number:            e.Number,
-		Program:           e.Program,
-	}
-	return med
 }

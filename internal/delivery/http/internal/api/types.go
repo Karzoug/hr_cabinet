@@ -278,6 +278,20 @@ func (u FullUser) Validate(ctx context.Context, validator *vld.Validator) error 
 	)
 }
 
+type ExpandedFullUser struct {
+	FullUser
+	Educations []Education         `json:"educations"`
+	Trainings  []Training          `json:"trainings"`
+	Passports  []PassportWithVisas `json:"passports"`
+	Contracts  []Contract          `json:"contracts"`
+	Vacations  []Vacation          `json:"vacations"`
+}
+
+type PassportWithVisas struct {
+	Passport
+	Visas []Visa `json:"visas"`
+}
+
 // Insurance represents employee insurance document data.
 type Insurance struct {
 	HasScan bool   `json:"has_scan,omitempty"`

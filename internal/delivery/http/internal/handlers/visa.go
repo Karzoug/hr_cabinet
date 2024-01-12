@@ -6,14 +6,13 @@ import (
 	"strconv"
 
 	"github.com/muonsoft/validation/validator"
-	"github.com/oapi-codegen/runtime/types"
 
 	serr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
+	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/convert"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
-	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
 
 // @Produce application/json
@@ -36,7 +35,7 @@ func (h *handler) ListVisas(w http.ResponseWriter, r *http.Request, userID uint6
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convertVisasToAPIVisas(vs)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIVisas(vs)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -64,7 +63,7 @@ func (h *handler) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 		return
 	}
 
-	id, err := h.userService.AddVisa(ctx, userID, passportID, convertAPIVisaToVisa(v))
+	id, err := h.userService.AddVisa(ctx, userID, passportID, convert.ToModelVisa(v))
 	if err != nil {
 		if errors.Is(err, user.ErrUserOrPassportNotFound) {
 			serr.ErrorMessage(w, r, http.StatusConflict, user.ErrUserOrPassportNotFound.Error(), nil)
@@ -109,7 +108,7 @@ func (h *handler) GetVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convertVisaToAPIVisa(p)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPIVisa(p)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -134,54 +133,4 @@ func (h *handler) PatchVisa(w http.ResponseWriter, r *http.Request, userID uint6
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
-}
-
-func convertVisasToAPIVisas(vs []model.Visa) []api.Visa {
-	res := make([]api.Visa, len(vs))
-	for i := 0; i < len(vs); i++ {
-		res[i] = convertVisaToAPIVisa(&vs[i])
-	}
-	return res
-}
-
-func convertVisaToAPIVisa(mv *model.Visa) api.Visa {
-	var ne api.VisaNumberEntries
-	switch mv.NumberEntries {
-	case model.VisaNumberEntriesN1:
-		ne = api.VisaNumberEntriesN1
-	case model.VisaNumberEntriesN2:
-		ne = api.VisaNumberEntriesN2
-	case model.VisaNumberEntriesMult:
-		ne = api.VisaNumberEntriesMult
-	}
-
-	return api.Visa{
-		ID:            &mv.ID,
-		IssuedState:   mv.IssuedState,
-		Number:        mv.Number,
-		NumberEntries: ne,
-		ValidFrom:     types.Date{Time: mv.ValidFrom},
-		ValidTo:       types.Date{Time: mv.ValidTo},
-	}
-}
-
-func convertAPIVisaToVisa(v api.Visa) model.Visa {
-	var ne model.VisaNumberEntries
-	switch v.NumberEntries {
-	case api.VisaNumberEntriesN1:
-		ne = model.VisaNumberEntriesN1
-	case api.VisaNumberEntriesN2:
-		ne = model.VisaNumberEntriesN2
-	case api.VisaNumberEntriesMult:
-		ne = model.VisaNumberEntriesMult
-	}
-
-	mv := model.Visa{
-		Number:        v.Number,
-		IssuedState:   v.IssuedState,
-		ValidTo:       v.ValidTo.Time,
-		ValidFrom:     v.ValidFrom.Time,
-		NumberEntries: ne,
-	}
-	return mv
 }

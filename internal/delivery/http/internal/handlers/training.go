@@ -6,14 +6,13 @@ import (
 	"strconv"
 
 	"github.com/muonsoft/validation/validator"
-	"github.com/oapi-codegen/runtime/types"
 
 	serr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
+	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/convert"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
-	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
 
 // @Produce application/json
@@ -36,7 +35,7 @@ func (h *handler) ListTrainings(w http.ResponseWriter, r *http.Request, userID u
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convertTrainingsToAPITrainings(eds)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPITrainings(eds)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -64,7 +63,7 @@ func (h *handler) AddTraining(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	id, err := h.userService.AddTraining(ctx, userID, convertAPITrainingToTraining(tr))
+	id, err := h.userService.AddTraining(ctx, userID, convert.ToModelTraining(tr))
 	if err != nil {
 		if errors.Is(err, user.ErrUserNotFound) {
 			serr.ErrorMessage(w, r, http.StatusConflict, user.ErrUserNotFound.Error(), nil)
@@ -108,7 +107,7 @@ func (h *handler) GetTraining(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, convertTrainingToAPITraining(ed)); err != nil {
+	if err := response.JSON(w, http.StatusOK, convert.ToAPITraining(ed)); err != nil {
 		serr.ReportError(r, err, false)
 		serr.ErrorMessage(w, r,
 			http.StatusInternalServerError,
@@ -136,33 +135,4 @@ func (h *handler) PatchTraining(w http.ResponseWriter, r *http.Request, userID u
 	}
 
 	w.WriteHeader(http.StatusNotImplemented)
-}
-
-func convertTrainingsToAPITrainings(eds []model.Training) []api.Training {
-	res := make([]api.Training, len(eds))
-	for i := 0; i < len(eds); i++ {
-		res[i] = convertTrainingToAPITraining(&eds[i])
-	}
-	return res
-}
-
-func convertTrainingToAPITraining(mtr *model.Training) api.Training {
-	return api.Training{
-		Cost:              (api.Money)(mtr.Cost),
-		DateFrom:          types.Date{Time: mtr.DateFrom},
-		DateTo:            types.Date{Time: mtr.DateTo},
-		ID:                &mtr.ID,
-		IssuedInstitution: mtr.IssuedInstitution,
-		Program:           mtr.Program,
-	}
-}
-
-func convertAPITrainingToTraining(tr api.Training) model.Training {
-	return model.Training{
-		Cost:              (uint64)(tr.Cost),
-		DateFrom:          tr.DateFrom.Time,
-		DateTo:            tr.DateTo.Time,
-		IssuedInstitution: tr.IssuedInstitution,
-		Program:           tr.Program,
-	}
 }

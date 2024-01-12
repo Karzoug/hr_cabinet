@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.23.0",
+        "version": "0.24.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -2702,152 +2702,16 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "required": [
-                                        "personal_data_processing"
-                                    ],
-                                    "allOf": [
+                                    "oneOf": [
                                         {
                                             "$ref": "#/components/schemas/FullUser"
                                         },
                                         {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "description": "",
-                                                    "type": "integer"
-                                                },
-                                                "passports": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Passport"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "number",
-                                                                    "issued_date",
-                                                                    "issued_by",
-                                                                    "type",
-                                                                    "has_scan",
-                                                                    "visas_count"
-                                                                ]
-                                                            },
-                                                            {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "visas": {
-                                                                        "description": "",
-                                                                        "type": "array",
-                                                                        "items": {
-                                                                            "allOf": [
-                                                                                {
-                                                                                    "$ref": "#/components/schemas/Visa"
-                                                                                },
-                                                                                {
-                                                                                    "required": [
-                                                                                        "id",
-                                                                                        "has_scan",
-                                                                                        "number",
-                                                                                        "issued_state",
-                                                                                        "valid_to",
-                                                                                        "valid_from",
-                                                                                        "number_entries"
-                                                                                    ]
-                                                                                }
-                                                                            ]
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "contracts": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Contract"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "has_scan",
-                                                                    "date_from",
-                                                                    "type",
-                                                                    "number"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "vacations": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Vacation"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "date_to"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "educations": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Education"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "date_to",
-                                                                    "issued_institution",
-                                                                    "has_scan",
-                                                                    "program"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                },
-                                                "trainings": {
-                                                    "description": "",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "allOf": [
-                                                            {
-                                                                "$ref": "#/components/schemas/Training"
-                                                            },
-                                                            {
-                                                                "required": [
-                                                                    "id",
-                                                                    "date_from",
-                                                                    "date_to",
-                                                                    "cost",
-                                                                    "issued_institution",
-                                                                    "program",
-                                                                    "has_scan"
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }
-                                                }
-                                            }
+                                            "$ref": "#/components/schemas/ExpandedFullUser"
                                         }
+                                    ],
+                                    "required": [
+                                        "personal_data_processing"
                                     ]
                                 },
                                 "examples": {
@@ -4002,6 +3866,158 @@
                     "issued_by": "Washington D.C. U.S.A.",
                     "type": "foreigners"
                 }
+            },
+            "ExpandedFullUser": {
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/FullUser"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "description": "",
+                                "type": "integer"
+                            },
+                            "passports": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/PassportWithVisas"
+                                }
+                            },
+                            "contracts": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contract"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "has_scan",
+                                                "date_from",
+                                                "type",
+                                                "number"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "vacations": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Vacation"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "date_from",
+                                                "date_to"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "educations": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Education"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "date_from",
+                                                "date_to",
+                                                "issued_institution",
+                                                "has_scan",
+                                                "program"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            },
+                            "trainings": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Training"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "date_from",
+                                                "date_to",
+                                                "cost",
+                                                "issued_institution",
+                                                "program",
+                                                "has_scan"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "PassportWithVisas": {
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Passport"
+                    },
+                    {
+                        "required": [
+                            "id",
+                            "number",
+                            "issued_date",
+                            "issued_by",
+                            "type",
+                            "has_scan",
+                            "visas_count",
+                            "visas"
+                        ]
+                    },
+                    {
+                        "properties": {
+                            "visas": {
+                                "type": "array",
+                                "items": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Visa"
+                                        },
+                                        {
+                                            "required": [
+                                                "id",
+                                                "has_scan",
+                                                "number",
+                                                "issued_state",
+                                                "valid_to",
+                                                "valid_from",
+                                                "number_entries"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                ]
             }
         },
         "responses": {

@@ -12,26 +12,27 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
+const listTrainingsQuery = `SELECT 
+id, title_of_program, title_of_institution, 
+cost, date_end, date_begin
+FROM trainings
+WHERE user_id = @user_id`
+
 func (s *storage) ListTrainings(ctx context.Context, userID uint64) ([]model.Training, error) {
 	const op = "postrgresql user storage: list trainings"
 
-	rows, err := s.DB.Query(ctx, `SELECT 
-	id, title_of_program, title_of_institution, 
-	cost, date_end, date_begin
-	FROM trainings
-	WHERE user_id = @user_id`,
-		pgx.NamedArgs{"user_id": userID})
+	rows, err := s.DB.Query(ctx, listTrainingsQuery, pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
-	eds, err := pgx.CollectRows[training](rows, pgx.RowToStructByNameLax[training])
+	trs, err := pgx.CollectRows[training](rows, pgx.RowToStructByNameLax[training])
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
-	trainings := make([]model.Training, len(eds))
-	for i, ed := range eds {
-		trainings[i] = convertTrainingToModelTraining(ed)
+	trainings := make([]model.Training, len(trs))
+	for i, tr := range trs {
+		trainings[i] = convertTrainingToModelTraining(tr)
 	}
 
 	return trainings, nil

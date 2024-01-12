@@ -11,6 +11,7 @@ type userRepository interface {
 	Exist(ctx context.Context, userID uint64) (bool, error)
 	List(ctx context.Context, params model.ListUsersParams) (users []model.User, totalCount int, err error)
 	Get(ctx context.Context, userID uint64) (*model.User, error)
+	GetExpandedUser(ctx context.Context, userID uint64) (*model.ExpandedUser, error)
 
 	GetEducation(ctx context.Context, userID, educationID uint64) (*model.Education, error)
 	ListEducations(ctx context.Context, userID uint64) ([]model.Education, error)

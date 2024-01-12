@@ -12,15 +12,16 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
+const listEducationsQuery = `SELECT 
+id, document_number, title_of_program, 
+title_of_institution, year_of_end, year_of_begin 
+FROM educations
+WHERE user_id = @user_id`
+
 func (s *storage) ListEducations(ctx context.Context, userID uint64) ([]model.Education, error) {
 	const op = "postrgresql user storage: list educations"
 
-	rows, err := s.DB.Query(ctx, `SELECT 
-	id, document_number, title_of_program, 
-	title_of_institution, year_of_end, year_of_begin 
-	FROM educations
-	WHERE user_id = @user_id`,
-		pgx.NamedArgs{"user_id": userID})
+	rows, err := s.DB.Query(ctx, listEducationsQuery, pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}

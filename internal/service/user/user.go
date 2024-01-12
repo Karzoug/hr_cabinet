@@ -27,6 +27,19 @@ func (s *service) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	return u, nil
 }
 
+func (s *service) GetExpanded(ctx context.Context, userID uint64) (*model.ExpandedUser, error) {
+	const op = "user service: get expanded"
+
+	eu, err := s.userRepository.GetExpandedUser(ctx, userID)
+	if err != nil {
+		if errors.Is(err, repoerr.ErrRecordNotFound) {
+			return nil, fmt.Errorf("%s: %w", op, ErrUserNotFound)
+		}
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	return eu, nil
+}
+
 func (s *service) List(ctx context.Context, params model.ListUsersParams) ([]model.User, int, error) {
 	const op = "user service: list users"
 
