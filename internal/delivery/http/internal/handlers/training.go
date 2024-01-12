@@ -78,7 +78,9 @@ func (h *handler) AddTraining(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	w.Header().Set("Location", api.BaseURL+"/users/"+strconv.FormatUint(userID, 10)+"/trainings/"+strconv.FormatUint(id, 10))
+	w.Header().Set("Location",
+		api.BaseURL+"/users/"+strconv.FormatUint(userID, 10)+
+			"/trainings/"+strconv.FormatUint(id, 10))
 }
 
 // @Router /users/{user_id}/trainings/{training_id} [delete]
@@ -92,7 +94,7 @@ func (h *handler) DeleteTraining(w http.ResponseWriter, r *http.Request, userID 
 func (h *handler) GetTraining(w http.ResponseWriter, r *http.Request, userID uint64, trainingID uint64) {
 	ctx := r.Context()
 
-	ed, err := h.userService.GetTraining(ctx, trainingID)
+	ed, err := h.userService.GetTraining(ctx, userID, trainingID)
 	if err != nil {
 		if errors.Is(err, user.ErrTrainingNotFound) {
 			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrTrainingNotFound.Error(), nil)

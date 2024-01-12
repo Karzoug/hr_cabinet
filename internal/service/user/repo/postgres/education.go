@@ -37,15 +37,18 @@ func (s *storage) ListEducations(ctx context.Context, userID uint64) ([]model.Ed
 	return educations, nil
 }
 
-func (s *storage) GetEducation(ctx context.Context, educationID uint64) (*model.Education, error) {
+func (s *storage) GetEducation(ctx context.Context, userID, educationID uint64) (*model.Education, error) {
 	const op = "postrgresql user storage: get education"
 
 	rows, err := s.DB.Query(ctx, `SELECT 
 		id, document_number, title_of_program, 
 		title_of_institution, year_of_end, year_of_begin 
 		FROM educations
-		WHERE id = @education_id`,
-		pgx.NamedArgs{"education_id": educationID})
+		WHERE id = @education_id AND user_id = @user_id`,
+		pgx.NamedArgs{
+			"education_id": educationID,
+			"user_id":      userID,
+		})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}

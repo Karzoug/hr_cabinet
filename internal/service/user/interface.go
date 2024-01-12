@@ -12,17 +12,21 @@ type userRepository interface {
 	List(ctx context.Context, params model.ListUsersParams) (users []model.User, totalCount int, err error)
 	Get(ctx context.Context, userID uint64) (*model.User, error)
 
-	GetEducation(ctx context.Context, educationID uint64) (*model.Education, error)
+	GetEducation(ctx context.Context, userID, educationID uint64) (*model.Education, error)
 	ListEducations(ctx context.Context, userID uint64) ([]model.Education, error)
 	AddEducation(ctx context.Context, userID uint64, ed model.Education) (uint64, error)
 
 	ListTrainings(ctx context.Context, userID uint64) ([]model.Training, error)
-	GetTraining(ctx context.Context, trainingID uint64) (*model.Training, error)
+	GetTraining(ctx context.Context, userID, trainingID uint64) (*model.Training, error)
 	AddTraining(ctx context.Context, userID uint64, tr model.Training) (uint64, error)
 
 	ListPassports(ctx context.Context, userID uint64) ([]model.Passport, error)
-	GetPassport(ctx context.Context, passportID uint64) (*model.Passport, error)
+	GetPassport(ctx context.Context, userID, passportID uint64) (*model.Passport, error)
 	AddPassport(ctx context.Context, userID uint64, p model.Passport) (uint64, error)
+
+	ListVisas(ctx context.Context, userID, passportID uint64) ([]model.Visa, error)
+	GetVisa(ctx context.Context, userID, passportID, visaID uint64) (*model.Visa, error)
+	AddVisa(ctx context.Context, userID, passportID uint64, mv model.Visa) (uint64, error)
 }
 
 type s3FileRepository interface {

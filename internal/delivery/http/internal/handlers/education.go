@@ -92,7 +92,7 @@ func (h *handler) DeleteEducation(w http.ResponseWriter, r *http.Request, userID
 func (h *handler) GetEducation(w http.ResponseWriter, r *http.Request, userID uint64, educationID uint64) {
 	ctx := r.Context()
 
-	ed, err := h.userService.GetEducation(ctx, educationID)
+	ed, err := h.userService.GetEducation(ctx, userID, educationID)
 	if err != nil {
 		if errors.Is(err, user.ErrEducationNotFound) {
 			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrEducationNotFound.Error(), nil)

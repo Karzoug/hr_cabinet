@@ -106,7 +106,13 @@ func New(cfg Config, envType env.Type,
 			} else {
 				msg = err.Error()
 			}
-			response.JSON(w, http.StatusBadRequest, api.Error{Message: msg})
+			if err := response.JSON(w, http.StatusBadRequest, api.Error{Message: msg}); err != nil {
+				srvErrors.ReportError(r, err, false)
+				srvErrors.ErrorMessage(w, r,
+					http.StatusInternalServerError,
+					http.StatusText(http.StatusInternalServerError),
+					nil)
+			}
 		},
 	})
 

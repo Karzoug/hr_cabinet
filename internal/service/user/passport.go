@@ -9,10 +9,10 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-func (s *service) GetPassport(ctx context.Context, passportID uint64) (*model.Passport, error) {
+func (s *service) GetPassport(ctx context.Context, userID, passportID uint64) (*model.Passport, error) {
 	const op = "user service: get passport"
 
-	p, err := s.userRepository.GetPassport(ctx, passportID)
+	p, err := s.userRepository.GetPassport(ctx, userID, passportID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return nil, fmt.Errorf("%s: %w", op, ErrPassportNotFound)

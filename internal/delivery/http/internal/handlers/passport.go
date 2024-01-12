@@ -78,7 +78,9 @@ func (h *handler) AddPassport(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	w.Header().Set("Location", api.BaseURL+"/users/"+strconv.FormatUint(userID, 10)+"/passports/"+strconv.FormatUint(id, 10))
+	w.Header().Set("Location",
+		api.BaseURL+"/users/"+strconv.FormatUint(userID, 10)+
+			"/passports/"+strconv.FormatUint(id, 10))
 }
 
 // @Router /users/{user_id}/passports/{passport_id} [delete]
@@ -92,7 +94,7 @@ func (h *handler) DeletePassport(w http.ResponseWriter, r *http.Request, userID 
 func (h *handler) GetPassport(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64) {
 	ctx := r.Context()
 
-	p, err := h.userService.GetPassport(ctx, passportID)
+	p, err := h.userService.GetPassport(ctx, userID, passportID)
 	if err != nil {
 		if errors.Is(err, user.ErrPassportNotFound) {
 			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrPassportNotFound.Error(), nil)
