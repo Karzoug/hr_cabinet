@@ -32,6 +32,10 @@ type UserService interface {
 	GetVisa(ctx context.Context, userID, passportID, visaID uint64) (*umodel.Visa, error)
 	ListVisas(ctx context.Context, userID, passportID uint64) ([]umodel.Visa, error)
 	AddVisa(ctx context.Context, userID, passportID uint64, mv umodel.Visa) (uint64, error)
+
+	GetVacation(ctx context.Context, userID, vacationID uint64) (*umodel.Vacation, error)
+	ListVacations(ctx context.Context, userID uint64) ([]umodel.Vacation, error)
+	AddVacation(ctx context.Context, userID uint64, v umodel.Vacation) (uint64, error)
 }
 
 type AuthService interface {

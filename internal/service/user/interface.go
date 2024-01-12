@@ -28,6 +28,10 @@ type userRepository interface {
 	ListVisas(ctx context.Context, userID, passportID uint64) ([]model.Visa, error)
 	GetVisa(ctx context.Context, userID, passportID, visaID uint64) (*model.Visa, error)
 	AddVisa(ctx context.Context, userID, passportID uint64, mv model.Visa) (uint64, error)
+
+	GetVacation(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error)
+	ListVacations(ctx context.Context, userID uint64) ([]model.Vacation, error)
+	AddVacation(ctx context.Context, userID uint64, v model.Vacation) (uint64, error)
 }
 
 type s3FileRepository interface {

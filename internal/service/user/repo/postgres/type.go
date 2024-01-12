@@ -202,3 +202,13 @@ func convertModelVisaToVisa(mv model.Visa) visa {
 		NumberEntries: mv.NumberEntries,
 	}
 }
+
+type vacation struct {
+	ID        uint64    `db:"id"`
+	DateBegin time.Time `db:"date_begin"`
+	DateEnd   time.Time `db:"date_end"`
+}
+
+func convertVacationToModelVacation(v vacation) model.Vacation {
+	return model.Vacation(v)
+}

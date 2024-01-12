@@ -1,9 +1,10 @@
 package convert
 
 import (
+	"github.com/oapi-codegen/runtime/types"
+
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
-	"github.com/oapi-codegen/runtime/types"
 )
 
 func ToAPIEducations(eds []model.Education) []api.Education {
