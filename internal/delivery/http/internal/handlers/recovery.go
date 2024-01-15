@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/muonsoft/validation/validator"
@@ -9,7 +8,6 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
-	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
 // @Accept  application/json
@@ -32,17 +30,7 @@ func (h *handler) InitChangePassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = h.passwordRecoveryService.InitChangePassword(ctx, string(initChngPswdReq.Login)); err != nil {
-		switch {
-		case errors.Is(err, repoerr.ErrRecordNotFound):
-			srverr.ResponseError(w, r,
-				http.StatusNotFound,
-				http.StatusText(http.StatusNotFound))
-		default:
-			srverr.LogError(r, err, false)
-			srverr.ResponseError(w, r,
-				http.StatusInternalServerError,
-				srverr.ErrInternalServerErrorMsg)
-		}
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 
@@ -70,17 +58,7 @@ func (h *handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 
 	err = h.passwordRecoveryService.ChangePassword(ctx, chPsw.Key, chPsw.Password)
 	if err != nil {
-		switch {
-		case errors.Is(err, repoerr.ErrRecordNotFound):
-			srverr.ResponseError(w, r,
-				http.StatusNotFound,
-				http.StatusText(http.StatusNotFound))
-		default:
-			srverr.LogError(r, err, false)
-			srverr.ResponseError(w, r,
-				http.StatusInternalServerError,
-				srverr.ErrInternalServerErrorMsg)
-		}
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 

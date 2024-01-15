@@ -55,6 +55,8 @@ func (s *service) ListShortUserInfo(ctx context.Context, params model.ListUsersP
 func (s *service) Add(ctx context.Context, u model.User) (uint64, error) {
 	const op = "user service: add user"
 
+	// TODO: add user to authorizations, use transaction
+
 	id, err := s.userRepository.Add(ctx, u)
 	if err != nil {
 		switch {

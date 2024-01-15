@@ -17,9 +17,9 @@ type recoveryRepository interface {
 }
 
 type keyRepository interface {
-	Set(ctx context.Context, key string, value int, duration time.Duration) error
-	Get(ctx context.Context, key string) (int, error)
-	Delete(ctx context.Context, key string) error
+	Set(key string, value int, duration time.Duration) error
+	Get(key string) (int, bool)
+	Delete(key string) error
 }
 
 // passwordVerification абстракция хеширования паролей.

@@ -72,7 +72,7 @@ jobs:
           echo MAIL_SMTP_HOST=${{ secrets.MAIL_SMTP_HOST }} >> ${{ env.ENV_FILE_PATH }} && \
           echo MAIL_SMTP_PORT=${{ secrets.MAIL_SMTP_PORT }} >> ${{ env.ENV_FILE_PATH }} && \
           echo MAIL_UI_PORT=${{ secrets.MAIL_UI_PORT }} >> ${{ env.ENV_FILE_PATH }} && \
-          echo DOMAIN=${{ secrets.DOMAIN }} >> ${{ env.ENV_FILE_PATH }} && \
+          echo RECOVERY_DOMAIN=${{ secrets.DOMAIN }} >> ${{ env.ENV_FILE_PATH }} && \
           chmod 600 ${{ env.ENV_FILE_PATH }} && \
           ls -la ${{ env.DEPLOY_DIRECTORY }}"
 
