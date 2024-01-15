@@ -10,6 +10,7 @@ const (
 	Conflict
 	PermissionDenied
 	Unauthenticated
+	ContentTooLarge
 )
 
 type Error struct {

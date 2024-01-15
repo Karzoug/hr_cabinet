@@ -35,6 +35,12 @@ func LogError(r *http.Request, err error, withStack bool) {
 func ResponseError(w http.ResponseWriter, r *http.Request, status int, errMessage string) {
 	message := strings.ToUpper(errMessage[:1]) + errMessage[1:]
 	w.WriteHeader(status)
+	if status == http.StatusNotModified {
+		// RFC 2616:
+		// The 304 response MUST NOT contain a message-body,
+		// and thus is always terminated by the first empty line after the header fields.
+		return
+	}
 	if err := response.JSON(w,
 		status,
 		api.Error{Message: message}); err != nil {
@@ -75,10 +81,14 @@ func serviceStatusToHTTPStatusCode(err *service.Error) int {
 		return http.StatusBadRequest
 	case service.NotModified:
 		return http.StatusNotModified
+	case service.Conflict:
+		return http.StatusConflict
 	case service.PermissionDenied:
 		return http.StatusForbidden
 	case service.Unauthenticated:
 		return http.StatusUnauthorized
+	case service.ContentTooLarge:
+		return http.StatusRequestEntityTooLarge
 	default:
 		return http.StatusInternalServerError
 	}

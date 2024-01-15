@@ -39,7 +39,7 @@ func (s *service) UploadPhoto(ctx context.Context, userID uint64, f model.File) 
 	const op = "user service: upload photo"
 
 	if f.Size > MaxPhotoSize {
-		return serr.NewError(serr.InvalidArgument, "photo file size too large")
+		return serr.NewError(serr.ContentTooLarge, "photo file size too large")
 	}
 
 	if exist, err := s.userRepository.Exist(ctx, userID); err != nil {
