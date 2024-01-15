@@ -6,9 +6,14 @@ import (
 	"net/http"
 	"strconv"
 
-	serr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
+	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	uservice "github.com/Employee-s-file-cabinet/backend/internal/service/user"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
+)
+
+const (
+	errLimitRequestBodySizeMsg   = "request body too large"
+	errBadContentLengthHeaderMsg = "bad content length header: missing or not a number"
 )
 
 // @Produce  image/png
@@ -19,20 +24,7 @@ func (h *handler) DownloadPhoto(w http.ResponseWriter, r *http.Request, userID u
 
 	f, closeFn, err := h.userService.DownloadPhoto(ctx, userID, r.Header.Get("If-None-Match"))
 	if err != nil {
-		switch {
-		case errors.Is(err, uservice.ErrUserNotFound):
-			serr.ErrorMessage(w, r, http.StatusNotFound, uservice.ErrUserNotFound.Error(), nil)
-		case errors.Is(err, uservice.ErrPhotoFileNotFound):
-			serr.ErrorMessage(w, r, http.StatusNotFound, uservice.ErrPhotoFileNotFound.Error(), nil)
-		case errors.Is(err, uservice.ErrPhotoFileNotModified):
-			w.WriteHeader(http.StatusNotModified)
-		default:
-			serr.ReportError(r, err, false)
-			serr.ErrorMessage(w, r,
-				http.StatusInternalServerError,
-				http.StatusText(http.StatusInternalServerError),
-				nil)
-		}
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 	defer closeFn()
@@ -42,11 +34,10 @@ func (h *handler) DownloadPhoto(w http.ResponseWriter, r *http.Request, userID u
 		w.Header().Set("ETag", f.Hash)
 	}
 	if _, err := io.Copy(w, f); err != nil {
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
+		srverr.LogError(r, err, false)
+		srverr.ResponseError(w, r,
 			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+			srverr.ErrInternalServerErrorMsg)
 		return
 	}
 }
@@ -71,18 +62,16 @@ func (h *handler) UploadPhoto(w http.ResponseWriter, r *http.Request, userID uin
 		}
 	}
 	if isBadContentLengthHeader {
-		serr.ErrorMessage(w, r,
+		srverr.ResponseError(w, r,
 			http.StatusBadRequest,
-			serr.ErrBadContentLengthHeader.Error(),
-			nil)
+			errBadContentLengthHeaderMsg)
 		return
 	}
 
 	if length > uservice.MaxPhotoSize {
-		serr.ErrorMessage(w, r,
+		srverr.ResponseError(w, r,
 			http.StatusBadRequest,
-			serr.ErrLimitRequestBodySize.Error(),
-			nil)
+			errLimitRequestBodySizeMsg)
 		return
 	}
 
@@ -95,17 +84,15 @@ func (h *handler) UploadPhoto(w http.ResponseWriter, r *http.Request, userID uin
 		ContentType: r.Header.Get("Content-Type"),
 	}); err != nil {
 		if errors.Is(err, new(http.MaxBytesError)) {
-			serr.ErrorMessage(w, r,
+			srverr.ResponseError(w, r,
 				http.StatusBadRequest,
-				serr.ErrLimitRequestBodySize.Error(),
-				nil)
+				errLimitRequestBodySizeMsg)
 			return
 		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
+		srverr.LogError(r, err, false)
+		srverr.ResponseError(w, r,
 			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+			srverr.ErrInternalServerErrorMsg)
 		return
 	}
 }

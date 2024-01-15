@@ -52,7 +52,7 @@ func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	u, err := pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByNameLax[user])
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+			return nil, repoerr.ErrRecordNotFound
 		}
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -98,7 +98,7 @@ func (s *storage) GetExpandedUser(ctx context.Context, userID uint64) (*model.Ex
 	u, err := pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByNameLax[user])
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+			return nil, repoerr.ErrRecordNotFound
 		}
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -274,10 +274,10 @@ func (s *storage) Add(ctx context.Context, mu model.User) (uint64, error) {
 	if err := row.Scan(&user.ID); err != nil {
 		if strings.Contains(err.Error(), "23") { // Integrity Constraint Violation
 			if strings.Contains(err.Error(), "department_id") {
-				return 0, fmt.Errorf("%s: the department does not exist: %w", op, repoerr.ErrRecordNotFound)
+				return 0, fmt.Errorf("the department does not exist: %w", repoerr.ErrConflict)
 			}
 			if strings.Contains(err.Error(), "passport_id") {
-				return 0, fmt.Errorf("%s: the position does not exist: %w", op, repoerr.ErrRecordNotFound)
+				return 0, fmt.Errorf("the position does not exist: %w", repoerr.ErrConflict)
 			}
 		}
 		return 0, fmt.Errorf("%s: %w", op, err)
@@ -323,19 +323,17 @@ func (s *storage) Update(ctx context.Context, mu model.User) error {
 	if err != nil {
 		if strings.Contains(err.Error(), "23") { // Integrity Constraint Violation
 			if strings.Contains(err.Error(), "department_id") {
-				return fmt.Errorf("%s: the department does not exist: %w", op, repoerr.ErrRecordNotFound)
+				return fmt.Errorf("the department does not exist: %w", repoerr.ErrConflict)
 			}
 			if strings.Contains(err.Error(), "passport_id") {
-				return fmt.Errorf("%s: the position does not exist: %w", op, repoerr.ErrRecordNotFound)
+				return fmt.Errorf("the position does not exist: %w", repoerr.ErrConflict)
 			}
 		}
 		return fmt.Errorf("%s: %w", op, err)
 	}
 
 	if tag.RowsAffected() == 0 { // it's ok for pgx
-		return fmt.Errorf("%s: %w and %w", op,
-			repoerr.ErrRecordNotModified,
-			repoerr.ErrRecordNotFound)
+		return repoerr.ErrRecordNotAffected
 	}
 	return nil
 }

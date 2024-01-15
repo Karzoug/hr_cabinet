@@ -15,7 +15,7 @@ func (s *service) Login(ctx context.Context, login, password string) (string, er
 
 	authnData, err := s.authRepository.Get(ctx, login)
 	if errors.Is(err, repoerr.ErrRecordNotFound) {
-		return "", fmt.Errorf("%s: %w", op, ErrForbidden)
+		return "", errUnauthenticated
 	}
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
@@ -23,7 +23,7 @@ func (s *service) Login(ctx context.Context, login, password string) (string, er
 
 	err = s.passwordVerificator.Check(password, authnData.PasswordHash)
 	if err != nil {
-		return "", fmt.Errorf("%s: %w", op, ErrForbidden)
+		return "", errUnauthenticated
 	}
 
 	t, err := s.tokenManager.Create(

@@ -85,7 +85,7 @@ func (s *storage) Download(ctx context.Context, prefix, name, etag string) (s3.F
 		case http.StatusNotFound:
 			return s3.File{}, nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
 		case http.StatusNotModified:
-			return s3.File{}, nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotModified)
+			return s3.File{}, nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotModifiedSince)
 		default:
 			return s3.File{}, nil, fmt.Errorf("%s: %w", op, err)
 		}

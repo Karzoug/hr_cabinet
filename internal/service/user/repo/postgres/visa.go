@@ -58,7 +58,7 @@ func (s *storage) GetVisa(ctx context.Context, userID, passportID, visaID uint64
 	}
 	p, err := pgx.CollectExactlyOneRow[visa](rows, pgx.RowToStructByNameLax[visa])
 	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+		return nil, repoerr.ErrRecordNotFound
 	}
 
 	med := convertVisaToModelVisa(p)
@@ -90,10 +90,10 @@ func (s *storage) AddVisa(ctx context.Context, userID, passportID uint64, mv mod
 	if err := row.Scan(&v.ID); err != nil {
 		if strings.Contains(err.Error(), "23") { // Integrity Constraint Violation
 			if strings.Contains(err.Error(), "user_id") {
-				return 0, fmt.Errorf("%s: the user does not exist: %w", op, repoerr.ErrRecordNotFound)
+				return 0, fmt.Errorf("the user does not exist: %w", repoerr.ErrConflict)
 			}
 			if strings.Contains(err.Error(), "passport_id") {
-				return 0, fmt.Errorf("%s: the passport does not exist: %w", op, repoerr.ErrRecordNotFound)
+				return 0, fmt.Errorf("the passport does not exist: %w", repoerr.ErrConflict)
 			}
 		}
 		return 0, fmt.Errorf("%s: %w", op, err)
@@ -126,9 +126,7 @@ func (s *storage) UpdateVisa(ctx context.Context, userID, passportID uint64, mv 
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	if tag.RowsAffected() == 0 { // it's ok for pgx
-		return fmt.Errorf("%s: %w and %w", op,
-			repoerr.ErrRecordNotModified,
-			repoerr.ErrRecordNotFound)
+		return repoerr.ErrRecordNotAffected
 	}
 	return nil
 }

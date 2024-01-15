@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	serr "github.com/Employee-s-file-cabinet/backend/internal/service"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
@@ -12,6 +13,7 @@ import (
 const (
 	MaxPhotoSize  = 20 << 20 // bytes
 	photoFileName = "photo"
+	//errUserNotFoundText = "user not found"
 )
 
 func (s *service) Get(ctx context.Context, userID uint64) (*model.User, error) {
@@ -20,7 +22,7 @@ func (s *service) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	u, err := s.userRepository.Get(ctx, userID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
-			return nil, fmt.Errorf("%s: %w", op, ErrUserNotFound)
+			return nil, serr.NewError(serr.NotFound, "user not found")
 		}
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -33,7 +35,7 @@ func (s *service) GetExpanded(ctx context.Context, userID uint64) (*model.Expand
 	eu, err := s.userRepository.GetExpandedUser(ctx, userID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
-			return nil, fmt.Errorf("%s: %w", op, ErrUserNotFound)
+			return nil, serr.NewError(serr.NotFound, "user not found")
 		}
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -56,8 +58,8 @@ func (s *service) Add(ctx context.Context, u model.User) (uint64, error) {
 	id, err := s.userRepository.Add(ctx, u)
 	if err != nil {
 		switch {
-		case errors.Is(err, repoerr.ErrRecordNotFound):
-			return 0, fmt.Errorf("%s: %w", op, ErrDepartmentOrPositionNotFound)
+		case errors.Is(err, repoerr.ErrConflict):
+			return 0, serr.NewError(serr.Conflict, "not added: department or position not found")
 		default:
 			return 0, fmt.Errorf("%s: %w", op, err)
 		}
@@ -71,10 +73,10 @@ func (s *service) Update(ctx context.Context, user model.User) error {
 	err := s.userRepository.Update(ctx, user)
 	if err != nil {
 		switch {
-		case errors.Is(err, repoerr.ErrRecordNotModified):
-			return ErrUserNotFound
-		case errors.Is(err, repoerr.ErrRecordNotFound):
-			return ErrDepartmentOrPositionNotFound
+		case errors.Is(err, repoerr.ErrRecordNotAffected):
+			return serr.NewError(serr.Conflict, "not updated: user problem")
+		case errors.Is(err, repoerr.ErrConflict):
+			return serr.NewError(serr.Conflict, "not updated: department/position problem")
 		default:
 			return fmt.Errorf("%s: %w", op, err)
 		}

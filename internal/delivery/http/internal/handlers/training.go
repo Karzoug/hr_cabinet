@@ -1,18 +1,16 @@
 package handlers
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/muonsoft/validation/validator"
 
-	serr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/convert"
+	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
-	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
 )
 
 // @Produce application/json
@@ -23,24 +21,15 @@ func (h *handler) ListTrainings(w http.ResponseWriter, r *http.Request, userID u
 
 	trs, err := h.userService.ListTrainings(ctx, userID)
 	if err != nil {
-		if errors.Is(err, user.ErrUserNotFound) {
-			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrUserNotFound.Error(), nil)
-			return
-		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 
 	if err := response.JSON(w, http.StatusOK, convert.ToAPIListTrainings(trs)); err != nil {
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
+		srverr.LogError(r, err, false)
+		srverr.ResponseError(w, r,
 			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+			srverr.ErrInternalServerErrorMsg)
 	}
 }
 
@@ -53,33 +42,26 @@ func (h *handler) AddTraining(w http.ResponseWriter, r *http.Request, userID uin
 
 	var tr api.AddTrainingJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &tr); err != nil {
-		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := tr.Validate(ctx, validator.Instance()); err != nil {
 		msg := api.ValidationErrorMessage(err)
-		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, msg)
 		return
 	}
 
 	id, err := h.userService.AddTraining(ctx, userID, convert.FromAPIAddTrainingRequest(tr))
 	if err != nil {
-		if errors.Is(err, user.ErrUserNotFound) {
-			serr.ErrorMessage(w, r, http.StatusConflict, user.ErrUserNotFound.Error(), nil)
-			return
-		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 
 	w.Header().Set("Location",
 		api.BaseURL+"/users/"+strconv.FormatUint(userID, 10)+
 			"/trainings/"+strconv.FormatUint(id, 10))
+	w.WriteHeader(http.StatusCreated)
 }
 
 // @Router /users/{user_id}/trainings/{training_id} [delete]
@@ -95,24 +77,15 @@ func (h *handler) GetTraining(w http.ResponseWriter, r *http.Request, userID uin
 
 	tr, err := h.userService.GetTraining(ctx, userID, trainingID)
 	if err != nil {
-		if errors.Is(err, user.ErrTrainingNotFound) {
-			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrTrainingNotFound.Error(), nil)
-			return
-		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 
 	if err := response.JSON(w, http.StatusOK, convert.ToAPIGetTrainingResponse(tr)); err != nil {
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
+		srverr.LogError(r, err, false)
+		srverr.ResponseError(w, r,
 			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+			srverr.ErrInternalServerErrorMsg)
 	}
 }
 
@@ -124,13 +97,13 @@ func (h *handler) PatchTraining(w http.ResponseWriter, r *http.Request, userID u
 
 	var patch api.PatchTrainingJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &patch); err != nil {
-		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := patch.Validate(ctx, validator.Instance()); err != nil {
 		msg := api.ValidationErrorMessage(err)
-		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, msg)
 		return
 	}
 
@@ -145,27 +118,19 @@ func (h *handler) PutTraining(w http.ResponseWriter, r *http.Request, userID, tr
 
 	var tr api.PutTrainingJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &tr); err != nil {
-		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := tr.Validate(ctx, validator.Instance()); err != nil {
 		msg := api.ValidationErrorMessage(err)
-		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, msg)
 		return
 	}
 
 	err := h.userService.UpdateTraining(ctx, userID, convert.FromAPIPutTrainingRequest(trainingID, tr))
 	if err != nil {
-		if errors.Is(err, user.ErrTrainingNotFound) {
-			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrTrainingNotFound.Error(), nil)
-			return
-		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 }

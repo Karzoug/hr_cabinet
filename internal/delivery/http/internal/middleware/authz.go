@@ -5,9 +5,8 @@ import (
 	"regexp"
 	"strings"
 
-	srvErrors "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
-	"github.com/Employee-s-file-cabinet/backend/internal/service/auth"
+	srverrors "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/auth/model/token"
 
 	"github.com/casbin/casbin/v2"
@@ -36,9 +35,9 @@ func (a *Authorizer) AuthorizeMiddleware(next http.Handler) http.Handler {
 		if !matched {
 			cookie, err := r.Cookie(cookieName)
 			if err != nil {
-				srvErrors.ErrorMessage(w, r,
+				srverrors.ResponseError(w, r,
 					http.StatusForbidden,
-					http.ErrNoCookie.Error(), nil)
+					http.ErrNoCookie.Error())
 				return
 			}
 
@@ -46,9 +45,9 @@ func (a *Authorizer) AuthorizeMiddleware(next http.Handler) http.Handler {
 
 			payload, err := a.TokenManager.Payload(ecabinetToken)
 			if err != nil {
-				srvErrors.ErrorMessage(w, r,
+				srverrors.ResponseError(w, r,
 					http.StatusUnauthorized,
-					auth.ErrTokenIsInvalid.Error(), nil)
+					"access token is missing or invalid")
 				return
 			}
 
@@ -58,9 +57,9 @@ func (a *Authorizer) AuthorizeMiddleware(next http.Handler) http.Handler {
 			result, _ := a.Enforcer.Enforce(user, path, method)
 
 			if !result {
-				srvErrors.ErrorMessage(w, r,
+				srverrors.ResponseError(w, r,
 					http.StatusUnauthorized,
-					auth.ErrUserNotAllowed.Error(), nil)
+					"user is not allowed to access")
 				return
 			}
 		}

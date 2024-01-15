@@ -54,7 +54,7 @@ func (s *storage) GetPassport(ctx context.Context, userID, passportID uint64) (*
 	}
 	p, err := pgx.CollectExactlyOneRow[passport](rows, pgx.RowToStructByNameLax[passport])
 	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+		return nil, repoerr.ErrRecordNotFound
 	}
 
 	med := convertPassportToModelPassport(p)
@@ -81,7 +81,7 @@ func (s *storage) AddPassport(ctx context.Context, userID uint64, mp model.Passp
 	if err := row.Scan(&p.ID); err != nil {
 		if strings.Contains(err.Error(), "23") && // Integrity Constraint Violation
 			strings.Contains(err.Error(), "user_id") {
-			return 0, fmt.Errorf("%s: the user does not exist: %w", op, repoerr.ErrRecordNotFound)
+			return 0, fmt.Errorf("the user does not exist: %w", repoerr.ErrConflict)
 		}
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
@@ -113,9 +113,7 @@ func (s *storage) UpdatePassport(ctx context.Context, userID uint64, mp model.Pa
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	if tag.RowsAffected() == 0 { // it's ok for pgx
-		return fmt.Errorf("%s: %w and %w", op,
-			repoerr.ErrRecordNotModified,
-			repoerr.ErrRecordNotFound)
+		return repoerr.ErrRecordNotAffected
 	}
 	return nil
 }

@@ -55,7 +55,7 @@ func (s *storage) GetEducation(ctx context.Context, userID, educationID uint64) 
 	}
 	ed, err := pgx.CollectExactlyOneRow[education](rows, pgx.RowToStructByNameLax[education])
 	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+		return nil, repoerr.ErrRecordNotFound
 	}
 
 	med := convertEducationToModelEducation(ed)
@@ -83,7 +83,7 @@ func (s *storage) AddEducation(ctx context.Context, userID uint64, ed model.Educ
 	if err := row.Scan(&ed.ID); err != nil {
 		if strings.Contains(err.Error(), "23") && // Integrity Constraint Violation
 			strings.Contains(err.Error(), "user_id") {
-			return 0, fmt.Errorf("%s: the user does not exist: %w", op, repoerr.ErrRecordNotFound)
+			return 0, fmt.Errorf("the user does not exist: %w", repoerr.ErrConflict)
 		}
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
@@ -115,9 +115,7 @@ func (s *storage) UpdateEducation(ctx context.Context, userID uint64, ed model.E
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	if tag.RowsAffected() == 0 { // it's ok for pgx
-		return fmt.Errorf("%s: %w and %w", op,
-			repoerr.ErrRecordNotModified,
-			repoerr.ErrRecordNotFound)
+		return repoerr.ErrRecordNotAffected
 	}
 	return nil
 }

@@ -31,7 +31,7 @@ func (s *storage) GetVacation(ctx context.Context, userID, vacationID uint64) (*
 
 	v, err := pgx.CollectExactlyOneRow[vacation](rows, pgx.RowToStructByNameLax[vacation])
 	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+		return nil, repoerr.ErrRecordNotFound
 	}
 
 	mv := convertVacationToModelVacation(v)
@@ -81,7 +81,7 @@ func (s *storage) AddVacation(ctx context.Context, userID uint64, v model.Vacati
 	if err := row.Scan(&v.ID); err != nil {
 		if strings.Contains(err.Error(), "23") && // Integrity Constraint Violation
 			strings.Contains(err.Error(), "user_id") {
-			return 0, fmt.Errorf("%s: the user does not exist: %w", op, repoerr.ErrRecordNotFound)
+			return 0, fmt.Errorf("the user does not exist: %w", repoerr.ErrConflict)
 		}
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
@@ -106,9 +106,7 @@ func (s *storage) UpdateVacation(ctx context.Context, userID uint64, v model.Vac
 		return fmt.Errorf("%s: %w", op, err)
 	}
 	if tag.RowsAffected() == 0 { // it's ok for pgx
-		return fmt.Errorf("%s: %w and %w", op,
-			repoerr.ErrRecordNotModified,
-			repoerr.ErrRecordNotFound)
+		return repoerr.ErrRecordNotAffected
 	}
 	return nil
 }

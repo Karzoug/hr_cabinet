@@ -1,15 +1,13 @@
 package handlers
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/muonsoft/validation/validator"
 
-	srvErrors "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
+	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
-	authErrors "github.com/Employee-s-file-cabinet/backend/internal/service/auth"
 )
 
 // @Accept  application/json
@@ -22,29 +20,18 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	var auth api.LoginJSONRequestBody
 	err := request.DecodeJSON(w, r, &auth)
 	if err != nil {
-		srvErrors.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := auth.Validate(ctx, validator.Instance()); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		srvErrors.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	token, err := h.authService.Login(ctx, string(auth.Login), auth.Password)
 	if err != nil {
-		switch {
-		case errors.Is(err, authErrors.ErrForbidden):
-			srvErrors.ErrorMessage(w, r,
-				http.StatusForbidden,
-				srvErrors.ErrLoginFailure.Error(), nil)
-		default:
-			srvErrors.ReportError(r, err, false)
-			srvErrors.ErrorMessage(w, r,
-				http.StatusInternalServerError,
-				http.StatusText(http.StatusInternalServerError), nil)
-		}
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 

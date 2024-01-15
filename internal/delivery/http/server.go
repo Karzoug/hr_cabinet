@@ -14,8 +14,8 @@ import (
 	"github.com/jub0bs/fcors"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/config/env"
-	srvErrors "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
+	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/handlers"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/middleware"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
@@ -57,8 +57,8 @@ func New(cfg Config, envType env.Type,
 	handler := handlers.New(userService, authService, passwordRecoveryService, logger)
 
 	mux := chi.NewRouter()
-	mux.NotFound(srvErrors.NotFound)
-	mux.MethodNotAllowed(srvErrors.MethodNotAllowed)
+	mux.NotFound(srverr.NotFound)
+	mux.MethodNotAllowed(srverr.MethodNotAllowed)
 
 	// Add middlewares
 	mux.Use(middleware.LogAccess)
@@ -107,11 +107,10 @@ func New(cfg Config, envType env.Type,
 				msg = err.Error()
 			}
 			if err := response.JSON(w, http.StatusBadRequest, api.Error{Message: msg}); err != nil {
-				srvErrors.ReportError(r, err, false)
-				srvErrors.ErrorMessage(w, r,
+				srverr.LogError(r, err, false)
+				srverr.ResponseError(w, r,
 					http.StatusInternalServerError,
-					http.StatusText(http.StatusInternalServerError),
-					nil)
+					srverr.ErrInternalServerErrorMsg)
 			}
 		},
 	})

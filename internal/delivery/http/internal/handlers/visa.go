@@ -1,18 +1,16 @@
 package handlers
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/muonsoft/validation/validator"
 
-	serr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/convert"
+	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
-	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
 )
 
 // @Produce application/json
@@ -23,57 +21,39 @@ func (h *handler) ListVisas(w http.ResponseWriter, r *http.Request, userID uint6
 
 	vs, err := h.userService.ListVisas(ctx, userID, passportID)
 	if err != nil {
-		if errors.Is(err, user.ErrUserOrPassportNotFound) {
-			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrUserOrPassportNotFound.Error(), nil)
-			return
-		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 
 	if err := response.JSON(w, http.StatusOK, convert.ToAPIListVisas(vs)); err != nil {
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
+		srverr.LogError(r, err, false)
+		srverr.ResponseError(w, r,
 			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+			srverr.ErrInternalServerErrorMsg)
 	}
 }
 
 // @Accept application/json
 // @Param   body body api.AddVisaJSONRequestBody true ""
-// @Failure 409  {object} api.Error "visa already exists"
 // @Router  /users/{user_id}/passports/{passport_id}/visas [post]
 func (h *handler) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64) {
 	ctx := r.Context()
 
 	var v api.AddVisaJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &v); err != nil {
-		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := v.Validate(ctx, validator.Instance()); err != nil {
 		msg := api.ValidationErrorMessage(err)
-		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, msg)
 		return
 	}
 
 	id, err := h.userService.AddVisa(ctx, userID, passportID, convert.FromAPIAddVisaRequest(v))
 	if err != nil {
-		if errors.Is(err, user.ErrUserOrPassportNotFound) {
-			serr.ErrorMessage(w, r, http.StatusConflict, user.ErrUserOrPassportNotFound.Error(), nil)
-			return
-		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 
@@ -81,6 +61,7 @@ func (h *handler) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 		api.BaseURL+"/users/"+strconv.FormatUint(userID, 10)+
 			"/passports/"+strconv.FormatUint(passportID, 10)+
 			"/visas/"+strconv.FormatUint(id, 10))
+	w.WriteHeader(http.StatusCreated)
 }
 
 // @Router /users/{user_id}/passports/{passport_id}/visas/{visa_id} [delete]
@@ -96,24 +77,15 @@ func (h *handler) GetVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 
 	v, err := h.userService.GetVisa(ctx, userID, passportID, visaID)
 	if err != nil {
-		if errors.Is(err, user.ErrVisaNotFound) {
-			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrVisaNotFound.Error(), nil)
-			return
-		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 
 	if err := response.JSON(w, http.StatusOK, convert.ToAPIGetVisaResponse(v)); err != nil {
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
+		srverr.LogError(r, err, false)
+		srverr.ResponseError(w, r,
 			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+			srverr.ErrInternalServerErrorMsg)
 	}
 }
 
@@ -128,7 +100,7 @@ func (h *handler) PatchVisa(w http.ResponseWriter, r *http.Request, userID, pass
 
 	if err := patch.Validate(ctx, validator.Instance()); err != nil {
 		msg := api.ValidationErrorMessage(err)
-		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, msg)
 		return
 	}
 
@@ -143,27 +115,19 @@ func (h *handler) PutVisa(w http.ResponseWriter, r *http.Request, userID, passpo
 
 	var v api.PutVisaJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &v); err != nil {
-		serr.ErrorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error())
 		return
 	}
 
 	if err := v.Validate(ctx, validator.Instance()); err != nil {
 		msg := api.ValidationErrorMessage(err)
-		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		srverr.ResponseError(w, r, http.StatusBadRequest, msg)
 		return
 	}
 
 	err := h.userService.UpdateVisa(ctx, userID, passportID, convert.FromAPIPutVisaRequest(visaID, v))
 	if err != nil {
-		if errors.Is(err, user.ErrVisaNotFound) {
-			serr.ErrorMessage(w, r, http.StatusNotFound, user.ErrVisaNotFound.Error(), nil)
-			return
-		}
-		serr.ReportError(r, err, false)
-		serr.ErrorMessage(w, r,
-			http.StatusInternalServerError,
-			http.StatusText(http.StatusInternalServerError),
-			nil)
+		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 }

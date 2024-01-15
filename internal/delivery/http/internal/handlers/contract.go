@@ -5,8 +5,8 @@ import (
 
 	"github.com/muonsoft/validation/validator"
 
-	serr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
+	srverrors "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 )
 
 // @Produce application/json
@@ -28,7 +28,7 @@ func (h *handler) AddContract(w http.ResponseWriter, r *http.Request, userID uin
 
 	if err := c.Validate(ctx, validator.Instance()); err != nil {
 		msg := api.ValidationErrorMessage(err)
-		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		srverrors.ResponseError(w, r, http.StatusBadRequest, msg)
 		return
 	}
 
@@ -58,7 +58,7 @@ func (h *handler) PatchContract(w http.ResponseWriter, r *http.Request, userID u
 
 	if err := patch.Validate(ctx, validator.Instance()); err != nil {
 		msg := api.ValidationErrorMessage(err)
-		serr.ErrorMessage(w, r, http.StatusBadRequest, msg, nil)
+		srverrors.ResponseError(w, r, http.StatusBadRequest, msg)
 		return
 	}
 
