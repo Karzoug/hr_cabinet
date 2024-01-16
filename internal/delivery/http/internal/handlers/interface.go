@@ -46,9 +46,9 @@ type UserService interface {
 }
 
 type AuthService interface {
-	Login(ctx context.Context, login, password string) (string, error)
+	Login(ctx context.Context, login, password string) (string, string, error)
 	Expires() time.Time
-	Payload(token string) (*token.Payload, error)
+	Payload(token, sign string) (*token.Payload, error)
 	PolicyEnforcer() (*casbin.Enforcer, error)
 }
 

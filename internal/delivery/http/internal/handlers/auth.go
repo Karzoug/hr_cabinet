@@ -6,6 +6,7 @@ import (
 	"github.com/muonsoft/validation/validator"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
+	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/cookie"
 	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
 )
@@ -29,20 +30,14 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.authService.Login(ctx, string(auth.Login), auth.Password)
+	token, sign, err := h.authService.Login(ctx, string(auth.Login), auth.Password)
 	if err != nil {
 		srverr.ResponseServiceError(w, r, err)
 		return
 	}
 
-	cookie := &http.Cookie{
-		Name:     "ecabinet-token",
-		Value:    token,
-		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
-		Secure:   true,
-		Expires:  h.authService.Expires(),
-	}
-	http.SetCookie(w, cookie)
+	cookie.SetToken(w, token, h.authService.Expires())
+	cookie.SetSignature(w, sign, h.authService.Expires())
+
 	w.WriteHeader(http.StatusOK)
 }
