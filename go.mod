@@ -5,7 +5,6 @@ go 1.21.4
 require (
 	github.com/brianvoe/gofakeit/v6 v6.26.3
 	github.com/casbin/casbin/v2 v2.81.0
-	github.com/fatih/color v1.16.0
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/henvic/pgq v0.0.2
 	github.com/ilyakaznacheev/cleanenv v1.5.0
@@ -13,6 +12,7 @@ require (
 	github.com/jackc/pgx/v5 v5.5.1
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/jub0bs/fcors v0.7.0
+	github.com/lmittmann/tint v1.0.3
 	github.com/minio/minio-go/v7 v7.0.66
 	github.com/muonsoft/validation v0.17.0
 	github.com/o1egl/paseto v1.0.0
@@ -44,8 +44,6 @@ require (
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
-	github.com/mattn/go-colorable v0.1.13 // indirect
-	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/minio/md5-simd v1.1.2 // indirect
 	github.com/minio/sha256-simd v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect

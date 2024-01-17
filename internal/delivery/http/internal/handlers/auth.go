@@ -36,8 +36,8 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie.SetToken(w, token, h.authService.Expires())
-	cookie.SetSignature(w, sign, h.authService.Expires())
+	cookie.SetToken(w, token, h.authService.Expires(), h.envType)
+	cookie.SetSignature(w, sign, h.authService.Expires(), h.envType)
 
 	w.WriteHeader(http.StatusOK)
 }

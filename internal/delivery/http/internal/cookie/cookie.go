@@ -3,6 +3,8 @@ package cookie
 import (
 	"net/http"
 	"time"
+
+	"github.com/Employee-s-file-cabinet/backend/internal/config/env"
 )
 
 const (
@@ -18,7 +20,7 @@ func GetSignature(r *http.Request) (string, error) {
 	return get(r, signName)
 }
 
-func SetToken(w http.ResponseWriter, token string, expires time.Time) {
+func SetToken(w http.ResponseWriter, token string, expires time.Time, envType env.Type) {
 	cookie := &http.Cookie{
 		Name:     tokenName,
 		Value:    token,
@@ -27,10 +29,13 @@ func SetToken(w http.ResponseWriter, token string, expires time.Time) {
 		Secure:   true,
 		Expires:  expires,
 	}
+	if envType == env.Development {
+		cookie.SameSite = http.SameSiteNoneMode
+	}
 	http.SetCookie(w, cookie)
 }
 
-func SetSignature(w http.ResponseWriter, sign string, expires time.Time) {
+func SetSignature(w http.ResponseWriter, sign string, expires time.Time, envType env.Type) {
 	cookie := &http.Cookie{
 		Name:     signName,
 		Value:    sign,
@@ -39,6 +44,9 @@ func SetSignature(w http.ResponseWriter, sign string, expires time.Time) {
 		HttpOnly: true,
 		Secure:   true,
 		Expires:  expires,
+	}
+	if envType == env.Development {
+		cookie.SameSite = http.SameSiteNoneMode
 	}
 	http.SetCookie(w, cookie)
 }

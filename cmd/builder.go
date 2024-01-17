@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/config/env"
-	"github.com/Employee-s-file-cabinet/backend/pkg/logger/slog/pretty"
+	"github.com/lmittmann/tint"
 )
 
 func buildLogger(level slog.Level, envMode env.Type) *slog.Logger {
@@ -14,14 +14,9 @@ func buildLogger(level slog.Level, envMode env.Type) *slog.Logger {
 
 	switch envMode { // nolint:exhaustive
 	case env.Development:
-		opts := pretty.HandlerOptions{
-			SlogOpts: &slog.HandlerOptions{
-				Level: level,
-			},
-		}
-
-		handler := opts.NewPrettyHandler(os.Stdout)
-		logger = slog.New(handler)
+		logger = slog.New(tint.NewHandler(os.Stdout, &tint.Options{
+			Level: level,
+		}))
 	default:
 		logger = slog.New(
 			slog.NewJSONHandler(os.Stdout,
