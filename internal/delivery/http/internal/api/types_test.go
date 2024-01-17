@@ -25,10 +25,8 @@ func wrongJSONTEstHelper(ctx context.Context, t *testing.T, s string, value vali
 	assert.Error(t, value.Validate(ctx, validator.Instance()))
 }
 
-func TestEducation_Validate(t *testing.T) {
+func TestAddEducationRequest_Validate(t *testing.T) {
 	edJSON := `{
-		"id": 578,
-		"has_scan": true,
 		"number": "1030180354933",
 		"date_to": "2015-01-01",
 		"date_from": "2011-01-01",
@@ -36,35 +34,32 @@ func TestEducation_Validate(t *testing.T) {
 		"program": "Связи с общественностью"
 	  }`
 
-	var ed Education
+	var ed AddEducationJSONRequestBody
 	rightJSONTEstHelper(context.TODO(), t, edJSON, &ed)
 
 	edJSON2 := `{
-		"id": 578,
 		"number": "1030180354933",
 		"date_to": "2015-01-01",
 		"date_from": "2011-01-01",
 		"program": "Связи с общественностью"
 	  }`
-	var ed2 Education
+	var ed2 AddEducationRequest
 	wrongJSONTEstHelper(context.TODO(), t, edJSON2, &ed2)
 }
 
-func TestContract_Validate(t *testing.T) {
+func TestAddContractRequest_Validate(t *testing.T) {
 	contractJSON := `{
-		"id": 127,
-		"has_scan": true,
 		"date_from": "2018-01-17",
 		"date_to": "2020-01-17",
 		"type": "temporary",
 		"number": "145678"
 	  }`
 
-	var c Contract
+	var c AddContractJSONRequestBody
 	rightJSONTEstHelper(context.TODO(), t, contractJSON, &c)
 }
 
-func TestFullUser_Validate(t *testing.T) {
+func TestAddUserRequest_Validate(t *testing.T) {
 	tests := []struct {
 		name       string
 		jsonString string
@@ -161,7 +156,7 @@ func TestFullUser_Validate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var u FullUser
+			var u AddUserJSONRequestBody
 			rightJSONTEstHelper(context.TODO(), t, tt.jsonString, &u)
 		})
 	}
@@ -176,13 +171,13 @@ func TestInsurance_Validate(t *testing.T) {
 	rightJSONTEstHelper(context.TODO(), t, insuranceJSON, &i)
 }
 
-func TestAuth_Validate(t *testing.T) {
+func TestLoginRequest_Validate(t *testing.T) {
 	authJSON := `{
 		"login": "anna@gazneft.ru",
 		"password": "pa$$word"
 	}`
 
-	var a Auth
+	var a LoginRequest
 	rightJSONTEstHelper(context.TODO(), t, authJSON, &a)
 }
 
@@ -191,7 +186,7 @@ func TestInitChangePasswordRequest_Validate(t *testing.T) {
 		"login": "vasyapp@gazneft.ru"
 	  }`
 
-	var i InitChangePasswordRequest
+	var i InitChangePasswordJSONRequestBody
 	rightJSONTEstHelper(context.TODO(), t, chPswJSON, &i)
 }
 
@@ -201,11 +196,11 @@ func TestChangePasswordRequest_Validate(t *testing.T) {
 		"password": "pa$$word"
 	  }`
 
-	var c ChangePasswordRequest
+	var c ChangePasswordJSONRequestBody
 	rightJSONTEstHelper(context.TODO(), t, chPswJSON, &c)
 }
 
-func TestPassport_Validate(t *testing.T) {
+func TestAddPassportRequest_Validate(t *testing.T) {
 	passportJSON := `{
 		"number": "33592222",
 		"issued_date": "2016-05-15",
@@ -213,7 +208,7 @@ func TestPassport_Validate(t *testing.T) {
 		"type": "foreigners"
 	  }`
 
-	var p Passport
+	var p AddPassportJSONRequestBody
 	rightJSONTEstHelper(context.TODO(), t, passportJSON, &p)
 }
 
@@ -243,7 +238,7 @@ func TestTaxpayer_Validate(t *testing.T) {
 	}
 }
 
-func TestTraining_Validate(t *testing.T) {
+func TestAddTrainingRequest_Validate(t *testing.T) {
 	trainingJSON := `{
 		"number": "A15/456878-456",
 		"issued_institution": "Yandex Practicum",
@@ -253,14 +248,12 @@ func TestTraining_Validate(t *testing.T) {
 		"date_from": "2023-07-10"
 	  }`
 
-	var tr Training
+	var tr AddTrainingJSONRequestBody
 	rightJSONTEstHelper(context.TODO(), t, trainingJSON, &tr)
 }
 
-func TestVisa_Validate(t *testing.T) {
+func TestAddVisaRequest_Validate(t *testing.T) {
 	visaJSON := `{
-		"id": 512,
-		"has_scan": true,
 		"number": "33592222",
 		"issued_state": "Spain",
 		"valid_to": "2017-10-22",
@@ -268,11 +261,11 @@ func TestVisa_Validate(t *testing.T) {
 		"number_entries": "1"
 	  }`
 
-	var v Visa
+	var v AddVisaJSONRequestBody
 	rightJSONTEstHelper(context.TODO(), t, visaJSON, &v)
 }
 
-func TestPatchFullUserJSONRequestBody_Validate(t *testing.T) {
+func TestPatchUserRequest_Validate(t *testing.T) {
 	tests := []struct {
 		name       string
 		jsonString string
@@ -316,13 +309,13 @@ func TestPatchFullUserJSONRequestBody_Validate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			var pu PatchFullUserJSONRequestBody
+			var pu PatchUserJSONRequestBody
 			rightJSONTEstHelper(context.TODO(), t, tt.jsonString, &pu)
 		})
 	}
 }
 
-func TestPatchContractJSONRequestBody_Validate(t *testing.T) {
+func TestPatchContractRequest_Validate(t *testing.T) {
 	tests := []struct {
 		name       string
 		jsonString string

@@ -21,9 +21,6 @@ func (s *storage) CheckAndReturnUser(ctx context.Context, login string) (*model.
 		WHERE work_email=@login`,
 		pgx.NamedArgs{"login": login})
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
-		}
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	defer rows.Close()
@@ -31,7 +28,7 @@ func (s *storage) CheckAndReturnUser(ctx context.Context, login string) (*model.
 	u, err := pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByNameLax[user])
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+			return nil, repoerr.ErrRecordNotFound
 		}
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -43,7 +40,7 @@ func (s *storage) CheckAndReturnUser(ctx context.Context, login string) (*model.
 func (s *storage) ChangePassword(ctx context.Context, userID int, hash string) error {
 	const op = "postgresql recovery storage: change password"
 
-	_, err := s.Exec(ctx,
+	tag, err := s.Exec(ctx,
 		`UPDATE authorizations
 		SET password_hash = @pass_hash
 		WHERE user_id=@id`,
@@ -53,6 +50,9 @@ func (s *storage) ChangePassword(ctx context.Context, userID int, hash string) e
 		})
 	if err != nil {
 		return fmt.Errorf("%s: %w", op, err)
+	}
+	if tag.RowsAffected() == 0 {
+		return repoerr.ErrRecordNotAffected
 	}
 
 	return nil

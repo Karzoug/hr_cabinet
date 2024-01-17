@@ -17,7 +17,7 @@ import (
 	authdb "github.com/Employee-s-file-cabinet/backend/internal/service/auth/repo/postgres"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/recovery"
 	recoverydb "github.com/Employee-s-file-cabinet/backend/internal/service/recovery/repo/postgres"
-	recoverykey "github.com/Employee-s-file-cabinet/backend/internal/service/recovery/repo/smap"
+	recoverykv "github.com/Employee-s-file-cabinet/backend/internal/service/recovery/repo/ttlmap"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
 	userdb "github.com/Employee-s-file-cabinet/backend/internal/service/user/repo/postgres"
 	users3 "github.com/Employee-s-file-cabinet/backend/internal/service/user/repo/s3"
@@ -36,7 +36,7 @@ func Run(ctx context.Context, cfg *config.Config, logger *slog.Logger) error {
 	}
 
 	// create user service
-	userDBRepo, err := userdb.NewStorage(db)
+	userDBRepo, err := userdb.NewUserStorage(db)
 	if err != nil {
 		return err
 	}
@@ -59,14 +59,14 @@ func Run(ctx context.Context, cfg *config.Config, logger *slog.Logger) error {
 	authService := auth.NewService(authDBRepo, passVerification, tokenMng)
 
 	// create recovery service
-	recoveryKeyRepo := recoverykey.New(cfg.RecoveryKeyLifetime)
+	recoveryKeyRepo := recoverykv.New[string, int](cfg.Recovery.CleanKeyInterval)
 	defer recoveryKeyRepo.Close()
 	recoveryDBRepo, err := recoverydb.NewStorage(db)
 	if err != nil {
 		return err
 	}
 	smtpClient := smtp.NewMock(cfg.Mail)
-	recoveryService := recovery.NewService(recoveryDBRepo, recoveryKeyRepo, smtpClient, passVerification, cfg.Domain)
+	recoveryService := recovery.NewService(recoveryDBRepo, recoveryKeyRepo, smtpClient, passVerification, cfg.Recovery)
 
 	srv, err := httpsrv.New(cfg.HTTP, cfg.EnvType, userService, authService, recoveryService, logger)
 	if err != nil {

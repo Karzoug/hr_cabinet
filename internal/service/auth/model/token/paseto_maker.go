@@ -1,47 +1,68 @@
 package token
 
 import (
+	"crypto"
+	"crypto/ed25519"
+	"encoding/hex"
 	"fmt"
 	"time"
 
 	"github.com/o1egl/paseto"
-	"golang.org/x/crypto/chacha20poly1305"
 )
+
+const v2SignSize = ed25519.SignatureSize
 
 // PasetoMaker реализация создателя токенов типа PaseTo.
 type PasetoMaker struct {
-	paseto       *paseto.V2
-	symmetricKey []byte
-	duration     time.Duration
+	paseto     *paseto.V2
+	privateKey crypto.PrivateKey
+	publicKey  crypto.PublicKey
+	duration   time.Duration
 }
 
 // NewPasetoMaker возвращает PasetoMaker для управления токенами.
-func NewPasetoMaker(symmetricKey string, duration time.Duration) (*PasetoMaker, error) {
-	if len(symmetricKey) != chacha20poly1305.KeySize {
-		return nil, fmt.Errorf("invalid key size: must be %d characters", chacha20poly1305.KeySize)
+
+func NewPasetoMaker(privateHexKey string, duration time.Duration) (*PasetoMaker, error) {
+	const op = "create paseto maker"
+
+	b, err := hex.DecodeString(privateHexKey)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
 	}
+	if len(b) != ed25519.PrivateKeySize {
+		return nil, fmt.Errorf("%s: invalid key size: must be %d characters", op, ed25519.PrivateKeySize)
+	}
+	privateKey := ed25519.PrivateKey(b)
 
 	return &PasetoMaker{
-		paseto:       paseto.NewV2(),
-		symmetricKey: []byte(symmetricKey),
-		duration:     duration,
+		paseto:     paseto.NewV2(),
+		privateKey: privateKey,
+		publicKey:  privateKey.Public(),
+		duration:   duration,
 	}, nil
 }
 
 // Create создаёт токен для переданных данных и продолжительности.
-func (m *PasetoMaker) Create(data Data) (string, error) {
+func (m *PasetoMaker) Create(data Data) (string, string, error) {
 	payload, err := NewPayload(data, m.duration)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return m.paseto.Encrypt(m.symmetricKey, payload, nil)
+	signed, err := m.paseto.Sign(m.privateKey, payload, nil)
+	if err != nil {
+		return "", "", err
+	}
+	token := signed[:len(signed)-v2SignSize]
+	sign := signed[len(signed)-v2SignSize:]
+
+	return token, sign, nil
 }
 
 // Verify проверяет, является ли токен действительным.
-func (m *PasetoMaker) Verify(in string) (*Payload, error) {
+func (m *PasetoMaker) Verify(token, sign string) (*Payload, error) {
 	payload := &Payload{}
-	err := m.paseto.Decrypt(in, m.symmetricKey, payload, nil)
+	err := m.paseto.Verify(token+sign, m.publicKey, payload, nil)
 	if err != nil {
 		return nil, ErrInvalidToken
 	}

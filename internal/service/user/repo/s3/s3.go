@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"strings"
 
 	"github.com/minio/minio-go/v7"
 
@@ -81,10 +80,15 @@ func (s *storage) Download(ctx context.Context, prefix, name, etag string) (s3.F
 
 	info, err := reader.Stat()
 	if err != nil {
-		if strings.Contains(err.Error(), http.StatusText(http.StatusNotModified)) {
-			return s3.File{}, nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotModified)
+		errResponse := minio.ToErrorResponse(err)
+		switch errResponse.StatusCode {
+		case http.StatusNotFound:
+			return s3.File{}, nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+		case http.StatusNotModified:
+			return s3.File{}, nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotModifiedSince)
+		default:
+			return s3.File{}, nil, fmt.Errorf("%s: %w", op, err)
 		}
-		return s3.File{}, nil, fmt.Errorf("%s: %w", op, err)
 	}
 
 	return s3.File{

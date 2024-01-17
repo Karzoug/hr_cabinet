@@ -5,19 +5,19 @@ type service struct {
 	keyRepository         keyRepository
 	notificationDeliverer notificationDeliverer
 	passwordVerificator   passwordVerificator
-	Domain                string
+	Config                Config
 }
 
 func NewService(rr recoveryRepository,
 	kr keyRepository,
 	nd notificationDeliverer,
 	pv passwordVerificator,
-	domain string) *service {
+	cfg Config) *service {
 	return &service{
 		recoveryRepository:    rr,
 		keyRepository:         kr,
 		notificationDeliverer: nd,
 		passwordVerificator:   pv,
-		Domain:                domain,
+		Config:                cfg,
 	}
 }

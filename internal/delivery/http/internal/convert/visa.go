@@ -7,52 +7,83 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
 
-func ToAPIVisas(vs []model.Visa) []api.Visa {
+func FromAPIAddVisaRequest(req api.AddVisaJSONRequestBody) model.Visa {
+	v := model.Visa{
+		Number:        req.Number,
+		IssuedState:   req.IssuedState,
+		ValidTo:       req.ValidTo.Time,
+		ValidFrom:     req.ValidFrom.Time,
+		NumberEntries: model.VisaNumberEntries(req.NumberEntries),
+	}
+	switch req.NumberEntries {
+	case api.N1:
+		v.NumberEntries = model.VisaNumberEntriesN1
+	case api.N2:
+		v.NumberEntries = model.VisaNumberEntriesN2
+	case api.Mult:
+		v.NumberEntries = model.VisaNumberEntriesMult
+	}
+	return v
+}
+
+func FromAPIPutVisaRequest(visaID uint64, req api.PutVisaJSONRequestBody) model.Visa {
+	v := model.Visa{
+		ID:            visaID,
+		Number:        req.Number,
+		IssuedState:   req.IssuedState,
+		ValidTo:       req.ValidTo.Time,
+		ValidFrom:     req.ValidFrom.Time,
+		NumberEntries: model.VisaNumberEntries(req.NumberEntries),
+	}
+	switch req.NumberEntries {
+	case api.N1:
+		v.NumberEntries = model.VisaNumberEntriesN1
+	case api.N2:
+		v.NumberEntries = model.VisaNumberEntriesN2
+	case api.Mult:
+		v.NumberEntries = model.VisaNumberEntriesMult
+	}
+	return v
+}
+
+func ToAPIGetVisaResponse(mv *model.Visa) api.GetVisaResponse {
+	return api.GetVisaResponse{
+		ID:            mv.ID,
+		Number:        mv.Number,
+		IssuedState:   mv.IssuedState,
+		ValidTo:       types.Date{Time: mv.ValidTo},
+		ValidFrom:     types.Date{Time: mv.ValidFrom},
+		NumberEntries: api.VisaNumberEntries(mv.NumberEntries),
+	}
+}
+
+func ToAPIListVisas(vs []model.Visa) api.ListVisasResponse {
+	return toAPIVisas(vs)
+}
+
+func toAPIVisas(vs []model.Visa) []api.Visa {
 	res := make([]api.Visa, len(vs))
 	for i := 0; i < len(vs); i++ {
-		res[i] = ToAPIVisa(&vs[i])
+		res[i] = toAPIVisa(vs[i])
 	}
 	return res
 }
 
-func ToAPIVisa(mv *model.Visa) api.Visa {
-	var ne api.VisaNumberEntries
+func toAPIVisa(mv model.Visa) api.Visa {
+	v := api.Visa{
+		ID:          mv.ID,
+		IssuedState: mv.IssuedState,
+		Number:      mv.Number,
+		ValidFrom:   types.Date{Time: mv.ValidFrom},
+		ValidTo:     types.Date{Time: mv.ValidTo},
+	}
 	switch mv.NumberEntries {
 	case model.VisaNumberEntriesN1:
-		ne = api.VisaNumberEntriesN1
+		v.NumberEntries = api.N1
 	case model.VisaNumberEntriesN2:
-		ne = api.VisaNumberEntriesN2
+		v.NumberEntries = api.N2
 	case model.VisaNumberEntriesMult:
-		ne = api.VisaNumberEntriesMult
+		v.NumberEntries = api.Mult
 	}
-
-	return api.Visa{
-		ID:            &mv.ID,
-		IssuedState:   mv.IssuedState,
-		Number:        mv.Number,
-		NumberEntries: ne,
-		ValidFrom:     types.Date{Time: mv.ValidFrom},
-		ValidTo:       types.Date{Time: mv.ValidTo},
-	}
-}
-
-func ToModelVisa(v api.Visa) model.Visa {
-	var ne model.VisaNumberEntries
-	switch v.NumberEntries {
-	case api.VisaNumberEntriesN1:
-		ne = model.VisaNumberEntriesN1
-	case api.VisaNumberEntriesN2:
-		ne = model.VisaNumberEntriesN2
-	case api.VisaNumberEntriesMult:
-		ne = model.VisaNumberEntriesMult
-	}
-
-	mv := model.Visa{
-		Number:        v.Number,
-		IssuedState:   v.IssuedState,
-		ValidTo:       v.ValidTo.Time,
-		ValidFrom:     v.ValidFrom.Time,
-		NumberEntries: ne,
-	}
-	return mv
+	return v
 }

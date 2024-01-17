@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	serr "github.com/Employee-s-file-cabinet/backend/internal/service"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
@@ -15,7 +16,7 @@ func (s *service) GetTraining(ctx context.Context, userID, trainingID uint64) (*
 	tr, err := s.userRepository.GetTraining(ctx, userID, trainingID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
-			return nil, fmt.Errorf("%s: %w", op, ErrTrainingNotFound)
+			return nil, serr.NewError(serr.NotFound, "training not found")
 		}
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -27,9 +28,6 @@ func (s *service) ListTrainings(ctx context.Context, userID uint64) ([]model.Tra
 
 	trs, err := s.userRepository.ListTrainings(ctx, userID)
 	if err != nil {
-		if errors.Is(err, repoerr.ErrRecordNotFound) {
-			return nil, fmt.Errorf("%s: %w", op, ErrUserNotFound)
-		}
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	return trs, nil
@@ -40,10 +38,25 @@ func (s *service) AddTraining(ctx context.Context, userID uint64, ed model.Train
 
 	id, err := s.userRepository.AddTraining(ctx, userID, ed)
 	if err != nil {
-		if errors.Is(err, repoerr.ErrRecordNotFound) {
-			return 0, fmt.Errorf("%s: %w", op, ErrUserNotFound)
+		if errors.Is(err, repoerr.ErrConflict) {
+			return 0, serr.NewError(serr.Conflict, "not added: user problem")
 		}
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
 	return id, nil
+}
+
+func (s *service) UpdateTraining(ctx context.Context, userID uint64, tr model.Training) error {
+	const op = "user service: update training"
+
+	err := s.userRepository.UpdateTraining(ctx, userID, tr)
+	if err != nil {
+		switch {
+		case errors.Is(err, repoerr.ErrRecordNotAffected):
+			return serr.NewError(serr.Conflict, "not updated: user/training problem")
+		default:
+			return fmt.Errorf("%s: %w", op, err)
+		}
+	}
+	return nil
 }

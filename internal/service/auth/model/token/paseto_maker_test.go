@@ -1,7 +1,8 @@
 package token_test
 
 import (
-	"strings"
+	"crypto/ed25519"
+	"encoding/hex"
 	"testing"
 	"time"
 
@@ -21,19 +22,22 @@ func TestPasetoMaker(t *testing.T) {
 	var maker *token.PasetoMaker
 	var err error
 	t.Run("create token maker", func(t *testing.T) {
-		maker, err = token.NewPasetoMaker(gofakeit.Lexify(strings.Repeat("?", 32)), duration)
+		_, private, err := ed25519.GenerateKey(nil)
+		require.NoError(t, err)
+		maker, err = token.NewPasetoMaker(hex.EncodeToString(private), duration)
 		require.NoError(t, err)
 	})
 
-	var testToken string
+	var testToken, testSign string
 	t.Run("create token", func(t *testing.T) {
-		testToken, err = maker.Create(data)
+		testToken, testSign, err = maker.Create(data)
 		require.NoError(t, err)
 		require.NotEmpty(t, testToken)
+		require.NotEmpty(t, testSign)
 	})
 
 	t.Run("verify token", func(t *testing.T) {
-		payload, err := maker.Verify(testToken)
+		payload, err := maker.Verify(testToken, testSign)
 		require.NoError(t, err)
 		require.NotEmpty(t, payload)
 
@@ -44,7 +48,9 @@ func TestPasetoMaker(t *testing.T) {
 func TestExpiredPasetoToken(t *testing.T) {
 	var err error
 
-	maker, err := token.NewPasetoMaker(gofakeit.Lexify(strings.Repeat("?", 32)), -time.Minute)
+	_, private, err := ed25519.GenerateKey(nil)
+	require.NoError(t, err)
+	maker, err := token.NewPasetoMaker(hex.EncodeToString(private), -time.Minute)
 	require.NoError(t, err)
 
 	data := token.Data{
@@ -52,15 +58,15 @@ func TestExpiredPasetoToken(t *testing.T) {
 		RoleID: gofakeit.Numerify("###"),
 	}
 
-	var testToken string
+	var testToken, testSign string
 	t.Run("create expired token", func(t *testing.T) {
-		testToken, err = maker.Create(data)
+		testToken, testSign, err = maker.Create(data)
 		require.NoError(t, err)
 		require.NotEmpty(t, testToken)
 	})
 
 	t.Run("verify expired token", func(t *testing.T) {
-		payload, err := maker.Verify(testToken)
+		payload, err := maker.Verify(testToken, testSign)
 		require.Error(t, err)
 		require.EqualError(t, err, token.ErrExpiredToken.Error())
 		require.Nil(t, payload)

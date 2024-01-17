@@ -9,15 +9,12 @@ const (
 	Development
 	// Staging is a constant defining the staging environment.
 	Staging
-	// Testing is a constant defining the testing environment.
-	Testing
 )
 
 const (
 	productionString  = "production"
 	developmentString = "development"
 	stagingString     = "staging"
-	testingString     = "testing"
 	unknownString     = "unknown"
 )
 
@@ -36,8 +33,6 @@ func (e Type) String() string {
 		return productionString
 	case Staging:
 		return stagingString
-	case Testing:
-		return testingString
 	default:
 		return unknownString
 	}
@@ -51,8 +46,6 @@ func (t *Type) UnmarshalText(data []byte) error {
 		*t = Development
 	case stagingString:
 		*t = Staging
-	case testingString:
-		*t = Testing
 	default:
 		return errors.New("unknown environment mode")
 	}

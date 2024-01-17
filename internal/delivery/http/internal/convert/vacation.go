@@ -7,25 +7,41 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
 
-func ToAPIVacations(vcs []model.Vacation) []api.Vacation {
-	res := make([]api.Vacation, len(vcs))
-	for i := 0; i < len(vcs); i++ {
-		res[i] = ToAPIVacation(&vcs[i])
+func FromAPIAddVacationRequest(req api.AddVacationJSONRequestBody) model.Vacation {
+	return model.Vacation{
+		DateBegin: req.DateFrom.Time,
+		DateEnd:   req.DateTo.Time,
+	}
+}
+
+func FromAPIPutVacationRequest(vacationID uint64, req api.PutVacationJSONRequestBody) model.Vacation {
+	return model.Vacation{
+		ID:        vacationID,
+		DateBegin: req.DateFrom.Time,
+		DateEnd:   req.DateTo.Time,
+	}
+}
+
+func ToAPIGetVacationResponse(med *model.Vacation) api.GetVacationResponse {
+	return api.GetVacationResponse{
+		ID:       med.ID,
+		DateFrom: types.Date{Time: med.DateBegin},
+		DateTo:   types.Date{Time: med.DateEnd},
+	}
+}
+
+func ToAPIListVacations(eds []model.Vacation) api.ListVacationsResponse {
+	res := make([]api.Vacation, len(eds))
+	for i := 0; i < len(eds); i++ {
+		res[i] = toAPIVacation(eds[i])
 	}
 	return res
 }
 
-func ToAPIVacation(mv *model.Vacation) api.Vacation {
+func toAPIVacation(med model.Vacation) api.Vacation {
 	return api.Vacation{
-		ID:       &mv.ID,
-		DateFrom: types.Date{Time: mv.DateBegin},
-		DateTo:   types.Date{Time: mv.DateEnd},
-	}
-}
-
-func ToModelVacation(tr api.Vacation) model.Vacation {
-	return model.Vacation{
-		DateBegin: tr.DateFrom.Time,
-		DateEnd:   tr.DateTo.Time,
+		ID:       med.ID,
+		DateFrom: types.Date{Time: med.DateBegin},
+		DateTo:   types.Date{Time: med.DateEnd},
 	}
 }

@@ -60,7 +60,7 @@ const (
 	ListUsersParamsSortByDepartment ListUsersParamsSortBy = "department"
 )
 
-func NewListUsersParams(opts ...ListUsersParamsOption) (*ListUsersParams, error) {
+func NewListUsersParams(opts ...ListUsersParamsOption) (ListUsersParams, error) {
 	pms := &ListUsersParams{
 		Limit:  defaultLimitUsers,
 		Query:  "",
@@ -70,8 +70,8 @@ func NewListUsersParams(opts ...ListUsersParamsOption) (*ListUsersParams, error)
 
 	for _, opt := range opts {
 		if err := opt(pms); err != nil {
-			return nil, err
+			return *pms, err
 		}
 	}
-	return pms, nil
+	return *pms, nil
 }

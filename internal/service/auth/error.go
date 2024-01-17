@@ -1,9 +1,8 @@
 package auth
 
-import "errors"
+import serr "github.com/Employee-s-file-cabinet/backend/internal/service"
 
-var (
-	ErrForbidden      = errors.New("forbidden")
-	ErrTokenIsInvalid = errors.New("access token is missing or invalid")
-	ErrUserNotAllowed = errors.New("user is not allowed to access")
+var errUnauthenticated = serr.NewError(
+	serr.Unauthenticated,
+	"login or password is incorrect",
 )

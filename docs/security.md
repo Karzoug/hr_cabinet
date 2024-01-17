@@ -41,7 +41,7 @@
 ### Передача токена 
 Токен подписывается приватным ключом и разделяется на две части: header.payload и signature. При успешной аутентификации сервер передает клиенту 
 * часть header.payload в SameSite Secure Cookie (доступно только по https и доступно из JS кода) с именем "ecabinet-token",
-* часть signature в SameSite Secure HttpOnly Cookie (доступно только по https и не доступно из JS кода) c именем "ecabinet-token_sign".
+* часть signature в SameSite Secure HttpOnly Cookie (доступно только по https и не доступно из JS кода) c именем "ecabinet-token-sign".
 
 Этот приём позволит избежать распространенных уязвимостей типа Cross Site Scripting (XSS), Cross Site Request Forgery (CSRF).
 

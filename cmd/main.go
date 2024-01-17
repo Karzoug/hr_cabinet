@@ -10,7 +10,6 @@ import (
 
 	"github.com/Employee-s-file-cabinet/backend/internal/app"
 	"github.com/Employee-s-file-cabinet/backend/internal/config"
-	"github.com/Employee-s-file-cabinet/backend/pkg/logger/slog/sl"
 )
 
 // nolint:gochecknoglobals
@@ -42,6 +41,9 @@ func main() {
 	defer stop()
 
 	if err := app.Run(ctx, cfg, logger); err != nil {
-		logger.Error("app stopped with error", sl.Error(err))
+		logger.Error("app stopped with error", slog.Attr{
+			Key:   "error",
+			Value: slog.StringValue(err.Error()),
+		})
 	}
 }

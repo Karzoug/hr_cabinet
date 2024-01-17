@@ -46,17 +46,17 @@ func (s *storage) GetTraining(ctx context.Context, userID, trainingID uint64) (*
 		id, title_of_program, title_of_institution, 
 		cost, date_end, date_begin 
 		FROM trainings
-		WHERE id = @training_id AND user_id = @user_id`,
+		WHERE id = @id AND user_id = @user_id`,
 		pgx.NamedArgs{
-			"training_id": trainingID,
-			"user_id":     userID,
+			"id":      trainingID,
+			"user_id": userID,
 		})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	ed, err := pgx.CollectExactlyOneRow[training](rows, pgx.RowToStructByNameLax[training])
 	if errors.Is(err, pgx.ErrNoRows) {
-		return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+		return nil, repoerr.ErrRecordNotFound
 	}
 
 	med := convertTrainingToModelTraining(ed)
@@ -67,8 +67,10 @@ func (s *storage) AddTraining(ctx context.Context, userID uint64, tr model.Train
 	const op = "postrgresql user storage: add training"
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO trainings
-		("user_id", "title_of_program", "title_of_institution", "cost", "date_end", "date_begin")
-		VALUES (@user_id, @title_of_program, @title_of_institution, @cost, @date_end, @date_begin)
+		("user_id", "title_of_program", "title_of_institution", 
+		"cost", "date_end", "date_begin")
+		VALUES (@user_id, @title_of_program, @title_of_institution, 
+		@cost, @date_end, @date_begin)
 		RETURNING "id"`,
 		pgx.NamedArgs{
 			"user_id":              userID,
@@ -82,10 +84,36 @@ func (s *storage) AddTraining(ctx context.Context, userID uint64, tr model.Train
 	if err := row.Scan(&tr.ID); err != nil {
 		if strings.Contains(err.Error(), "23") && // Integrity Constraint Violation
 			strings.Contains(err.Error(), "user_id") {
-			return 0, fmt.Errorf("%s: the user does not exist: %w", op, repoerr.ErrRecordNotFound)
+			return 0, fmt.Errorf("the user does not exist: %w", repoerr.ErrConflict)
 		}
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
 
 	return tr.ID, nil
+}
+
+func (s *storage) UpdateTraining(ctx context.Context, userID uint64, tr model.Training) error {
+	const op = "postrgresql user storage: update training"
+
+	tag, err := s.DB.Exec(ctx, `UPDATE trainings
+	SET title_of_program=@title_of_program, title_of_institution=@title_of_institution, 
+	cost=@cost, date_end=@date_end, date_begin=@date_begin
+	WHERE id=@id AND user_id=@user_id`,
+		pgx.NamedArgs{
+			"user_id":              userID,
+			"id":                   tr.ID,
+			"title_of_program":     tr.Program,
+			"title_of_institution": tr.IssuedInstitution,
+			"cost":                 tr.Cost,
+			"date_end":             tr.DateTo,
+			"date_begin":           tr.DateFrom,
+		})
+
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+	if tag.RowsAffected() == 0 { // it's ok for pgx
+		return repoerr.ErrRecordNotAffected
+	}
+	return nil
 }

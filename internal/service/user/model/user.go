@@ -4,32 +4,38 @@ import (
 	"time"
 )
 
+type ShortUserInfo struct {
+	ID           uint64
+	Department   string
+	Email        string
+	FirstName    string
+	LastName     string
+	MiddleName   string
+	PhoneNumbers map[string]string
+	Position     string
+}
+
 type User struct {
-	ID                  uint64
-	LastName            string
-	FirstName           string
-	MiddleName          string
-	Gender              Gender
+	ShortUserInfo
+	Gender              gender
 	DateOfBirth         time.Time
 	PlaceOfBirth        string
 	Grade               string
-	PhoneNumbers        map[string]string
-	Email               string
 	RegistrationAddress string
 	ResidentialAddress  string
 	Nationality         string
 	InsuranceNumber     string
 	TaxpayerNumber      string
-	Position            string
-	Department          string
+	PositionID          uint64
+	DepartmentID        uint64
 }
 
-// Gender represents user gender.
-type Gender string
+// gender represents user gender.
+type gender string
 
 const (
-	GenderFemale Gender = "female"
-	GenderMale   Gender = "male"
+	GenderFemale gender = "female"
+	GenderMale   gender = "male"
 )
 
 // ExpandedUser represents summary information about the user.
@@ -37,12 +43,7 @@ type ExpandedUser struct {
 	User
 	Educations []Education
 	Trainings  []Training
-	Passports  []PassportWithVisas
+	Passports  []ExpandedPassport
 	// Contracts []Contract
-	// Vacations  []Vacation
-}
-
-type PassportWithVisas struct {
-	Passport
-	Visas []Visa
+	Vacations []Vacation
 }

@@ -26,10 +26,10 @@ type passwordVerificator interface {
 // tokenManager абстракция для управления токенами.
 type tokenManager interface {
 	// Create создаёт токен для переданных данных и продолжительности действия.
-	Create(data token.Data) (string, error)
+	Create(data token.Data) (string, string, error)
 
 	// Verify проверяет, является ли токен действительным.
-	Verify(in string) (*token.Payload, error)
+	Verify(token, sign string) (*token.Payload, error)
 
 	// Expires возвращает время истечения срока годности токена (начиная с текущего момента времени).
 	Expires() time.Time
