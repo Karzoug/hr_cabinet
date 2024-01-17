@@ -2,15 +2,10 @@
 package api
 
 import (
-	"regexp"
 	"strings"
 
 	vld "github.com/muonsoft/validation"
 )
-
-const base64 string = "^(?:[A-Za-z0-9+\\/]{4})*(?:[A-Za-z0-9+\\/]{2}==|[A-Za-z0-9+\\/]{3}=|[A-Za-z0-9+\\/]{4})$"
-
-var rxBase64 = regexp.MustCompile(base64)
 
 var (
 	ErrInvalidOnlyNumbersFormat = vld.NewError(

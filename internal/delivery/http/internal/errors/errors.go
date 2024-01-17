@@ -34,18 +34,17 @@ func LogError(r *http.Request, err error, withStack bool) {
 // ResponseError converts error message to api.Error and writes this one in JSON format to response writer.
 func ResponseError(w http.ResponseWriter, r *http.Request, status int, errMessage string) {
 	message := strings.ToUpper(errMessage[:1]) + errMessage[1:]
-	w.WriteHeader(status)
 	if status == http.StatusNotModified {
 		// RFC 2616:
 		// The 304 response MUST NOT contain a message-body,
 		// and thus is always terminated by the first empty line after the header fields.
+		w.WriteHeader(status)
 		return
 	}
 	if err := response.JSON(w,
 		status,
 		api.Error{Message: message}); err != nil {
 		LogError(r, err, false)
-		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
 

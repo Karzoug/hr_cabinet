@@ -3,14 +3,16 @@ package recovery
 import (
 	"context"
 	"crypto/rand"
-	"encoding/base64"
 	"errors"
 	"fmt"
+	"math/big"
 
 	serr "github.com/Employee-s-file-cabinet/backend/internal/service"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/recovery/model"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
+
+const letters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"
 
 func (s *service) InitChangePassword(ctx context.Context, login string) error {
 	user, err := s.getUser(ctx, login)
@@ -85,12 +87,10 @@ func (s *service) getUser(ctx context.Context, login string) (*model.User, error
 func (s *service) generateKey(userID int) (string, error) {
 	const op = "recovery service: generate key"
 
-	randBytes := make([]byte, 26)
-	_, err := rand.Read(randBytes)
+	key, err := generateRandomString(36)
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
 	}
-	key := base64.StdEncoding.EncodeToString(randBytes)
 
 	// TODO: передавать время из конфигурации
 	err = s.keyRepository.Set(key, userID, s.Config.KeyLifetime)
@@ -116,4 +116,17 @@ func (s *service) sendRecoveryMessage(ctx context.Context, data model.MessageDat
 	}
 
 	return nil
+}
+
+func generateRandomString(n int) (string, error) {
+	ret := make([]byte, n)
+	for i := 0; i < n; i++ {
+		num, err := rand.Int(rand.Reader, big.NewInt(int64(len(letters))))
+		if err != nil {
+			return "", err
+		}
+		ret[i] = letters[num.Int64()]
+	}
+
+	return string(ret), nil
 }
