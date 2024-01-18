@@ -15,11 +15,12 @@ import (
 func (s *storage) ListPassports(ctx context.Context, userID uint64) ([]model.Passport, error) {
 	const op = "postrgresql user storage: list passports"
 
-	rows, err := s.DB.Query(ctx, `SELECT 
-	id, number, type, issued_date, issued_by, 
-	(SELECT COUNT(*) FROM visas WHERE visas.passport_id = passports.id) AS visas_count 
-	FROM passports
-	WHERE passports.user_id = @user_id`,
+	rows, err := s.DB.Query(ctx,
+		`SELECT id, number, type, issued_date, issued_by, 
+		(SELECT COUNT(*) FROM visas WHERE visas.passport_id = passports.id) AS visas_count,
+		(SELECT COUNT(*)>0 FROM scans WHERE scans.document_id=passports.id AND scans.type='Паспорт') AS has_scan
+		FROM passports
+		WHERE passports.user_id = @user_id`,
 		pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
@@ -42,7 +43,8 @@ func (s *storage) GetPassport(ctx context.Context, userID, passportID uint64) (*
 
 	rows, err := s.DB.Query(ctx,
 		`SELECT id, number, type, issued_date, issued_by,
-		(SELECT COUNT(*) FROM visas WHERE visas.passport_id = passports.id) AS visas_count 
+		(SELECT COUNT(*) FROM visas WHERE visas.passport_id = passports.id) AS visas_count,
+		(SELECT COUNT(*)>0 FROM scans WHERE user_id=@user_id AND scans.document_id=passports.id AND scans.type='Паспорт') AS has_scan
 		FROM passports
 		WHERE id = @passport_id AND user_id = @user_id`,
 		pgx.NamedArgs{
@@ -95,10 +97,10 @@ func (s *storage) UpdatePassport(ctx context.Context, userID uint64, mp model.Pa
 	p := convertModelPassportToPassport(mp)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE passports
-	SET number=@number, 
-	type=@type, 
-	issued_date=@issued_date, 
-	issued_by=@issued_by
+	SET number = @number, 
+	type = @type, 
+	issued_date = @issued_date, 
+	issued_by = @issued_by
 	WHERE id=@id AND user_id=@user_id`,
 		pgx.NamedArgs{
 			"user_id":     userID,

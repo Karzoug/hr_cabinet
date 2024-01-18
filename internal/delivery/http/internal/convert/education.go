@@ -36,6 +36,7 @@ func ToAPIGetEducationResponse(med *model.Education) api.GetEducationResponse {
 		IssuedInstitution: med.IssuedInstitution,
 		Number:            med.Number,
 		Program:           med.Program,
+		HasScan:           &med.HasScan,
 	}
 }
 
@@ -55,5 +56,6 @@ func toAPIEducation(med model.Education) api.Education {
 		IssuedInstitution: med.IssuedInstitution,
 		Number:            med.Number,
 		Program:           med.Program,
+		HasScan:           &med.HasScan,
 	}
 }

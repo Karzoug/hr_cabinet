@@ -9,4 +9,5 @@ type Training struct {
 	Cost              uint64
 	DateTo            time.Time
 	DateFrom          time.Time
+	HasScan           bool
 }

@@ -76,6 +76,7 @@ func toAPIPassport(mp model.Passport) api.Passport {
 		IssuedDate: types.Date{Time: mp.IssuedDate},
 		Number:     mp.Number,
 		VisasCount: mp.VisasCount,
+		HasScan:    mp.HasScan,
 	}
 	switch mp.Type {
 	case model.PassportTypeInternal:

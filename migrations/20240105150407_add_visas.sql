@@ -43,7 +43,7 @@ COMMIT;
 BEGIN;
 
 DROP TABLE IF EXISTS visas;
-DROP TYPE IF EXISTS 'visa_number_entries';
+DROP TYPE IF EXISTS visa_number_entries;
 
 COMMIT;
 -- +goose StatementEnd

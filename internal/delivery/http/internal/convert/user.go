@@ -21,8 +21,8 @@ func FromAPIAddUserRequest(req api.AddUserJSONRequestBody) model.User {
 		RegistrationAddress: req.RegistrationAddress,
 		ResidentialAddress:  req.ResidentialAddress,
 		Nationality:         req.Nationality,
-		InsuranceNumber:     req.Insurance.Number,
-		TaxpayerNumber:      req.Taxpayer.Number,
+		Insurance:           model.Insurance{Number: req.Insurance.Number},
+		Taxpayer:            model.Taxpayer{Number: req.Taxpayer.Number},
 		PositionID:          req.PositionID,
 		DepartmentID:        req.DepartmentID,
 	}
@@ -56,8 +56,8 @@ func FromAPIPutUserRequest(userID uint64, req api.PutUserJSONRequestBody) model.
 		RegistrationAddress: req.RegistrationAddress,
 		ResidentialAddress:  req.ResidentialAddress,
 		Nationality:         req.Nationality,
-		InsuranceNumber:     req.Insurance.Number,
-		TaxpayerNumber:      req.Taxpayer.Number,
+		Insurance:           model.Insurance{Number: req.Insurance.Number},
+		Taxpayer:            model.Taxpayer{Number: req.Taxpayer.Number},
 		PositionID:          req.PositionID,
 		DepartmentID:        req.DepartmentID,
 	}
@@ -80,6 +80,7 @@ func ToAPIGetExpandedUserResponse(u *model.ExpandedUser) api.GetExpandedUserResp
 	var expUser api.GetExpandedUserResponse
 
 	expUser.GetUserResponse = ToAPIGetUserResponse(&u.User)
+	expUser.Military = nil
 	expUser.Educations = ToAPIListEducations(u.Educations)
 	expUser.Trainings = ToAPIListTrainings(u.Trainings)
 	expUser.Passports = ToAPIExpandedPassports(u.Passports)
@@ -100,7 +101,6 @@ func ToAPIGetUserResponse(u *model.User) api.GetUserResponse {
 		Gender:              "",
 		Grade:               u.Grade,
 		ID:                  u.ID,
-		Insurance:           api.Insurance{Number: u.InsuranceNumber},
 		LastName:            u.LastName,
 		MiddleName:          u.MiddleName,
 		Nationality:         u.Nationality,
@@ -108,7 +108,24 @@ func ToAPIGetUserResponse(u *model.User) api.GetUserResponse {
 		PositionID:          u.PositionID,
 		RegistrationAddress: u.RegistrationAddress,
 		ResidentialAddress:  u.ResidentialAddress,
-		Taxpayer:            api.Taxpayer{Number: u.TaxpayerNumber},
+		Insurance: api.Insurance{
+			Number:  u.Insurance.Number,
+			HasScan: &u.Insurance.HasScan,
+		},
+		Taxpayer: api.Taxpayer{
+			Number:  u.Taxpayer.Number,
+			HasScan: &u.Taxpayer.HasScan,
+		},
+		Military: &api.Military{
+			Category:    u.Military.Category,
+			Comissariat: u.Military.Commissariat,
+			HasScan:     &u.Military.HasScan,
+			Rank:        u.Military.Rank,
+			Speciality:  u.Military.Speciality,
+		},
+		PersonalDataProcessing: api.PersonalDataProcessing{
+			HasScan: u.PersonalDataProcessing.HasScan,
+		},
 	}
 	if u.PhoneNumbers != nil {
 		resp.PhoneNumbers = make(map[string]api.PhoneNumber, len(u.PhoneNumbers))

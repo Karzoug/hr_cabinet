@@ -9,6 +9,7 @@ type Passport struct {
 	Number     string
 	Type       PassportType
 	VisasCount uint
+	HasScan    bool
 }
 
 type PassportType string

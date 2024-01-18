@@ -9,4 +9,5 @@ type Education struct {
 	IssuedInstitution string
 	DateTo            time.Time
 	DateFrom          time.Time
+	HasScan           bool
 }

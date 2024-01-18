@@ -40,7 +40,7 @@ func Run(ctx context.Context, cfg *config.Config, logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
-	userFileRepo, err := users3.New(ctx, s3Client)
+	userFileRepo, err := users3.New(ctx, s3Client, cfg.S3)
 	if err != nil {
 		return err
 	}

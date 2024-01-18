@@ -12,7 +12,7 @@ $$
 $$;
 
 ALTER TABLE passports
-    ADD COLUMN "type" passport_type NOT NULL;
+    ADD COLUMN "type" passport_type;
 
 COMMIT;
 -- +goose StatementEnd
@@ -23,7 +23,7 @@ BEGIN;
 
 ALTER TABLE passports
     DROP COLUMN "type";
-DROP TYPE IF EXISTS 'passport_type';
+DROP TYPE IF EXISTS passport_type;
 
 COMMIT;
 -- +goose StatementEnd

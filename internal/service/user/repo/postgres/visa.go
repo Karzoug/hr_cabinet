@@ -108,8 +108,8 @@ func (s *storage) UpdateVisa(ctx context.Context, userID, passportID uint64, mv 
 	v := convertModelVisaToVisa(mv)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE visas
-	SET number=@number, issued_state=@issued_state, 
-	valid_from=@valid_from, valid_to=@valid_to, number_entries=@number_entries
+	SET number = @number, issued_state = @issued_state, 
+	valid_from = @valid_from, valid_to = @valid_to, number_entries = @number_entries
 	WHERE id=@id AND user_id=@user_id AND passport_id=@passport_id`,
 		pgx.NamedArgs{
 			"user_id":        userID,

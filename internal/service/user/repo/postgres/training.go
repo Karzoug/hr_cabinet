@@ -12,14 +12,15 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-const listTrainingsQuery = `SELECT 
-id, title_of_program, title_of_institution, 
-cost, date_end, date_begin
+const listTrainingsQuery = `SELECT
+id, title_of_program, title_of_institution,
+cost, date_end, date_begin,
+(SELECT COUNT(*)>0 FROM scans WHERE scans.document_id=trainings.id AND scans.type='Сертификат') AS has_scan
 FROM trainings
 WHERE user_id = @user_id`
 
 func (s *storage) ListTrainings(ctx context.Context, userID uint64) ([]model.Training, error) {
-	const op = "postrgresql user storage: list trainings"
+	const op = "postgresql user storage: list trainings"
 
 	rows, err := s.DB.Query(ctx, listTrainingsQuery, pgx.NamedArgs{"user_id": userID})
 	if err != nil {
@@ -39,12 +40,13 @@ func (s *storage) ListTrainings(ctx context.Context, userID uint64) ([]model.Tra
 }
 
 func (s *storage) GetTraining(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
-	const op = "postrgresql user storage: get training"
+	const op = "postgresql user storage: get training"
 
 	rows, err := s.DB.Query(ctx,
-		`SELECT 
-		id, title_of_program, title_of_institution, 
-		cost, date_end, date_begin 
+		`SELECT
+		id, title_of_program, title_of_institution,
+		cost, date_end, date_begin,
+		(SELECT COUNT(*)>0 FROM scans WHERE user_id=@user_id AND scans.document_id=trainings.id AND scans.type='Сертификат') AS has_scan
 		FROM trainings
 		WHERE id = @id AND user_id = @user_id`,
 		pgx.NamedArgs{
@@ -64,7 +66,7 @@ func (s *storage) GetTraining(ctx context.Context, userID, trainingID uint64) (*
 }
 
 func (s *storage) AddTraining(ctx context.Context, userID uint64, tr model.Training) (uint64, error) {
-	const op = "postrgresql user storage: add training"
+	const op = "postgresql user storage: add training"
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO trainings
 		("user_id", "title_of_program", "title_of_institution", 
@@ -96,8 +98,8 @@ func (s *storage) UpdateTraining(ctx context.Context, userID uint64, tr model.Tr
 	const op = "postrgresql user storage: update training"
 
 	tag, err := s.DB.Exec(ctx, `UPDATE trainings
-	SET title_of_program=@title_of_program, title_of_institution=@title_of_institution, 
-	cost=@cost, date_end=@date_end, date_begin=@date_begin
+	SET title_of_program = @title_of_program, title_of_institution = @title_of_institution, 
+	cost = @cost, date_end = @date_end, date_begin = @date_begin
 	WHERE id=@id AND user_id=@user_id`,
 		pgx.NamedArgs{
 			"user_id":              userID,

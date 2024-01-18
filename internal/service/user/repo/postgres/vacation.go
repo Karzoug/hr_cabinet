@@ -93,7 +93,7 @@ func (s *storage) UpdateVacation(ctx context.Context, userID uint64, v model.Vac
 	const op = "postrgresql user storage: update vacation"
 
 	tag, err := s.DB.Exec(ctx, `UPDATE vacations
-	SET date_begin=@date_begin, date_end=@date_end
+	SET date_begin = @date_begin, date_end = @date_end
 	WHERE id=@id AND user_id=@user_id`,
 		pgx.NamedArgs{
 			"user_id":    userID,

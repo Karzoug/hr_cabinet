@@ -4,8 +4,6 @@
 package api
 
 import (
-	"time"
-
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -557,9 +555,10 @@ type Scan struct {
 	DocumentID *uint64  `json:"document_id,omitempty"`
 	ID         uint64   `json:"id"`
 	Type       ScanType `json:"type"`
+	Url        string   `json:"url,omitempty"`
 
 	// UploadAt an upload date-time as defined by full-date - RFC3339
-	UploadAt time.Time `json:"upload_at"`
+	UploadAt string `json:"upload_at,omitempty"`
 }
 
 // ScanType defines model for ScanType.

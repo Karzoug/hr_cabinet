@@ -31,19 +31,42 @@ func (s *storage) Exist(ctx context.Context, userID uint64) (bool, error) {
 	return true, nil
 }
 
-const getUserQuery = `SELECT 
-users.id AS id, firstname, middlename, lastname, gender,
+const (
+	getUserQuery = `SELECT 
+users.id AS id, lastname, firstname, middlename, gender,
 date_of_birth, place_of_birth, grade, phone_numbers,
-work_email, registration_address,residential_address, nationality,
+work_email, registration_address, residential_address, nationality,
 insurance_number, taxpayer_number, users.department_id AS department_id, position_id,
-departments.title AS department, positions.title AS position
+positions.title AS position, departments.title AS department,
+(SELECT COUNT(*)>0 FROM scans WHERE user_id=@user_id AND scans.type='ИНН') AS insurance_has_scan,
+(SELECT COUNT(*)>0 FROM scans WHERE user_id=@user_id AND scans.type='СНИЛС') AS taxpayer_has_scan,
+(SELECT COUNT(*)>0 FROM scans WHERE user_id=@user_id AND scans.type='Согласие на обработку данных') AS pdp_has_scan
 FROM users
 JOIN departments ON users.department_id = departments.id
 JOIN positions ON users.position_id = positions.id
 WHERE users.id = @user_id`
 
+	listPassportsQuery = `SELECT 
+id, number, type, issued_date, issued_by,
+(SELECT COUNT(*)>0 FROM scans WHERE scans.document_id=passports.id AND scans.type='Паспорт') AS has_scan
+FROM passports
+WHERE passports.user_id = @user_id`
+
+	listVisasQuery = `SELECT 
+id, number, passport_id, issued_state, 
+valid_to, valid_from, number_entries 
+FROM visas
+WHERE visas.user_id = @user_id`
+
+	getMilitaryQuery = `SELECT
+rank, specialty, category_of_validity, title_of_commissariat,
+(SELECT COUNT(*)>0 FROM scans WHERE scans.user_id=@user_id AND scans.document_id=militaries.id AND scans.type='Военный билет') AS has_scan
+FROM militaries
+WHERE militaries.user_id = @user_id`
+)
+
 func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
-	const op = "postrgresql user storage: get user"
+	const op = "postgresql user storage: get user"
 
 	rows, err := s.DB.Query(ctx, getUserQuery, pgx.NamedArgs{"user_id": userID})
 	if err != nil {
@@ -57,6 +80,19 @@ func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 
+	rows, err = s.DB.Query(ctx, getMilitaryQuery, pgx.NamedArgs{"user_id": userID})
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	m, err := pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByNameLax[military])
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
+		}
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	u.Military = *m
 	mu := convertUserToModelUser(u)
 	return &mu, nil
 }
@@ -65,23 +101,14 @@ func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 // (!) This is a complex query that potentially returns a lot of data.
 // Use context with timeout.
 func (s *storage) GetExpandedUser(ctx context.Context, userID uint64) (*model.ExpandedUser, error) {
-	const op = "postrgresql user storage: get expanded user"
+	const op = "postgresql user storage: get expanded user"
 
 	batch := &pgx.Batch{}
 	batch.Queue(getUserQuery, pgx.NamedArgs{"user_id": userID})
 	batch.Queue(listEducationsQuery, pgx.NamedArgs{"user_id": userID})
 	batch.Queue(listTrainingsQuery, pgx.NamedArgs{"user_id": userID})
-	batch.Queue(`SELECT 
-	id, number, type, issued_date, issued_by	 
-	FROM passports
-	WHERE passports.user_id = @user_id`,
-		pgx.NamedArgs{"user_id": userID})
-	batch.Queue(`SELECT 
-	id, number, passport_id, issued_state, 
-	valid_to, valid_from, number_entries 
-	FROM visas
-	WHERE visas.user_id = @user_id`,
-		pgx.NamedArgs{"user_id": userID})
+	batch.Queue(listPassportsQuery, pgx.NamedArgs{"user_id": userID})
+	batch.Queue(listVisasQuery, pgx.NamedArgs{"user_id": userID})
 	batch.Queue(listVacationsQuery, pgx.NamedArgs{"user_id": userID})
 	br := s.DB.SendBatch(ctx, batch)
 	defer br.Close()
@@ -182,7 +209,7 @@ func (s *storage) GetExpandedUser(ctx context.Context, userID uint64) (*model.Ex
 }
 
 func (s *storage) ListShortUserInfo(ctx context.Context, pms model.ListUsersParams) ([]model.ShortUserInfo, int, error) {
-	const op = "postrgresql user storage: list short user info"
+	const op = "postgresql user storage: list short user info"
 
 	sb := pgq.
 		Select(`users.id AS id, lastname, firstname, middlename, 
@@ -292,13 +319,13 @@ func (s *storage) Update(ctx context.Context, mu model.User) error {
 	user := convertModelUserToUser(&mu)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE users
-	SET lastname=@lastname, firstname=@firstname, middlename=@middlename, 
-	gender=@gender, date_of_birth=@date_of_birth, place_of_birth=@place_of_birth, 
-	grade=@grade, phone_numbers=@phone_numbers, work_email=@email, 
-	registration_address=@registration_address, residential_address=@residential_address, 
-	nationality=@nationality, insurance_number=@insurance_number, 
-	taxpayer_number=@taxpayer_number, 
-	department_id=@department_id, position_id=@position_id
+	SET lastname = @lastname, firstname = @firstname, middlename = @middlename, 
+	gender = @gender, date_of_birth = @date_of_birth, place_of_birth = @place_of_birth, 
+	grade = @grade, phone_numbers = @phone_numbers, work_email = @email, 
+	registration_address = @registration_address, residential_address = @residential_address, 
+	nationality = @nationality, insurance_number = @insurance_number, 
+	taxpayer_number = @taxpayer_number, 
+	department_id = @department_id, position_id = @position_id
 	WHERE id=@id`,
 		pgx.NamedArgs{
 			"id":                   user.ID,

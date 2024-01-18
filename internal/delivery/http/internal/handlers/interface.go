@@ -43,6 +43,10 @@ type UserService interface {
 	ListVacations(ctx context.Context, userID uint64) ([]umodel.Vacation, error)
 	AddVacation(ctx context.Context, userID uint64, v umodel.Vacation) (uint64, error)
 	UpdateVacation(ctx context.Context, userID uint64, v umodel.Vacation) error
+
+	GetScan(ctx context.Context, userID, scanID uint64) (*umodel.Scan, error)
+	ListScans(ctx context.Context, userID uint64) ([]umodel.Scan, error)
+	UploadScan(ctx context.Context, userID uint64, ms umodel.Scan, f umodel.File) (uint64, error)
 }
 
 type AuthService interface {

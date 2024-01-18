@@ -39,9 +39,14 @@ type userRepository interface {
 	ListVacations(ctx context.Context, userID uint64) ([]model.Vacation, error)
 	AddVacation(ctx context.Context, userID uint64, v model.Vacation) (uint64, error)
 	UpdateVacation(ctx context.Context, userID uint64, v model.Vacation) error
+
+	GetScan(ctx context.Context, userID, scanID uint64) (*model.Scan, error)
+	ListScans(ctx context.Context, userID uint64) ([]model.Scan, error)
+	AddScan(ctx context.Context, userID uint64, ms model.Scan) (uint64, error)
 }
 
 type s3FileRepository interface {
 	Upload(context.Context, s3.File) error
 	Download(ctx context.Context, prefix, name, etag string) (file s3.File, closeFn func() error, err error)
+	PresignedURL(ctx context.Context, prefix, name string) (string, error)
 }
