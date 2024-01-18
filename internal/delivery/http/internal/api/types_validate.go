@@ -27,7 +27,6 @@ func (b ChangePasswordJSONRequestBody) Validate(ctx context.Context, validator *
 		vld.StringProperty("key", b.Key,
 			it.IsNotBlank(),
 			it.HasExactLength(36)),
-		vld.StringProperty("key", b.Key, it.Matches(rxBase64)),
 		vld.StringProperty("password", b.Password,
 			it.IsNotBlank(),
 			it.HasLengthBetween(8, 15)),
@@ -589,7 +588,6 @@ func (cp CheckKeyParams) Validate(ctx context.Context, validator *vld.Validator)
 		vld.StringProperty("key", cp.Key,
 			it.IsNotBlank(),
 			it.HasExactLength(36)),
-		vld.StringProperty("key", string(cp.Key), it.Matches(rxBase64)),
 	)
 }
 
