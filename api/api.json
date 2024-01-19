@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.25.1",
+        "version": "0.25.2",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -2668,12 +2668,31 @@
             "AddContractRequest": {
                 "description": "",
                 "required": [
-                    "date_from",
+                    "number",
                     "type",
-                    "number"
+                    "work_type_id",
+                    "date_from"
                 ],
                 "type": "object",
                 "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ContractType",
+                        "description": ""
+                    },
+                    "work_type_id": {
+                        "type": "integer",
+                        "description": ""
+                    },
+                    "probation_period": {
+                        "type": "integer",
+                        "description": ""
+                    },
                     "date_from": {
                         "format": "date",
                         "description": "",
@@ -2683,23 +2702,15 @@
                         "format": "date",
                         "description": "",
                         "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ContractType",
-                        "description": ""
-                    },
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
                     }
                 },
                 "example": {
-                    "date_from": "2018-01-17",
-                    "date_to": "2020-01-17",
+                    "number": "145678",
                     "type": "temporary",
-                    "number": "145678"
+                    "date_from": "2018-01-17",
+                    "work_type_id": 3,
+                    "probation_period": 3,
+                    "date_to": "2020-01-17"
                 }
             },
             "ListContractsResponse": {
@@ -3418,8 +3429,7 @@
                 "description": "",
                 "enum": [
                     "temporary",
-                    "permanent",
-                    "self_employed"
+                    "permanent"
                 ],
                 "type": "string"
             },
@@ -3505,12 +3515,30 @@
             "PutContractRequest": {
                 "description": "",
                 "required": [
-                    "date_from",
+                    "number",
                     "type",
-                    "number"
+                    "date_from"
                 ],
                 "type": "object",
                 "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ContractType",
+                        "description": ""
+                    },
+                    "work_type_id": {
+                        "type": "integer",
+                        "description": ""
+                    },
+                    "probation_period": {
+                        "type": "integer",
+                        "description": ""
+                    },
                     "date_from": {
                         "format": "date",
                         "description": "",
@@ -3519,16 +3547,6 @@
                     "date_to": {
                         "format": "date",
                         "description": "",
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ContractType",
-                        "description": ""
-                    },
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
                         "type": "string"
                     }
                 },

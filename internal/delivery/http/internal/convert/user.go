@@ -85,9 +85,7 @@ func ToAPIGetExpandedUserResponse(u *model.ExpandedUser) api.GetExpandedUserResp
 	expUser.Trainings = ToAPIListTrainings(u.Trainings)
 	expUser.Passports = ToAPIExpandedPassports(u.Passports)
 	expUser.Vacations = ToAPIListVacations(u.Vacations)
-
-	// TODO: add contracts and vacation
-	expUser.Contracts = []api.Contract{}
+	expUser.Contracts = ToAPIListContracts(u.Contracts)
 
 	return expUser
 }

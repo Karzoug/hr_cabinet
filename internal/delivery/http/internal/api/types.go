@@ -15,9 +15,8 @@ const (
 
 // Defines values for ContractType.
 const (
-	Permanent    ContractType = "permanent"
-	SelfEmployed ContractType = "self_employed"
-	Temporary    ContractType = "temporary"
+	Permanent ContractType = "permanent"
+	Temporary ContractType = "temporary"
 )
 
 // Defines values for Gender.
@@ -72,10 +71,12 @@ const (
 
 // AddContractRequest defines model for AddContractRequest.
 type AddContractRequest struct {
-	DateFrom openapi_types.Date  `json:"date_from"`
-	DateTo   *openapi_types.Date `json:"date_to,omitempty"`
-	Number   string              `json:"number"`
-	Type     ContractType        `json:"type"`
+	DateFrom        openapi_types.Date  `json:"date_from"`
+	DateTo          *openapi_types.Date `json:"date_to,omitempty"`
+	Number          string              `json:"number"`
+	Type            ContractType        `json:"type"`
+	ProbationPeriod *uint               `json:"probation_period,omitempty"`
+	WorkTypeID      uint64              `json:"work_type_id"`
 }
 
 // AddEducationRequest defines model for AddEducationRequest.
@@ -162,12 +163,14 @@ type ChangePasswordRequest struct {
 
 // Contract defines model for Contract.
 type Contract struct {
-	DateFrom openapi_types.Date  `json:"date_from"`
-	DateTo   *openapi_types.Date `json:"date_to,omitempty"`
-	HasScan  *bool               `json:"has_scan,omitempty"`
-	ID       uint64              `json:"id"`
-	Number   string              `json:"number"`
-	Type     ContractType        `json:"type"`
+	DateFrom        openapi_types.Date  `json:"date_from"`
+	DateTo          *openapi_types.Date `json:"date_to,omitempty"`
+	HasScan         *bool               `json:"has_scan,omitempty"`
+	ID              uint64              `json:"id"`
+	Number          string              `json:"number"`
+	Type            ContractType        `json:"type"`
+	ProbationPeriod *uint               `json:"probation_period,omitempty"`
+	WorkTypeID      uint64              `json:"work_type_id"`
 }
 
 // ContractType defines model for ContractType.
@@ -467,10 +470,12 @@ type PositionTrackItem struct {
 
 // PutContractRequest defines model for PutContractRequest.
 type PutContractRequest struct {
-	DateFrom openapi_types.Date  `json:"date_from"`
-	DateTo   *openapi_types.Date `json:"date_to,omitempty"`
-	Number   string              `json:"number"`
-	Type     ContractType        `json:"type"`
+	DateFrom        openapi_types.Date  `json:"date_from"`
+	DateTo          *openapi_types.Date `json:"date_to,omitempty"`
+	Number          string              `json:"number"`
+	Type            ContractType        `json:"type"`
+	ProbationPeriod *uint               `json:"probation_period,omitempty"`
+	WorkTypeID      uint64              `json:"work_type_id"`
 }
 
 // PutEducationRequest defines model for PutEducationRequest.

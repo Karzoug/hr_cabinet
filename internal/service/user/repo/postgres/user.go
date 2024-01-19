@@ -110,6 +110,7 @@ func (s *storage) GetExpandedUser(ctx context.Context, userID uint64) (*model.Ex
 	batch.Queue(listPassportsQuery, pgx.NamedArgs{"user_id": userID})
 	batch.Queue(listVisasQuery, pgx.NamedArgs{"user_id": userID})
 	batch.Queue(listVacationsQuery, pgx.NamedArgs{"user_id": userID})
+	batch.Queue(listContractsQuery, pgx.NamedArgs{"user_id": userID})
 	br := s.DB.SendBatch(ctx, batch)
 	defer br.Close()
 
@@ -203,6 +204,20 @@ func (s *storage) GetExpandedUser(ctx context.Context, userID uint64) (*model.Ex
 	expUser.Vacations = make([]model.Vacation, len(vs))
 	for i, v := range vs {
 		expUser.Vacations[i] = convertVacationToModelVacation(v)
+	}
+
+	// get contracts
+	rows, err = br.Query()
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	cs, err := pgx.CollectRows[contract](rows, pgx.RowToStructByNameLax[contract])
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+	expUser.Contracts = make([]model.Contract, len(cs))
+	for i, c := range cs {
+		expUser.Contracts[i] = convertContractToModelContract(c)
 	}
 
 	return &expUser, nil

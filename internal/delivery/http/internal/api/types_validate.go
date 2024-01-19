@@ -246,7 +246,7 @@ func (b AddContractJSONRequestBody) Validate(ctx context.Context, validator *vld
 		vld.ComparableProperty[ContractType]("type",
 			b.Type,
 			it.IsNotBlankComparable[ContractType](),
-			it.IsOneOf[ContractType](Permanent, Temporary, SelfEmployed)),
+			it.IsOneOf[ContractType](Permanent, Temporary)),
 	)
 }
 
@@ -264,8 +264,7 @@ func (b PatchContractJSONRequestBody) Validate(ctx context.Context, validator *v
 				it.IsNotBlankComparable[ContractType](),
 				it.IsOneOf[ContractType](
 					Permanent,
-					Temporary,
-					SelfEmployed))),
+					Temporary))),
 	)
 }
 
@@ -278,7 +277,7 @@ func (b PutContractJSONRequestBody) Validate(ctx context.Context, validator *vld
 		vld.ComparableProperty[ContractType]("type",
 			b.Type,
 			it.IsNotBlankComparable[ContractType](),
-			it.IsOneOf[ContractType](Permanent, Temporary, SelfEmployed)),
+			it.IsOneOf[ContractType](Permanent, Temporary)),
 	)
 }
 
