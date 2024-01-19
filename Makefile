@@ -13,6 +13,10 @@ install-dependencies:
 lint:
 	golangci-lint run ./...
 
+.PHONY: format
+format:
+	goimports -local github.com/Employee-s-file-cabinet/backend -w ./internal/
+
 .PHONY: build-dev
 build-dev:
 	go build -o server -tags=dev  ./cmd/

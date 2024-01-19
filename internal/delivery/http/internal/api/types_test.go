@@ -78,10 +78,8 @@ func TestAddUserRequest_Validate(t *testing.T) {
 				"residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
 				"grade": "1",
 				"email": "pushkin@dantes.net",
-				"phone_numbers": {
-					"mobile": "79999999999",
-					"office": "123456"
-				},
+				"mobile_phone_number": "79999999999",
+				"office_phone_number": "123456",
 				"insurance": {
 					"number": "08336732477"
 				},
@@ -110,17 +108,15 @@ func TestAddUserRequest_Validate(t *testing.T) {
 				"position": "Строитель",
 				"department": "Инженерный отдел",
 				"email": "akramovur@rogakopyta.net",
-				"phone_numbers": {
-				  "mobile": "79999999999",
-				  "office": "123456"
-				},
+				"mobile_phone_number": "79999999999",
+				"office_phone_number": "123456",
 				"passports": [
 				  {
 					"id": 67,
 					"number": "AZ0001055",
 					"issued_date": "2010-05-23",
 					"issued_by": "TOSHKENT SHAHAR IIBB",
-					"type": "foreigners",
+					"type": "national",
 					"has_scan": true
 				  }
 				],
@@ -205,7 +201,7 @@ func TestAddPassportRequest_Validate(t *testing.T) {
 		"number": "33592222",
 		"issued_date": "2016-05-15",
 		"issued_by": "Washington D.C. U.S.A.",
-		"type": "foreigners"
+		"type": "national"
 	  }`
 
 	var p AddPassportJSONRequestBody
@@ -256,6 +252,7 @@ func TestAddVisaRequest_Validate(t *testing.T) {
 	visaJSON := `{
 		"number": "33592222",
 		"issued_state": "Spain",
+		"type": "C1",
 		"valid_to": "2017-10-22",
 		"valid_from": "2017-09-08",
 		"number_entries": "1"
@@ -276,9 +273,7 @@ func TestPatchUserRequest_Validate(t *testing.T) {
 				"position": "Novelist",
 				"department": "Collegium of Foreign Affairs",
 				"email": "dantes@pushkin.net",
-				"phone_numbers": {
-					"mobile": "79919939929"
-				},
+				"mobile_phone_number": "79999999999",
 				"foreign_languages": [
 				  "english",
 				  "german",
@@ -292,10 +287,8 @@ func TestPatchUserRequest_Validate(t *testing.T) {
 				"position": "Строитель",
 				"department": "Инженерный отдел",
 				"email": "akramovur@rogakopyta.net",
-				"phone_numbers": {
-				  "mobile": "79999999999",
-				  "office": "123456"
-				},
+				"mobile_phone_number": "79999999999",
+				"office_phone_number": "123456",
 				"contracts": [
 				  {
 					"date_from": "2013-08-01",

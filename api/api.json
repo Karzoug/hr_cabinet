@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.25.2",
+        "version": "0.26.0",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -1403,7 +1403,7 @@
                 }
             ]
         },
-        "/users/{user_id}/passports/{passport_id}/visas": {
+        "/users/{user_id}/visas": {
             "get": {
                 "responses": {
                     "200": {
@@ -1485,18 +1485,10 @@
                     },
                     "in": "path",
                     "required": true
-                },
-                {
-                    "name": "passport_id",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
                 }
             ]
         },
-        "/users/{user_id}/passports/{passport_id}/visas/{visa_id}": {
+        "/users/{user_id}/visas/{visa_id}": {
             "get": {
                 "responses": {
                     "200": {
@@ -1623,14 +1615,6 @@
             "parameters": [
                 {
                     "name": "user_id",
-                    "schema": {
-                        "type": "integer"
-                    },
-                    "in": "path",
-                    "required": true
-                },
-                {
-                    "name": "passport_id",
                     "schema": {
                         "type": "integer"
                     },
@@ -2040,88 +2024,12 @@
         },
         "/users/{user_id}/passports/{passport_id}": {
             "get": {
-                "parameters": [
-                    {
-                        "name": "expanded",
-                        "description": "whether to return visas along with user passport data (default - no)",
-                        "schema": {
-                            "default": false,
-                            "type": "boolean"
-                        },
-                        "in": "query",
-                        "required": false
-                    }
-                ],
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "oneOf": [
-                                        {
-                                            "$ref": "#/components/schemas/GetPassportResponse"
-                                        },
-                                        {
-                                            "$ref": "#/components/schemas/GetExpandedPassportResponse"
-                                        }
-                                    ]
-                                },
-                                "examples": {
-                                    "Internal passport example": {
-                                        "value": {
-                                            "id": 98,
-                                            "number": "4011364219",
-                                            "issued_date": "2016-05-15",
-                                            "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
-                                            "type": "internal",
-                                            "has_scan": false,
-                                            "visas_count": 1
-                                        }
-                                    },
-                                    "Foreigners passport example (expanded)": {
-                                        "value": {
-                                            "id": 75,
-                                            "visas": [
-                                                {
-                                                    "id": 3,
-                                                    "number": "33592222",
-                                                    "issued_state": "Russia",
-                                                    "valid_to": "2017-09-22",
-                                                    "valid_from": "2018-09-22",
-                                                    "number_entries": "mult",
-                                                    "has_scan": true
-                                                }
-                                            ],
-                                            "number": "33592222",
-                                            "issued_date": "2016-05-15",
-                                            "issued_by": "Washington D.C. U.S.A.",
-                                            "type": "foreigners",
-                                            "has_scan": false,
-                                            "visas_count": 1
-                                        }
-                                    },
-                                    "Internal passport example (expanded)": {
-                                        "value": {
-                                            "id": 98,
-                                            "visas": [
-                                                {
-                                                    "id": 9,
-                                                    "number": "33592222",
-                                                    "issued_state": "Germany",
-                                                    "valid_to": "2017-09-22",
-                                                    "valid_from": "2017-10-08",
-                                                    "number_entries": "2",
-                                                    "has_scan": false
-                                                }
-                                            ],
-                                            "number": "4011364219",
-                                            "issued_date": "2016-05-15",
-                                            "issued_by": "ТП № 28 отдела УФМС России по СПб и ЛО",
-                                            "type": "internal",
-                                            "has_scan": false,
-                                            "visas_count": 1
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/GetPassportResponse"
                                 }
                             }
                         },
@@ -2348,7 +2256,7 @@
                     "has_scan": {
                         "description": "",
                         "type": "boolean",
-                        "readOnly": true
+                        "readOnly": false
                     }
                 },
                 "example": {
@@ -2501,83 +2409,6 @@
                     "login": "vasyapp@gazneft.ru"
                 }
             },
-            "ListUsersItem": {
-                "description": "",
-                "required": [
-                    "id",
-                    "first_name",
-                    "last_name",
-                    "middle_name",
-                    "position",
-                    "department",
-                    "phone_numbers",
-                    "email"
-                ],
-                "type": "object",
-                "properties": {
-                    "first_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "last_name": {
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "middle_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "position": {
-                        "description": "",
-                        "type": "string"
-                    },
-                    "department": {
-                        "description": "",
-                        "type": "string"
-                    },
-                    "email": {
-                        "format": "email",
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "phone_numbers": {
-                        "$ref": "#/components/schemas/PhoneNumbers",
-                        "description": "",
-                        "maxLength": 15,
-                        "minLength": 2
-                    },
-                    "id": {
-                        "description": "",
-                        "type": "integer"
-                    }
-                },
-                "example": {
-                    "id": 1,
-                    "first_name": "Alexander",
-                    "last_name": "Pushkin",
-                    "middle_name": "Sergeyevich",
-                    "position": "Novelist",
-                    "department": "Collegium of Foreign Affairs",
-                    "email": "pushkin@dantes.net",
-                    "phone_numbers": [
-                        {
-                            "number": "799183712345",
-                            "type": "mobile"
-                        },
-                        {
-                            "number": "1837",
-                            "type": "office"
-                        }
-                    ]
-                }
-            },
             "ListUsersResponse": {
                 "description": "",
                 "required": [
@@ -2616,10 +2447,8 @@
                             "position": "Novelist",
                             "department": "Collegium of Foreign Affairs",
                             "email": "pushkin@dantes.net",
-                            "phone_numbers": {
-                                "mobile": "79999999999",
-                                "office": "123456"
-                            }
+                            "mobile_phone_number": "79999999999",
+                            "office_phone_number": "123456"
                         },
                         {
                             "first_name": "Nikolai",
@@ -2628,10 +2457,8 @@
                             "position": "Playwright",
                             "department": "Third Section of His Imperial Majesty's Own Chancellery",
                             "email": "gogol@fire.net",
-                            "phone_numbers": {
-                                "mobile": "79999999999",
-                                "office": "123456"
-                            }
+                            "mobile_phone_number": "79999999999",
+                            "office_phone_number": "123456"
                         }
                     ],
                     "current_page": 2,
@@ -2686,12 +2513,12 @@
                         "description": ""
                     },
                     "work_type_id": {
-                        "type": "integer",
-                        "description": ""
+                        "description": "",
+                        "type": "integer"
                     },
                     "probation_period": {
-                        "type": "integer",
-                        "description": ""
+                        "description": "",
+                        "type": "integer"
                     },
                     "date_from": {
                         "format": "date",
@@ -2765,10 +2592,9 @@
                     "id",
                     "has_scan",
                     "number",
-                    "issued_state",
                     "valid_to",
                     "valid_from",
-                    "number_entries"
+                    "type"
                 ],
                 "type": "object",
                 "properties": {
@@ -2794,10 +2620,6 @@
                         "description": "",
                         "type": "string"
                     },
-                    "number_entries": {
-                        "$ref": "#/components/schemas/VisaNumberEntries",
-                        "description": ""
-                    },
                     "id": {
                         "description": "",
                         "type": "integer"
@@ -2806,6 +2628,12 @@
                         "description": "",
                         "type": "boolean",
                         "readOnly": false
+                    },
+                    "type": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "type": "string"
                     }
                 },
                 "example": {
@@ -2815,7 +2643,7 @@
                     "issued_state": "Spain",
                     "valid_to": "2017-10-22",
                     "valid_from": "2017-09-08",
-                    "number_entries": "1"
+                    "type": "C1"
                 }
             },
             "GetPassportResponse": {
@@ -2833,37 +2661,6 @@
                 "allOf": [
                     {
                         "$ref": "#/components/schemas/Visa"
-                    }
-                ]
-            },
-            "ExpandedPassport": {
-                "description": "",
-                "type": "object",
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/Passport"
-                    },
-                    {
-                        "required": [
-                            "visas"
-                        ],
-                        "properties": {
-                            "visas": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/Visa"
-                                }
-                            }
-                        }
-                    }
-                ]
-            },
-            "GetExpandedPassportResponse": {
-                "description": "",
-                "type": "object",
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/ExpandedPassport"
                     }
                 ]
             },
@@ -3202,229 +2999,6 @@
                     }
                 ]
             },
-            "Scan": {
-                "description": "",
-                "required": [
-                    "id",
-                    "type"
-                ],
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "",
-                        "type": "integer",
-                        "example": 3
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ScanType",
-                        "description": ""
-                    },
-                    "document_id": {
-                        "description": "document ID (if necessary), passport ID for passport scan, for example",
-                        "type": "integer",
-                        "example": "1"
-                    },
-                    "description": {
-                        "description": "",
-                        "maxLength": 150,
-                        "type": "string",
-                        "example": "Краткое описание документа"
-                    },
-                    "url": {
-                        "description": "URL to directly download objects (HTTP GET operations)",
-                        "type": "string",
-                        "example": ""
-                    },
-                    "upload_at": {
-                        "format": "date-time",
-                        "description": "an upload date-time as defined by full-date - RFC3339",
-                        "type": "string",
-                        "example": "2019-08-24T14:15:22Z"
-                    }
-                },
-                "example": {
-                    "id": 81,
-                    "upload_at": "2018-02-10T09:30Z",
-                    "type": "baby_birth",
-                    "description": "not verified by social services"
-                }
-            },
-            "PassportType": {
-                "description": "",
-                "default": "internal",
-                "enum": [
-                    "internal",
-                    "external",
-                    "foreigners"
-                ],
-                "type": "string"
-            },
-            "AddPassportRequest": {
-                "description": "",
-                "required": [
-                    "number",
-                    "issued_date",
-                    "issued_by",
-                    "type"
-                ],
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "issued_date": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "issued_by": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/PassportType",
-                        "description": ""
-                    }
-                },
-                "example": {
-                    "number": "33592222",
-                    "issued_date": "2016-05-15",
-                    "issued_by": "Washington D.C. U.S.A.",
-                    "type": "foreigners"
-                }
-            },
-            "Passport": {
-                "description": "",
-                "required": [
-                    "id",
-                    "number",
-                    "issued_date",
-                    "issued_by",
-                    "type",
-                    "has_scan",
-                    "visas_count"
-                ],
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "issued_date": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "issued_by": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/PassportType",
-                        "description": ""
-                    },
-                    "id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "has_scan": {
-                        "description": "",
-                        "type": "boolean",
-                        "readOnly": false
-                    },
-                    "visas_count": {
-                        "description": "",
-                        "type": "integer"
-                    }
-                },
-                "example": {
-                    "id": 547,
-                    "has_scan": false,
-                    "number": "33592222",
-                    "issued_date": "2016-05-15",
-                    "issued_by": "Washington D.C. U.S.A.",
-                    "type": "foreigners"
-                }
-            },
-            "PatchPassportRequest": {
-                "description": "",
-                "minProperties": 1,
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "issued_date": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "issued_by": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/PassportType",
-                        "description": ""
-                    }
-                },
-                "example": {
-                    "number": "33592222"
-                }
-            },
-            "PutPassportRequest": {
-                "description": "",
-                "required": [
-                    "number",
-                    "issued_date",
-                    "issued_by",
-                    "type"
-                ],
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "issued_date": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "issued_by": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/PassportType",
-                        "description": ""
-                    }
-                },
-                "example": {
-                    "number": "33592222",
-                    "issued_date": "2016-05-15",
-                    "issued_by": "Washington D.C. U.S.A.",
-                    "type": "foreigners"
-                }
-            },
             "ContractType": {
                 "description": "",
                 "enum": [
@@ -3433,147 +3007,13 @@
                 ],
                 "type": "string"
             },
-            "Contract": {
-                "description": "",
-                "required": [
-                    "id",
-                    "has_scan",
-                    "date_from",
-                    "type",
-                    "number"
-                ],
-                "type": "object",
-                "properties": {
-                    "date_from": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "date_to": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ContractType",
-                        "description": ""
-                    },
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "has_scan": {
-                        "description": "",
-                        "type": "boolean",
-                        "readOnly": true
-                    }
-                },
-                "example": {
-                    "id": 127,
-                    "has_scan": true,
-                    "date_from": "2018-01-17",
-                    "date_to": "2020-01-17",
-                    "type": "temporary",
-                    "number": "145678"
-                }
-            },
-            "PatchContractRequest": {
-                "minProperties": 1,
-                "type": "object",
-                "properties": {
-                    "date_from": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "date_to": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ContractType",
-                        "description": ""
-                    },
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "number": "145678"
-                }
-            },
-            "PutContractRequest": {
-                "description": "",
-                "required": [
-                    "number",
-                    "type",
-                    "date_from"
-                ],
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "type": {
-                        "$ref": "#/components/schemas/ContractType",
-                        "description": ""
-                    },
-                    "work_type_id": {
-                        "type": "integer",
-                        "description": ""
-                    },
-                    "probation_period": {
-                        "type": "integer",
-                        "description": ""
-                    },
-                    "date_from": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "date_to": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    }
-                },
-                "example": {
-                    "date_from": "2018-01-17",
-                    "date_to": "2020-01-17",
-                    "type": "temporary",
-                    "number": "145678"
-                }
-            },
-            "VisaNumberEntries": {
-                "description": "",
-                "enum": [
-                    "1",
-                    "2",
-                    "mult"
-                ],
-                "type": "string"
-            },
             "PutVisaRequest": {
                 "description": "",
                 "required": [
                     "number",
-                    "issued_state",
                     "valid_to",
                     "valid_from",
-                    "number_entries"
+                    "type"
                 ],
                 "type": "object",
                 "properties": {
@@ -3599,9 +3039,11 @@
                         "description": "",
                         "type": "string"
                     },
-                    "number_entries": {
-                        "$ref": "#/components/schemas/VisaNumberEntries",
-                        "description": ""
+                    "type": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "type": "string"
                     }
                 },
                 "example": {
@@ -3609,7 +3051,7 @@
                     "issued_state": "Spain",
                     "valid_to": "2017-10-22",
                     "valid_from": "2017-09-08",
-                    "number_entries": "1"
+                    "type": "C1"
                 }
             },
             "PatchVisaRequest": {
@@ -3639,59 +3081,15 @@
                         "description": "",
                         "type": "string"
                     },
-                    "number_entries": {
-                        "$ref": "#/components/schemas/VisaNumberEntries",
-                        "description": ""
+                    "type": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "type": "string"
                     }
                 },
                 "example": {
-                    "number_entries": "2"
-                }
-            },
-            "AddVisaRequest": {
-                "description": "",
-                "required": [
-                    "number",
-                    "issued_state",
-                    "valid_to",
-                    "valid_from",
-                    "number_entries"
-                ],
-                "type": "object",
-                "properties": {
-                    "number": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "issued_state": {
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "valid_to": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "valid_from": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "number_entries": {
-                        "$ref": "#/components/schemas/VisaNumberEntries",
-                        "description": ""
-                    }
-                },
-                "example": {
-                    "number": "33592222",
-                    "issued_state": "Spain",
-                    "valid_to": "2017-10-22",
-                    "valid_from": "2017-09-08",
-                    "number_entries": "1"
+                    "type": "C2"
                 }
             },
             "Gender": {
@@ -3729,127 +3127,6 @@
                     "recruited_users_number": {
                         "description": "number of recruited employees",
                         "type": "integer"
-                    }
-                }
-            },
-            "GetExpandedUserResponse": {
-                "description": "",
-                "type": "object",
-                "allOf": [
-                    {
-                        "$ref": "#/components/schemas/GetUserResponse"
-                    },
-                    {
-                        "required": [
-                            "passports",
-                            "contracts",
-                            "vacations",
-                            "educations",
-                            "trainings",
-                            "id"
-                        ],
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "description": "",
-                                "type": "integer"
-                            },
-                            "passports": {
-                                "description": "",
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/ExpandedPassport"
-                                }
-                            },
-                            "contracts": {
-                                "description": "",
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/Contract"
-                                }
-                            },
-                            "vacations": {
-                                "description": "",
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/Vacation"
-                                }
-                            },
-                            "educations": {
-                                "description": "",
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/Education"
-                                }
-                            },
-                            "trainings": {
-                                "description": "",
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/Training"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "example": {
-                    "id": 93,
-                    "first_name": "Улугбек",
-                    "last_name": "Акрамов",
-                    "middle_name": "Рашидович",
-                    "position_id": 2,
-                    "department": 8,
-                    "email": "akramovur@rogakopyta.net",
-                    "phone_numbers": {
-                        "mobile": "79999999999",
-                        "office": "123456"
-                    },
-                    "passports": [
-                        {
-                            "id": 67,
-                            "number": "AZ0001055",
-                            "issued_date": "2010-05-23",
-                            "issued_by": "TOSHKENT SHAHAR IIBB",
-                            "type": "foreigners",
-                            "has_scan": true,
-                            "visas_count": 1
-                        }
-                    ],
-                    "contracts": [
-                        {
-                            "date_from": "2013-08-01",
-                            "date_to": "2013-09-04",
-                            "type": "temporary",
-                            "number": "12345"
-                        }
-                    ],
-                    "work_permit": {
-                        "number": "77121034092",
-                        "valid_to": "2013-09-05",
-                        "has_scan": true
-                    },
-                    "grade": "2",
-                    "working_model": "in-office",
-                    "date_of_birth": "1994-05-26",
-                    "place_of_birth": "Ташкент",
-                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
-                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
-                    "nationality": "Узбекистан",
-                    "gender": "male",
-                    "position_track": [
-                        {
-                            "date_from": "2018-01-17",
-                            "date_to": "2018-01-17",
-                            "position_id": 15
-                        },
-                        {
-                            "date_from": "2018-01-17",
-                            "date_to": "2018-01-17",
-                            "position_id": 82
-                        }
-                    ],
-                    "personal_data_processing": {
-                        "has_scan": true
                     }
                 }
             },
@@ -3913,713 +3190,6 @@
                 },
                 "example": {
                     "program": "Связи с общественностью"
-                }
-            },
-            "PhoneNumbers": {
-                "type": "object",
-                "additionalProperties": {
-                    "maxLength": 15,
-                    "minLength": 2,
-                    "type": "string"
-                },
-                "example": {
-                    "mobile": "79999999999",
-                    "office": "123456"
-                },
-                "x-go-type-skip-optional-pointer": true
-            },
-            "PutUserRequest": {
-                "description": "",
-                "required": [
-                    "first_name",
-                    "last_name",
-                    "middle_name",
-                    "position_id",
-                    "department_id",
-                    "grade",
-                    "phone_numbers",
-                    "date_of_birth",
-                    "gender",
-                    "place_of_birth",
-                    "registration_address",
-                    "residential_address",
-                    "nationality",
-                    "taxpayer",
-                    "insurance",
-                    "email",
-                    "position_track"
-                ],
-                "type": "object",
-                "properties": {
-                    "first_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "last_name": {
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "middle_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "position_id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "department_id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "email": {
-                        "format": "email",
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "phone_numbers": {
-                        "$ref": "#/components/schemas/PhoneNumbers",
-                        "description": ""
-                    },
-                    "grade": {
-                        "description": "",
-                        "maxLength": 1,
-                        "minLength": 1,
-                        "type": "string"
-                    },
-                    "working_model": {
-                        "$ref": "#/components/schemas/WorkingModel",
-                        "description": ""
-                    },
-                    "date_of_birth": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "gender": {
-                        "$ref": "#/components/schemas/Gender"
-                    },
-                    "place_of_birth": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "registration_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "residential_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "nationality": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "foreign_languages": {
-                        "description": "",
-                        "type": "array",
-                        "items": {
-                            "maxLength": 50,
-                            "minLength": 2,
-                            "type": "string"
-                        },
-                        "x-go-type-skip-optional-pointer": true
-                    },
-                    "military": {
-                        "$ref": "#/components/schemas/Military",
-                        "description": ""
-                    },
-                    "taxpayer": {
-                        "$ref": "#/components/schemas/Taxpayer",
-                        "description": ""
-                    },
-                    "insurance": {
-                        "$ref": "#/components/schemas/Insurance"
-                    },
-                    "work_permit": {
-                        "$ref": "#/components/schemas/WorkPermit",
-                        "description": ""
-                    },
-                    "position_track": {
-                        "$ref": "#/components/schemas/PositionTrack",
-                        "description": ""
-                    }
-                },
-                "example": {
-                    "first_name": "Alexander",
-                    "last_name": "Pushkin",
-                    "middle_name": "Sergeyevich",
-                    "position_id": 2,
-                    "department_id": 3,
-                    "email": "pushkin@dantes.net",
-                    "phone_numbers": [
-                        {
-                            "number": "799183712345",
-                            "type": "mobile"
-                        },
-                        {
-                            "number": "1837",
-                            "type": "office"
-                        }
-                    ],
-                    "grade": "1",
-                    "working_model": "remote",
-                    "date_of_birth": "1799-06-06",
-                    "gender": "male",
-                    "place_of_birth": "Москва",
-                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "nationality": "Царская Россия",
-                    "foreign_languages": [
-                        "english",
-                        "french"
-                    ],
-                    "military": {
-                        "rank": "Старший лейтенант",
-                        "speciality": "101182",
-                        "category": "А2",
-                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга"
-                    },
-                    "taxpayer": {
-                        "number": "500100732259"
-                    },
-                    "insurance": {
-                        "number": "08336732477"
-                    },
-                    "position_track": [
-                        {
-                            "date_from": "2018-01-17",
-                            "date_to": "2018-01-17",
-                            "position_id": 15
-                        },
-                        {
-                            "date_from": "2018-01-17",
-                            "date_to": "2018-01-17",
-                            "position_id": 82
-                        }
-                    ]
-                }
-            },
-            "PatchUserRequest": {
-                "minProperties": 1,
-                "type": "object",
-                "properties": {
-                    "first_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "last_name": {
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "middle_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "position_id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "department_id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "email": {
-                        "format": "email",
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "phone_numbers": {
-                        "$ref": "#/components/schemas/PhoneNumbers",
-                        "description": ""
-                    },
-                    "grade": {
-                        "description": "",
-                        "maxLength": 1,
-                        "minLength": 1,
-                        "type": "string"
-                    },
-                    "working_model": {
-                        "$ref": "#/components/schemas/WorkingModel",
-                        "description": ""
-                    },
-                    "date_of_birth": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "gender": {
-                        "$ref": "#/components/schemas/Gender"
-                    },
-                    "place_of_birth": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "registration_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "residential_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "nationality": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "foreign_languages": {
-                        "description": "",
-                        "type": "array",
-                        "items": {
-                            "maxLength": 50,
-                            "minLength": 2,
-                            "type": "string"
-                        },
-                        "x-go-type-skip-optional-pointer": true
-                    },
-                    "military": {
-                        "$ref": "#/components/schemas/Military",
-                        "description": ""
-                    },
-                    "taxpayer": {
-                        "$ref": "#/components/schemas/Taxpayer",
-                        "description": ""
-                    },
-                    "insurance": {
-                        "$ref": "#/components/schemas/Insurance"
-                    },
-                    "work_permit": {
-                        "$ref": "#/components/schemas/WorkPermit",
-                        "description": ""
-                    },
-                    "position_track": {
-                        "$ref": "#/components/schemas/PositionTrack",
-                        "description": ""
-                    }
-                }
-            },
-            "GetUserResponse": {
-                "description": "",
-                "required": [
-                    "first_name",
-                    "last_name",
-                    "middle_name",
-                    "position_id",
-                    "department_id",
-                    "grade",
-                    "phone_numbers",
-                    "date_of_birth",
-                    "gender",
-                    "place_of_birth",
-                    "registration_address",
-                    "residential_address",
-                    "nationality",
-                    "taxpayer",
-                    "insurance",
-                    "email",
-                    "position_track",
-                    "personal_data_processing",
-                    "id"
-                ],
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "first_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "last_name": {
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "middle_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "position_id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "department_id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "email": {
-                        "format": "email",
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "phone_numbers": {
-                        "$ref": "#/components/schemas/PhoneNumbers",
-                        "description": ""
-                    },
-                    "grade": {
-                        "description": "",
-                        "maxLength": 1,
-                        "minLength": 1,
-                        "type": "string"
-                    },
-                    "working_model": {
-                        "$ref": "#/components/schemas/WorkingModel",
-                        "description": ""
-                    },
-                    "date_of_birth": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "gender": {
-                        "$ref": "#/components/schemas/Gender",
-                        "description": ""
-                    },
-                    "place_of_birth": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "registration_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "residential_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "nationality": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "foreign_languages": {
-                        "description": "",
-                        "type": "array",
-                        "items": {
-                            "maxLength": 50,
-                            "minLength": 2,
-                            "type": "string"
-                        },
-                        "x-go-type-skip-optional-pointer": true
-                    },
-                    "military": {
-                        "$ref": "#/components/schemas/Military",
-                        "description": ""
-                    },
-                    "taxpayer": {
-                        "$ref": "#/components/schemas/Taxpayer",
-                        "description": ""
-                    },
-                    "insurance": {
-                        "$ref": "#/components/schemas/Insurance"
-                    },
-                    "work_permit": {
-                        "$ref": "#/components/schemas/WorkPermit",
-                        "description": ""
-                    },
-                    "position_track": {
-                        "$ref": "#/components/schemas/PositionTrack",
-                        "description": ""
-                    },
-                    "personal_data_processing": {
-                        "$ref": "#/components/schemas/PersonalDataProcessing",
-                        "description": ""
-                    },
-                    "finance": {
-                        "$ref": "#/components/schemas/UserFinance",
-                        "description": ""
-                    }
-                },
-                "example": {
-                    "id": 53,
-                    "first_name": "Alexander",
-                    "last_name": "Pushkin",
-                    "middle_name": "Sergeyevich",
-                    "position_id": 35,
-                    "department_id": 69,
-                    "email": "pushkin@dantes.net",
-                    "phone_numbers": [
-                        {
-                            "number": "799183712345",
-                            "type": "mobile"
-                        },
-                        {
-                            "number": "1837",
-                            "type": "office"
-                        }
-                    ],
-                    "grade": "1",
-                    "working_model": "remote",
-                    "date_of_birth": "1799-06-06",
-                    "gender": "male",
-                    "place_of_birth": "Москва",
-                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "nationality": "Царская Россия",
-                    "foreign_languages": [
-                        "english",
-                        "french"
-                    ],
-                    "military": {
-                        "rank": "Старший лейтенант",
-                        "speciality": "101182",
-                        "category": "А2",
-                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
-                        "has_scan": true
-                    },
-                    "taxpayer": {
-                        "number": 500100732259,
-                        "has_scan": true
-                    },
-                    "insurance": {
-                        "number": "08336732477",
-                        "has_scan": true
-                    },
-                    "position_track": [
-                        {
-                            "date_from": "2018-01-17",
-                            "date_to": "2018-01-17",
-                            "position_id": 15
-                        },
-                        {
-                            "date_from": "2018-01-17",
-                            "date_to": "2018-01-17",
-                            "position_id": 82
-                        }
-                    ],
-                    "personal_data_processing": {
-                        "has_scan": true
-                    }
-                }
-            },
-            "AddUserRequest": {
-                "description": "",
-                "required": [
-                    "first_name",
-                    "last_name",
-                    "middle_name",
-                    "position_id",
-                    "department_id",
-                    "grade",
-                    "phone_numbers",
-                    "date_of_birth",
-                    "gender",
-                    "place_of_birth",
-                    "registration_address",
-                    "residential_address",
-                    "nationality",
-                    "taxpayer",
-                    "insurance",
-                    "email",
-                    "position_track"
-                ],
-                "type": "object",
-                "properties": {
-                    "first_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "last_name": {
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "middle_name": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "position_id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "department_id": {
-                        "description": "",
-                        "type": "integer"
-                    },
-                    "email": {
-                        "format": "email",
-                        "description": "",
-                        "maxLength": 50,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "phone_numbers": {
-                        "$ref": "#/components/schemas/PhoneNumbers",
-                        "description": ""
-                    },
-                    "grade": {
-                        "description": "",
-                        "maxLength": 1,
-                        "minLength": 1,
-                        "type": "string"
-                    },
-                    "working_model": {
-                        "$ref": "#/components/schemas/WorkingModel",
-                        "description": ""
-                    },
-                    "date_of_birth": {
-                        "format": "date",
-                        "description": "",
-                        "type": "string"
-                    },
-                    "gender": {
-                        "$ref": "#/components/schemas/Gender"
-                    },
-                    "place_of_birth": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "registration_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "residential_address": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "nationality": {
-                        "description": "",
-                        "maxLength": 150,
-                        "minLength": 2,
-                        "type": "string"
-                    },
-                    "foreign_languages": {
-                        "description": "",
-                        "type": "array",
-                        "items": {
-                            "maxLength": 50,
-                            "minLength": 2,
-                            "type": "string"
-                        },
-                        "x-go-type-skip-optional-pointer": true
-                    },
-                    "military": {
-                        "$ref": "#/components/schemas/Military",
-                        "description": ""
-                    },
-                    "taxpayer": {
-                        "$ref": "#/components/schemas/Taxpayer",
-                        "description": ""
-                    },
-                    "insurance": {
-                        "$ref": "#/components/schemas/Insurance"
-                    },
-                    "work_permit": {
-                        "$ref": "#/components/schemas/WorkPermit",
-                        "description": ""
-                    },
-                    "position_track": {
-                        "$ref": "#/components/schemas/PositionTrack",
-                        "description": ""
-                    }
-                },
-                "example": {
-                    "id": 1,
-                    "first_name": "Alexander",
-                    "last_name": "Pushkin",
-                    "middle_name": "Sergeyevich",
-                    "position_id": 2,
-                    "department_id": 3,
-                    "email": "pushkin@dantes.net",
-                    "phone_numbers": [
-                        {
-                            "number": "799183712345",
-                            "type": "mobile"
-                        },
-                        {
-                            "number": "1837",
-                            "type": "office"
-                        }
-                    ],
-                    "grade": "1",
-                    "working_model": "remote",
-                    "date_of_birth": "1799-06-06",
-                    "gender": "male",
-                    "place_of_birth": "Москва",
-                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
-                    "nationality": "Царская Россия",
-                    "foreign_languages": [
-                        "english",
-                        "french"
-                    ],
-                    "military": {
-                        "rank": "Старший лейтенант",
-                        "speciality": "101182",
-                        "category": "А2",
-                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга"
-                    },
-                    "taxpayer": {
-                        "number": "500100732259"
-                    },
-                    "insurance": {
-                        "number": "08336732477"
-                    },
-                    "position_track": [
-                        {
-                            "date_from": "2018-01-17",
-                            "date_to": "2018-01-17",
-                            "position_id": 15
-                        },
-                        {
-                            "date_from": "2018-01-17",
-                            "date_to": "2018-01-17",
-                            "position_id": 82
-                        }
-                    ]
                 }
             },
             "ChangePasswordRequest": {
@@ -4825,6 +3395,1283 @@
                     "position": {
                         "type": "string"
                     }
+                }
+            },
+            "ListUsersItem": {
+                "description": "",
+                "required": [
+                    "id",
+                    "first_name",
+                    "last_name",
+                    "middle_name",
+                    "position",
+                    "department",
+                    "mobile_phone_number",
+                    "ofiice_phone_number",
+                    "email",
+                    "office_phone_number"
+                ],
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "middle_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "position": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "department": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "email": {
+                        "format": "email",
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "mobile_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "minLength": 7,
+                        "type": "string"
+                    },
+                    "office_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "id": 1,
+                    "first_name": "Alexander",
+                    "last_name": "Pushkin",
+                    "middle_name": "Sergeyevich",
+                    "position": "Novelist",
+                    "department": "Collegium of Foreign Affairs",
+                    "email": "pushkin@dantes.net",
+                    "mobile_phone_number": "799183712345",
+                    "office_phone_number": "1837"
+                }
+            },
+            "AddUserRequest": {
+                "description": "",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "middle_name",
+                    "position_id",
+                    "department_id",
+                    "grade",
+                    "mobile_phone_number",
+                    "ofiice_phone_number",
+                    "date_of_birth",
+                    "gender",
+                    "place_of_birth",
+                    "registration_address",
+                    "residential_address",
+                    "taxpayer",
+                    "insurance",
+                    "email",
+                    "office_phone_number"
+                ],
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "middle_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "position_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "department_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "email": {
+                        "format": "email",
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "mobile_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "minLength": 7,
+                        "type": "string"
+                    },
+                    "office_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "type": "string"
+                    },
+                    "grade": {
+                        "description": "",
+                        "maxLength": 1,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "working_model": {
+                        "$ref": "#/components/schemas/WorkingModel",
+                        "description": ""
+                    },
+                    "date_of_birth": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "gender": {
+                        "$ref": "#/components/schemas/Gender"
+                    },
+                    "place_of_birth": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "registration_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "residential_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "foreign_languages": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "maxLength": 50,
+                            "minLength": 2,
+                            "type": "string"
+                        },
+                        "x-go-type-skip-optional-pointer": true
+                    },
+                    "military": {
+                        "$ref": "#/components/schemas/Military",
+                        "description": ""
+                    },
+                    "taxpayer": {
+                        "$ref": "#/components/schemas/Taxpayer",
+                        "description": ""
+                    },
+                    "insurance": {
+                        "$ref": "#/components/schemas/Insurance"
+                    },
+                    "work_permit": {
+                        "$ref": "#/components/schemas/WorkPermit",
+                        "description": ""
+                    }
+                },
+                "example": {
+                    "id": 1,
+                    "first_name": "Alexander",
+                    "last_name": "Pushkin",
+                    "middle_name": "Sergeyevich",
+                    "position_id": 2,
+                    "department_id": 3,
+                    "email": "pushkin@dantes.net",
+                    "mobile_phone_number": "799183712345",
+                    "office_phone_number": "1837",
+                    "grade": "1",
+                    "working_model": "remote",
+                    "date_of_birth": "1799-06-06",
+                    "gender": "male",
+                    "place_of_birth": "Москва",
+                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "foreign_languages": [
+                        "english",
+                        "french"
+                    ],
+                    "military": {
+                        "rank": "Старший лейтенант",
+                        "speciality": "101182",
+                        "category": "А2",
+                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга"
+                    },
+                    "taxpayer": {
+                        "number": "500100732259"
+                    },
+                    "insurance": {
+                        "number": "08336732477"
+                    }
+                }
+            },
+            "PassportType": {
+                "description": "",
+                "default": "national",
+                "enum": [
+                    "international",
+                    "national"
+                ],
+                "type": "string"
+            },
+            "AddVisaRequest": {
+                "description": "",
+                "required": [
+                    "number",
+                    "valid_to",
+                    "valid_from",
+                    "type"
+                ],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_state": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "valid_to": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "valid_from": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 1,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "number": "33592222",
+                    "issued_state": "Spain",
+                    "valid_to": "2017-10-22",
+                    "valid_from": "2017-09-08",
+                    "type": "C1"
+                }
+            },
+            "Contract": {
+                "description": "",
+                "required": [
+                    "id",
+                    "has_scan",
+                    "date_from",
+                    "type",
+                    "number",
+                    "work_type_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "date_from": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "date_to": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ContractType",
+                        "description": ""
+                    },
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": true
+                    },
+                    "work_type_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "probation_period": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "id": 127,
+                    "has_scan": true,
+                    "date_from": "2018-01-17",
+                    "date_to": "2020-01-17",
+                    "type": "temporary",
+                    "number": "145678",
+                    "work_type_id": 3,
+                    "probation_period": 3
+                }
+            },
+            "PatchContractRequest": {
+                "minProperties": 1,
+                "type": "object",
+                "properties": {
+                    "date_from": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "date_to": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ContractType",
+                        "description": ""
+                    },
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "work_type_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "probation_period": {
+                        "description": "",
+                        "type": "integer"
+                    }
+                },
+                "example": {
+                    "number": "145678"
+                }
+            },
+            "PutContractRequest": {
+                "description": "",
+                "required": [
+                    "number",
+                    "type",
+                    "date_from",
+                    "work_type_id"
+                ],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ContractType",
+                        "description": ""
+                    },
+                    "work_type_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "probation_period": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "date_from": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "date_to": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "date_from": "2018-01-17",
+                    "date_to": "2020-01-17",
+                    "type": "temporary",
+                    "number": "145678",
+                    "work_type_id": 3,
+                    "probation_period": 3
+                }
+            },
+            "Scan": {
+                "description": "",
+                "required": [
+                    "id",
+                    "type",
+                    "url",
+                    "upload_at"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/ScanType",
+                        "description": ""
+                    },
+                    "document_id": {
+                        "description": "document ID (if necessary), passport ID for passport scan, for example",
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "description": {
+                        "description": "",
+                        "maxLength": 150,
+                        "type": "string",
+                        "example": "Краткое описание документа"
+                    },
+                    "url": {
+                        "description": "URL to directly download objects (HTTP GET operations)",
+                        "type": "string",
+                        "example": ""
+                    },
+                    "upload_at": {
+                        "format": "date-time",
+                        "description": "an upload date-time as defined by full-date - RFC3339",
+                        "type": "string",
+                        "example": "2019-08-24T14:15:22Z"
+                    }
+                },
+                "example": {
+                    "id": 81,
+                    "upload_at": "2018-02-10T09:30Z",
+                    "type": "baby_birth",
+                    "description": "not verified by social services"
+                }
+            },
+            "PatchPassportRequest": {
+                "description": "",
+                "minProperties": 1,
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_date": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "issued_by": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_by_code": {
+                        "description": "",
+                        "maxLength": 6,
+                        "minLength": 6,
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/PassportType",
+                        "description": ""
+                    },
+                    "citizenship": {
+                        "description": "",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "number": "33592222"
+                }
+            },
+            "GetExpandedUserResponse": {
+                "description": "",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/GetUserResponse"
+                    },
+                    {
+                        "required": [
+                            "position_track",
+                            "passports",
+                            "contracts",
+                            "vacations",
+                            "educations",
+                            "trainings",
+                            "id",
+                            "visas"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "description": "",
+                                "type": "integer"
+                            },
+                            "position_track": {
+                                "$ref": "#/components/schemas/PositionTrack",
+                                "description": ""
+                            },
+                            "passports": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Passport"
+                                }
+                            },
+                            "contracts": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Contract"
+                                }
+                            },
+                            "vacations": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Vacation"
+                                }
+                            },
+                            "educations": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Education"
+                                }
+                            },
+                            "trainings": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Training"
+                                }
+                            },
+                            "visas": {
+                                "description": "",
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/Visa"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "id": 93,
+                    "first_name": "Улугбек",
+                    "last_name": "Акрамов",
+                    "middle_name": "Рашидович",
+                    "position_id": 2,
+                    "department": 8,
+                    "email": "akramovur@rogakopyta.net",
+                    "mobile_phone_number": "799183712345",
+                    "office_phone_number": "1837",
+                    "passports": [
+                        {
+                            "id": 67,
+                            "number": "AZ0001055",
+                            "issued_date": "2010-05-23",
+                            "issued_by": "TOSHKENT SHAHAR IIBB",
+                            "type": "international",
+                            "has_scan": true
+                        }
+                    ],
+                    "visas": [],
+                    "contracts": [
+                        {
+                            "date_from": "2013-08-01",
+                            "date_to": "2013-09-04",
+                            "type": "temporary",
+                            "number": "12345"
+                        }
+                    ],
+                    "work_permit": {
+                        "number": "77121034092",
+                        "valid_to": "2013-09-05",
+                        "has_scan": true
+                    },
+                    "grade": "2",
+                    "working_model": "in-office",
+                    "date_of_birth": "1994-05-26",
+                    "place_of_birth": "Ташкент",
+                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 27",
+                    "nationality": "Узбекистан",
+                    "gender": "male",
+                    "position_track": [
+                        {
+                            "date_from": "2018-01-17",
+                            "date_to": "2018-01-17",
+                            "position_id": 15
+                        },
+                        {
+                            "date_from": "2018-01-17",
+                            "date_to": "2018-01-17",
+                            "position_id": 82
+                        }
+                    ],
+                    "personal_data_processing": {
+                        "has_scan": true
+                    }
+                }
+            },
+            "PatchUserRequest": {
+                "minProperties": 1,
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "middle_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "position_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "department_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "email": {
+                        "format": "email",
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "mobile_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "minLength": 7,
+                        "type": "string"
+                    },
+                    "office_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "type": "string"
+                    },
+                    "grade": {
+                        "description": "",
+                        "maxLength": 1,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "working_model": {
+                        "$ref": "#/components/schemas/WorkingModel",
+                        "description": ""
+                    },
+                    "date_of_birth": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "gender": {
+                        "$ref": "#/components/schemas/Gender"
+                    },
+                    "place_of_birth": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "registration_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "residential_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "foreign_languages": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "maxLength": 50,
+                            "minLength": 2,
+                            "type": "string"
+                        },
+                        "x-go-type-skip-optional-pointer": true
+                    },
+                    "military": {
+                        "$ref": "#/components/schemas/Military",
+                        "description": ""
+                    },
+                    "taxpayer": {
+                        "$ref": "#/components/schemas/Taxpayer",
+                        "description": ""
+                    },
+                    "insurance": {
+                        "$ref": "#/components/schemas/Insurance"
+                    },
+                    "work_permit": {
+                        "$ref": "#/components/schemas/WorkPermit",
+                        "description": ""
+                    }
+                }
+            },
+            "PutUserRequest": {
+                "description": "",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "middle_name",
+                    "position_id",
+                    "department_id",
+                    "grade",
+                    "mobile_phone_number",
+                    "ofiice_phone_number",
+                    "date_of_birth",
+                    "gender",
+                    "place_of_birth",
+                    "registration_address",
+                    "residential_address",
+                    "taxpayer",
+                    "insurance",
+                    "email",
+                    "office_phone_number"
+                ],
+                "type": "object",
+                "properties": {
+                    "first_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "middle_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "position_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "department_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "email": {
+                        "format": "email",
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "grade": {
+                        "description": "",
+                        "maxLength": 1,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "working_model": {
+                        "$ref": "#/components/schemas/WorkingModel",
+                        "description": ""
+                    },
+                    "date_of_birth": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "gender": {
+                        "$ref": "#/components/schemas/Gender"
+                    },
+                    "place_of_birth": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "registration_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "residential_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "foreign_languages": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "maxLength": 50,
+                            "minLength": 2,
+                            "type": "string"
+                        },
+                        "x-go-type-skip-optional-pointer": true
+                    },
+                    "military": {
+                        "$ref": "#/components/schemas/Military",
+                        "description": ""
+                    },
+                    "taxpayer": {
+                        "$ref": "#/components/schemas/Taxpayer",
+                        "description": ""
+                    },
+                    "insurance": {
+                        "$ref": "#/components/schemas/Insurance"
+                    },
+                    "work_permit": {
+                        "$ref": "#/components/schemas/WorkPermit",
+                        "description": ""
+                    },
+                    "mobile_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "minLength": 7,
+                        "type": "string"
+                    },
+                    "office_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "first_name": "Alexander",
+                    "last_name": "Pushkin",
+                    "middle_name": "Sergeyevich",
+                    "position_id": 2,
+                    "department_id": 3,
+                    "email": "pushkin@dantes.net",
+                    "mobile_phone_number": "799183712345",
+                    "office_phone_number": "1837",
+                    "grade": "1",
+                    "working_model": "remote",
+                    "date_of_birth": "1799-06-06",
+                    "gender": "male",
+                    "place_of_birth": "Москва",
+                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "foreign_languages": [
+                        "english",
+                        "french"
+                    ],
+                    "military": {
+                        "rank": "Старший лейтенант",
+                        "speciality": "101182",
+                        "category": "А2",
+                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга"
+                    },
+                    "taxpayer": {
+                        "number": "500100732259"
+                    },
+                    "insurance": {
+                        "number": "08336732477"
+                    }
+                }
+            },
+            "GetUserResponse": {
+                "description": "",
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "middle_name",
+                    "position_id",
+                    "department_id",
+                    "grade",
+                    "mobile_phone_number",
+                    "ofiice_phone_number",
+                    "date_of_birth",
+                    "gender",
+                    "place_of_birth",
+                    "registration_address",
+                    "residential_address",
+                    "taxpayer",
+                    "insurance",
+                    "email",
+                    "personal_data_processing",
+                    "id",
+                    "office_phone_number"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "first_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "middle_name": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "position_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "department_id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "email": {
+                        "format": "email",
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "mobile_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "minLength": 7,
+                        "type": "string"
+                    },
+                    "office_phone_number": {
+                        "description": "",
+                        "maxLength": 15,
+                        "type": "string"
+                    },
+                    "grade": {
+                        "description": "",
+                        "maxLength": 1,
+                        "minLength": 1,
+                        "type": "string"
+                    },
+                    "working_model": {
+                        "$ref": "#/components/schemas/WorkingModel",
+                        "description": ""
+                    },
+                    "date_of_birth": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "gender": {
+                        "$ref": "#/components/schemas/Gender",
+                        "description": ""
+                    },
+                    "place_of_birth": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "registration_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "residential_address": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "foreign_languages": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "maxLength": 50,
+                            "minLength": 2,
+                            "type": "string"
+                        },
+                        "x-go-type-skip-optional-pointer": true
+                    },
+                    "military": {
+                        "$ref": "#/components/schemas/Military",
+                        "description": ""
+                    },
+                    "taxpayer": {
+                        "$ref": "#/components/schemas/Taxpayer",
+                        "description": ""
+                    },
+                    "insurance": {
+                        "$ref": "#/components/schemas/Insurance"
+                    },
+                    "work_permit": {
+                        "$ref": "#/components/schemas/WorkPermit",
+                        "description": ""
+                    },
+                    "personal_data_processing": {
+                        "$ref": "#/components/schemas/PersonalDataProcessing",
+                        "description": ""
+                    },
+                    "finance": {
+                        "$ref": "#/components/schemas/UserFinance",
+                        "description": ""
+                    }
+                },
+                "example": {
+                    "id": 53,
+                    "first_name": "Alexander",
+                    "last_name": "Pushkin",
+                    "middle_name": "Sergeyevich",
+                    "position_id": 35,
+                    "department_id": 69,
+                    "email": "pushkin@dantes.net",
+                    "mobile_phone_number": "799183712345",
+                    "office_phone_number": "1837",
+                    "grade": "1",
+                    "working_model": "remote",
+                    "date_of_birth": "1799-06-06",
+                    "gender": "male",
+                    "place_of_birth": "Москва",
+                    "registration_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "residential_address": "Санкт-Петербург, наб. реки Мойки, 12",
+                    "foreign_languages": [
+                        "english",
+                        "french"
+                    ],
+                    "military": {
+                        "rank": "Старший лейтенант",
+                        "speciality": "101182",
+                        "category": "А2",
+                        "comissariat": "Военный комиссариат Петроградского района г. Санкт-Петербурга",
+                        "has_scan": true
+                    },
+                    "taxpayer": {
+                        "number": 500100732259,
+                        "has_scan": true
+                    },
+                    "insurance": {
+                        "number": "08336732477",
+                        "has_scan": true
+                    },
+                    "personal_data_processing": {
+                        "has_scan": true
+                    }
+                }
+            },
+            "PutPassportRequest": {
+                "description": "",
+                "required": [
+                    "number",
+                    "issued_date",
+                    "type",
+                    "citizenship"
+                ],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_date": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "issued_by": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_by_code": {
+                        "description": "",
+                        "maxLength": 6,
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/PassportType",
+                        "description": ""
+                    },
+                    "citizenship": {
+                        "description": "",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "number": "33592222",
+                    "issued_date": "2016-05-15",
+                    "type": "national",
+                    "citizenship": "США"
+                }
+            },
+            "AddPassportRequest": {
+                "description": "",
+                "required": [
+                    "number",
+                    "issued_date",
+                    "type",
+                    "citizenship"
+                ],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_date": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "issued_by": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_by_code": {
+                        "description": "",
+                        "maxLength": 6,
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/PassportType",
+                        "description": ""
+                    },
+                    "citizenship": {
+                        "description": "",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "number": "33592222",
+                    "issued_date": "2016-05-15",
+                    "type": "national",
+                    "citizenship": "США"
+                }
+            },
+            "Passport": {
+                "description": "",
+                "required": [
+                    "id",
+                    "number",
+                    "issued_date",
+                    "type",
+                    "has_scan",
+                    "Citizenship",
+                    "citizenship"
+                ],
+                "type": "object",
+                "properties": {
+                    "number": {
+                        "description": "",
+                        "maxLength": 50,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_date": {
+                        "format": "date",
+                        "description": "",
+                        "type": "string"
+                    },
+                    "issued_by": {
+                        "description": "",
+                        "maxLength": 150,
+                        "minLength": 2,
+                        "type": "string"
+                    },
+                    "issued_by_code": {
+                        "description": "",
+                        "maxLength": 6,
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/PassportType",
+                        "description": ""
+                    },
+                    "id": {
+                        "description": "",
+                        "type": "integer"
+                    },
+                    "has_scan": {
+                        "description": "",
+                        "type": "boolean",
+                        "readOnly": false
+                    },
+                    "citizenship": {
+                        "description": "",
+                        "type": "string"
+                    }
+                },
+                "example": {
+                    "id": 547,
+                    "has_scan": false,
+                    "number": "33592222",
+                    "issued_date": "2016-05-15",
+                    "type": "national",
+                    "citizenship": "Республика Беларусь"
                 }
             }
         },

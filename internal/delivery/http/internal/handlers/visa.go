@@ -16,10 +16,10 @@ import (
 // @Produce application/json
 // @Success 200 {object} api.ListVisasResponse
 // @Router  /users/{user_id}/passports/{passport_id}/visas [get]
-func (h *handler) ListVisas(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64) {
+func (h *handler) ListVisas(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
 
-	vs, err := h.userService.ListVisas(ctx, userID, passportID)
+	vs, err := h.userService.ListVisas(ctx, userID)
 	if err != nil {
 		srverr.ResponseServiceError(w, r, err)
 		return
@@ -35,8 +35,8 @@ func (h *handler) ListVisas(w http.ResponseWriter, r *http.Request, userID uint6
 
 // @Accept application/json
 // @Param   body body api.AddVisaJSONRequestBody true ""
-// @Router  /users/{user_id}/passports/{passport_id}/visas [post]
-func (h *handler) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64) {
+// @Router  /users/{user_id}/visas [post]
+func (h *handler) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
 
 	var v api.AddVisaJSONRequestBody
@@ -51,7 +51,7 @@ func (h *handler) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 		return
 	}
 
-	id, err := h.userService.AddVisa(ctx, userID, passportID, convert.FromAPIAddVisaRequest(v))
+	id, err := h.userService.AddVisa(ctx, userID, convert.FromAPIAddVisaRequest(v))
 	if err != nil {
 		srverr.ResponseServiceError(w, r, err)
 		return
@@ -59,23 +59,22 @@ func (h *handler) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 
 	w.Header().Set("Location",
 		api.BaseURL+"/users/"+strconv.FormatUint(userID, 10)+
-			"/passports/"+strconv.FormatUint(passportID, 10)+
 			"/visas/"+strconv.FormatUint(id, 10))
 	w.WriteHeader(http.StatusCreated)
 }
 
-// @Router /users/{user_id}/passports/{passport_id}/visas/{visa_id} [delete]
-func (h *handler) DeleteVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64, visaID uint64) {
+// @Router /users/{user_id}/visas/{visa_id} [delete]
+func (h *handler) DeleteVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
 // @Produce application/json
 // @Success 200 {object} api.GetVisaResponse
-// @Router  /users/{user_id}/passports/{passport_id}/visas/{visa_id} [get]
-func (h *handler) GetVisa(w http.ResponseWriter, r *http.Request, userID uint64, passportID uint64, visaID uint64) {
+// @Router  /users/{user_id}/visas/{visa_id} [get]
+func (h *handler) GetVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64) {
 	ctx := r.Context()
 
-	v, err := h.userService.GetVisa(ctx, userID, passportID, visaID)
+	v, err := h.userService.GetVisa(ctx, userID, visaID)
 	if err != nil {
 		srverr.ResponseServiceError(w, r, err)
 		return
@@ -91,8 +90,8 @@ func (h *handler) GetVisa(w http.ResponseWriter, r *http.Request, userID uint64,
 
 // @Accept application/json
 // @Param   body body api.PatchVisaJSONRequestBody true ""
-// @Router  /users/{user_id}/passports/{passport_id}/visas/{visa_id} [patch]
-func (h *handler) PatchVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64) {
+// @Router  /users/{user_id}/visas/{visa_id} [patch]
+func (h *handler) PatchVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64) {
 	ctx := r.Context()
 
 	var patch api.PatchVisaJSONRequestBody
@@ -110,7 +109,7 @@ func (h *handler) PatchVisa(w http.ResponseWriter, r *http.Request, userID, pass
 // @Accept  application/json
 // @Param   body body api.PutVisaJSONRequestBody true ""
 // @Router  /users/{user_id}/visas/{visa_id} [put]
-func (h *handler) PutVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64) {
+func (h *handler) PutVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64) {
 	ctx := r.Context()
 
 	var v api.PutVisaJSONRequestBody
@@ -125,7 +124,7 @@ func (h *handler) PutVisa(w http.ResponseWriter, r *http.Request, userID, passpo
 		return
 	}
 
-	err := h.userService.UpdateVisa(ctx, userID, passportID, convert.FromAPIPutVisaRequest(visaID, v))
+	err := h.userService.UpdateVisa(ctx, userID, convert.FromAPIPutVisaRequest(visaID, v))
 	if err != nil {
 		srverr.ResponseServiceError(w, r, err)
 		return

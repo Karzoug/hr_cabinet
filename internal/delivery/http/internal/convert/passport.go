@@ -9,54 +9,53 @@ import (
 
 func FromAPIAddPassportRequest(req api.AddPassportJSONRequestBody) model.Passport {
 	mp := model.Passport{
-		IssuedBy:   req.IssuedBy,
-		IssuedDate: req.IssuedDate.Time,
-		Number:     req.Number,
+		Citizenship:  req.Citizenship,
+		IssuedBy:     req.IssuedBy,
+		IssuedByCode: req.IssuedByCode,
+		IssuedDate:   req.IssuedDate.Time,
+		Number:       req.Number,
 	}
 	switch req.Type {
-	case api.Internal:
-		mp.Type = model.PassportTypeInternal
-	case api.External:
-		mp.Type = model.PassportTypeExternal
-	case api.Foreigners:
-		mp.Type = model.PassportTypeForeigners
+	case api.National:
+		mp.Type = model.PassportTypeNational
+	case api.International:
+		mp.Type = model.PassportTypeInternational
 	}
 	return mp
 }
 
 func FromAPIPutPassportRequest(passportID uint64, req api.PutPassportJSONRequestBody) model.Passport {
 	mp := model.Passport{
-		IssuedBy:   req.IssuedBy,
-		IssuedDate: req.IssuedDate.Time,
-		Number:     req.Number,
-		ID:         passportID,
+		Citizenship:  req.Citizenship,
+		IssuedBy:     req.IssuedBy,
+		IssuedByCode: req.IssuedByCode,
+		IssuedDate:   req.IssuedDate.Time,
+		Number:       req.Number,
+		ID:           passportID,
 	}
 	switch req.Type {
-	case api.Internal:
-		mp.Type = model.PassportTypeInternal
-	case api.External:
-		mp.Type = model.PassportTypeExternal
-	case api.Foreigners:
-		mp.Type = model.PassportTypeForeigners
+	case api.International:
+		mp.Type = model.PassportTypeInternational
+	case api.National:
+		mp.Type = model.PassportTypeNational
 	}
 	return mp
 }
 
 func ToAPIGetPassportResponse(mp *model.Passport) api.GetPassportResponse {
 	resp := api.GetPassportResponse{
-		ID:         mp.ID,
-		IssuedBy:   mp.IssuedBy,
-		IssuedDate: types.Date{Time: mp.IssuedDate},
-		Number:     mp.Number,
-		VisasCount: mp.VisasCount,
+		ID:           mp.ID,
+		Citizenship:  mp.Citizenship,
+		IssuedBy:     mp.IssuedBy,
+		IssuedByCode: mp.IssuedByCode,
+		IssuedDate:   types.Date{Time: mp.IssuedDate},
+		Number:       mp.Number,
 	}
 	switch mp.Type {
-	case model.PassportTypeInternal:
-		resp.Type = api.Internal
-	case model.PassportTypeExternal:
-		resp.Type = api.External
-	case model.PassportTypeForeigners:
-		resp.Type = api.Foreigners
+	case model.PassportTypeInternational:
+		resp.Type = api.International
+	case model.PassportTypeNational:
+		resp.Type = api.National
 	}
 	return resp
 }
@@ -71,35 +70,27 @@ func ToAPIListPassports(eds []model.Passport) api.ListPassportsResponse {
 
 func toAPIPassport(mp model.Passport) api.Passport {
 	resp := api.GetPassportResponse{
-		ID:         mp.ID,
-		IssuedBy:   mp.IssuedBy,
-		IssuedDate: types.Date{Time: mp.IssuedDate},
-		Number:     mp.Number,
-		VisasCount: mp.VisasCount,
-		HasScan:    mp.HasScan,
+		ID:           mp.ID,
+		Citizenship:  mp.Citizenship,
+		IssuedBy:     mp.IssuedBy,
+		IssuedByCode: mp.IssuedByCode,
+		IssuedDate:   types.Date{Time: mp.IssuedDate},
+		Number:       mp.Number,
+		HasScan:      mp.HasScan,
 	}
 	switch mp.Type {
-	case model.PassportTypeInternal:
-		resp.Type = api.Internal
-	case model.PassportTypeExternal:
-		resp.Type = api.External
-	case model.PassportTypeForeigners:
-		resp.Type = api.Foreigners
+	case model.PassportTypeInternational:
+		resp.Type = api.International
+	case model.PassportTypeNational:
+		resp.Type = api.National
 	}
 	return resp
 }
 
-func ToAPIExpandedPassports(psps []model.ExpandedPassport) []api.ExpandedPassport {
-	res := make([]api.ExpandedPassport, len(psps))
+func ToAPIPassports(psps []model.Passport) []api.Passport {
+	res := make([]api.Passport, len(psps))
 	for i := 0; i < len(psps); i++ {
-		res[i] = toAPIExpandedPassport(psps[i])
+		res[i] = toAPIPassport(psps[i])
 	}
 	return res
-}
-
-func toAPIExpandedPassport(mp model.ExpandedPassport) api.ExpandedPassport {
-	return api.ExpandedPassport{
-		Passport: toAPIPassport(mp.Passport),
-		Visas:    toAPIVisas(mp.Visas),
-	}
 }

@@ -57,7 +57,11 @@ func (b AddUserJSONRequestBody) Validate(ctx context.Context, validator *vld.Val
 		vld.StringProperty("email", string(b.Email),
 			it.IsNotBlank(),
 			it.HasLengthBetween(5, 50)),
-		vld.ValidMapProperty[PhoneNumber]("phone_numbers", b.PhoneNumbers),
+		vld.StringProperty("mobile_phone_number", b.MobilePhoneNumber,
+			it.IsNotBlank(),
+			it.HasLengthBetween(7, 15)),
+		vld.StringProperty("office_phone_number", b.OfficePhoneNumber,
+			it.HasMaxLength(15)),
 		vld.StringProperty("grade", b.Grade,
 			it.IsNotBlank(),
 			it.HasExactLength(1)),
@@ -80,9 +84,6 @@ func (b AddUserJSONRequestBody) Validate(ctx context.Context, validator *vld.Val
 			it.IsNotBlank(),
 			it.HasLengthBetween(2, 150)),
 		vld.StringProperty("residential_address", b.ResidentialAddress,
-			it.IsNotBlank(),
-			it.HasLengthBetween(2, 150)),
-		vld.StringProperty("nationality", b.Nationality,
 			it.IsNotBlank(),
 			it.HasLengthBetween(2, 150)),
 		vld.EachStringProperty("foreign_languages", b.ForeignLanguages,
@@ -121,7 +122,15 @@ func (b PatchUserJSONRequestBody) Validate(ctx context.Context, validator *vld.V
 			Then(vld.NilString((*string)(b.Email),
 				it.IsNotBlank(),
 				it.HasLengthBetween(5, 50))),
-		vld.ValidMapProperty[PhoneNumber]("phone_numbers", b.PhoneNumbers),
+		vld.When(b.MobilePhoneNumber != nil).
+			At(vld.PropertyName("mobile_phone_number")).
+			Then(vld.NilString(b.MobilePhoneNumber,
+				it.IsNotBlank(),
+				it.HasLengthBetween(7, 15))),
+		vld.When(b.OfficePhoneNumber != nil).
+			At(vld.PropertyName("office_phone_number")).
+			Then(vld.NilString(b.OfficePhoneNumber,
+				it.HasMaxLength(15))),
 		vld.When(b.Grade != nil).
 			At(vld.PropertyName("grade")).
 			Then(vld.NilString(b.Grade,
@@ -155,15 +164,9 @@ func (b PatchUserJSONRequestBody) Validate(ctx context.Context, validator *vld.V
 			Then(vld.NilString(b.ResidentialAddress,
 				it.IsNotBlank(),
 				it.HasLengthBetween(2, 150))),
-		vld.When(b.Nationality != nil).
-			At(vld.PropertyName("nationality")).
-			Then(vld.NilString(b.Nationality,
-				it.IsNotBlank(),
-				it.HasLengthBetween(2, 150))),
 		vld.EachStringProperty("foreign_languages", b.ForeignLanguages,
 			it.IsNotBlank(),
 			it.HasLengthBetween(2, 50)),
-		vld.ValidSliceProperty[PositionTrackItem]("position_track", b.PositionTrack),
 		vld.When(b.Military != nil).
 			At(vld.PropertyName("military")).
 			Then(vld.ValidProperty("military", b.Military)),
@@ -194,7 +197,11 @@ func (b PutUserJSONRequestBody) Validate(ctx context.Context, validator *vld.Val
 		vld.StringProperty("email", string(b.Email),
 			it.IsNotBlank(),
 			it.HasLengthBetween(5, 50)),
-		vld.ValidMapProperty[PhoneNumber]("phone_numbers", b.PhoneNumbers),
+		vld.StringProperty("mobile_phone_number", b.MobilePhoneNumber,
+			it.IsNotBlank(),
+			it.HasLengthBetween(7, 15)),
+		vld.StringProperty("office_phone_number", b.OfficePhoneNumber,
+			it.HasMaxLength(15)),
 		vld.StringProperty("grade", b.Grade,
 			it.IsNotBlank(),
 			it.HasExactLength(1)),
@@ -219,13 +226,9 @@ func (b PutUserJSONRequestBody) Validate(ctx context.Context, validator *vld.Val
 		vld.StringProperty("residential_address", b.ResidentialAddress,
 			it.IsNotBlank(),
 			it.HasLengthBetween(2, 150)),
-		vld.StringProperty("nationality", b.Nationality,
-			it.IsNotBlank(),
-			it.HasLengthBetween(2, 150)),
 		vld.EachStringProperty("foreign_languages", b.ForeignLanguages,
 			it.IsNotBlank(),
 			it.HasLengthBetween(2, 50)),
-		vld.ValidSliceProperty[PositionTrackItem]("position_track", b.PositionTrack),
 		vld.When(b.Military != nil).
 			At(vld.PropertyName("military")).
 			Then(vld.ValidProperty("military", b.Military)),
@@ -333,9 +336,14 @@ func (b PutEducationJSONRequestBody) Validate(ctx context.Context, validator *vl
 func (b AddPassportJSONRequestBody) Validate(ctx context.Context, validator *vld.Validator) error {
 	return validator.Validate(
 		ctx,
-		vld.StringProperty("issued_by", b.IssuedBy,
-			it.IsNotBlank(),
-			it.HasLengthBetween(2, 150)),
+		vld.When(b.IssuedBy != nil).
+			At(vld.PropertyName("issued_by")).
+			Then(vld.NilString(b.IssuedBy,
+				it.HasLengthBetween(2, 150))),
+		vld.When(b.IssuedByCode != nil).
+			At(vld.PropertyName("issued_by_code")).
+			Then(vld.NilString(b.IssuedByCode,
+				it.HasMaxLength(6))),
 		vld.StringProperty("number",
 			b.Number,
 			it.IsNotBlank(),
@@ -344,10 +352,7 @@ func (b AddPassportJSONRequestBody) Validate(ctx context.Context, validator *vld
 		vld.ComparableProperty[PassportType]("type",
 			b.Type,
 			it.IsNotBlankComparable[PassportType](),
-			it.IsOneOf[PassportType](
-				External,
-				Internal,
-				Foreigners)),
+			it.IsOneOf[PassportType](National, International)),
 	)
 }
 
@@ -357,8 +362,11 @@ func (b PatchPassportJSONRequestBody) Validate(ctx context.Context, validator *v
 		vld.When(b.IssuedBy != nil).
 			At(vld.PropertyName("issued_by")).
 			Then(vld.NilString(b.IssuedBy,
-				it.IsNotBlank(),
 				it.HasLengthBetween(2, 150))),
+		vld.When(b.IssuedByCode != nil).
+			At(vld.PropertyName("issued_by_code")).
+			Then(vld.NilString(b.IssuedByCode,
+				it.HasMaxLength(6))),
 		vld.When(b.Number != nil).
 			At(vld.PropertyName("number")).
 			Then(vld.NilString(b.Number,
@@ -369,19 +377,21 @@ func (b PatchPassportJSONRequestBody) Validate(ctx context.Context, validator *v
 			At(vld.PropertyName("type")).
 			Then(vld.NilComparable(b.Type,
 				it.IsNotBlankComparable[PassportType](),
-				it.IsOneOf[PassportType](
-					External,
-					Internal,
-					Foreigners))),
+				it.IsOneOf[PassportType](National, International))),
 	)
 }
 
 func (b PutPassportJSONRequestBody) Validate(ctx context.Context, validator *vld.Validator) error {
 	return validator.Validate(
 		ctx,
-		vld.StringProperty("issued_by", b.IssuedBy,
-			it.IsNotBlank(),
-			it.HasLengthBetween(2, 150)),
+		vld.When(b.IssuedBy != nil).
+			At(vld.PropertyName("issued_by")).
+			Then(vld.NilString(b.IssuedBy,
+				it.HasLengthBetween(2, 150))),
+		vld.When(b.IssuedByCode != nil).
+			At(vld.PropertyName("issued_by_code")).
+			Then(vld.NilString(b.IssuedByCode,
+				it.HasExactLength(6))),
 		vld.StringProperty("number",
 			b.Number,
 			it.IsNotBlank(),
@@ -390,29 +400,21 @@ func (b PutPassportJSONRequestBody) Validate(ctx context.Context, validator *vld
 		vld.ComparableProperty[PassportType]("type",
 			b.Type,
 			it.IsNotBlankComparable[PassportType](),
-			it.IsOneOf[PassportType](
-				External,
-				Internal,
-				Foreigners)),
+			it.IsOneOf[PassportType](National, International)),
 	)
 }
 
 func (b AddVisaJSONRequestBody) Validate(ctx context.Context, validator *vld.Validator) error {
 	return validator.Validate(
 		ctx,
-		vld.StringProperty("issued_state", b.IssuedState,
-			it.IsNotBlank(),
+		vld.NilStringProperty("issued_state", b.IssuedState,
 			it.HasLengthBetween(2, 50)),
 		vld.StringProperty("number", b.Number,
 			it.IsNotBlank(),
 			it.HasLengthBetween(2, 50)),
-		vld.ComparableProperty[VisaNumberEntries]("number_entries",
-			b.NumberEntries,
-			it.IsNotBlankComparable[VisaNumberEntries](),
-			it.IsOneOf[VisaNumberEntries](
-				N1,
-				N2,
-				Mult)),
+		vld.StringProperty("type", b.Type,
+			it.IsNotBlank(),
+			it.HasLengthBetween(1, 50)),
 	)
 }
 
@@ -429,33 +431,26 @@ func (b PatchVisaJSONRequestBody) Validate(ctx context.Context, validator *vld.V
 			Then(vld.NilString(b.Number,
 				it.IsNotBlank(),
 				it.HasLengthBetween(2, 50))),
-		vld.When(b.NumberEntries != nil).
-			At(vld.PropertyName("number_entries")).
-			Then(vld.NilComparable(b.NumberEntries,
-				it.IsNotBlankComparable[VisaNumberEntries](),
-				it.IsOneOf[VisaNumberEntries](
-					N1,
-					N2,
-					Mult))),
+		vld.When(b.Type != nil).
+			At(vld.PropertyName("type")).
+			Then(vld.NilString(b.Type,
+				it.IsNotBlank(),
+				it.HasLengthBetween(1, 50))),
 	)
 }
 
 func (b PutVisaJSONRequestBody) Validate(ctx context.Context, validator *vld.Validator) error {
 	return validator.Validate(
 		ctx,
-		vld.StringProperty("issued_state", b.IssuedState,
-			it.IsNotBlank(),
+		vld.NilStringProperty("issued_state", b.IssuedState,
 			it.HasLengthBetween(2, 50)),
 		vld.StringProperty("number", b.Number,
 			it.IsNotBlank(),
 			it.HasLengthBetween(2, 50)),
-		vld.ComparableProperty[VisaNumberEntries]("number_entries",
-			b.NumberEntries,
-			it.IsNotBlankComparable[VisaNumberEntries](),
-			it.IsOneOf[VisaNumberEntries](
-				N1,
-				N2,
-				Mult)),
+		vld.StringProperty("type",
+			b.Type,
+			it.IsNotBlank(),
+			it.HasLengthBetween(1, 50)),
 	)
 }
 
@@ -538,15 +533,6 @@ func (m Military) Validate(ctx context.Context, validator *vld.Validator) error 
 		vld.StringProperty("speciality", m.Speciality,
 			it.IsNotBlank(),
 			it.HasLengthBetween(6, 7)),
-	)
-}
-
-func (pn PhoneNumber) Validate(ctx context.Context, validator *vld.Validator) error {
-	return validator.Validate(
-		ctx,
-		vld.StringProperty("phone_number", string(pn),
-			it.IsNotBlank(),
-			it.HasLengthBetween(2, 15)),
 	)
 }
 

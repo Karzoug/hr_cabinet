@@ -20,6 +20,15 @@ $$
     END
 $$;
 
+DO
+$$
+    BEGIN
+        IF NOT EXISTS(SELECT 1 FROM pg_type WHERE typname = 'passport_type') THEN
+            create type passport_type AS ENUM ('Внутренний', 'Заграничный');
+        END IF;
+    END
+$$;
+
 CREATE TABLE IF NOT EXISTS "departments"
 (
     "id"          bigserial PRIMARY KEY,
@@ -65,7 +74,6 @@ CREATE TABLE IF NOT EXISTS "users"
     "work_email"       varchar NOT NULL,
     "registration_address" varchar NOT NULL,
     "residential_address"  varchar NOT NULL,
-    "nationality"          varchar NOT NULL,
     "insurance_number" varchar NOT NULL,
     "taxpayer_number"  varchar NOT NULL,
     "created_at"       timestamptz DEFAULT (now()),
@@ -96,10 +104,12 @@ CREATE TABLE IF NOT EXISTS "passports"
 (
     "id"                   bigserial PRIMARY KEY,
     "user_id"              bigint  NOT NULL,
-    "series"               integer NOT NULL,
-    "number"               integer NOT NULL,
+    "number"               varchar NOT NULL,
+    "citizenship":         varchar NOT NULL,
+    "type"                 passport_type,
     "issued_date"          date    NOT NULL,
-    "issued_by"            varchar NOT NULL,
+    "issued_by"            varchar,
+    "issued_by_code"       varchar,
     "created_at"           timestamptz DEFAULT (now()),
     "updated_at"           timestamptz
 );
@@ -448,6 +458,7 @@ DROP TABLE IF EXISTS indexations;
 
 DROP TYPE IF EXISTS gender;
 DROP TYPE IF EXISTS contract_type;
+DROP TYPE IF EXISTS passport_type;
 
 DROP FUNCTION IF EXISTS update_updated_at();
 

@@ -10,17 +10,18 @@ import (
 func FromAPIAddUserRequest(req api.AddUserJSONRequestBody) model.User {
 	user := model.User{
 		ShortUserInfo: model.ShortUserInfo{
-			Email:      string(req.Email),
-			FirstName:  req.FirstName,
-			LastName:   req.LastName,
-			MiddleName: req.MiddleName,
+			Email:             string(req.Email),
+			FirstName:         req.FirstName,
+			LastName:          req.LastName,
+			MiddleName:        req.MiddleName,
+			MobilePhoneNumber: req.MobilePhoneNumber,
+			OfficePhoneNumber: req.OfficePhoneNumber,
 		},
 		DateOfBirth:         req.DateOfBirth.Time,
 		PlaceOfBirth:        req.PlaceOfBirth,
 		Grade:               req.Grade,
 		RegistrationAddress: req.RegistrationAddress,
 		ResidentialAddress:  req.ResidentialAddress,
-		Nationality:         req.Nationality,
 		Insurance:           model.Insurance{Number: req.Insurance.Number},
 		Taxpayer:            model.Taxpayer{Number: req.Taxpayer.Number},
 		PositionID:          req.PositionID,
@@ -31,12 +32,6 @@ func FromAPIAddUserRequest(req api.AddUserJSONRequestBody) model.User {
 		user.Gender = model.GenderFemale
 	case api.Male:
 		user.Gender = model.GenderMale
-	}
-	if req.PhoneNumbers != nil {
-		user.PhoneNumbers = make(map[string]string, len(req.PhoneNumbers))
-		for k, v := range req.PhoneNumbers {
-			user.PhoneNumbers[k] = string(v)
-		}
 	}
 	return user
 }
@@ -44,18 +39,19 @@ func FromAPIAddUserRequest(req api.AddUserJSONRequestBody) model.User {
 func FromAPIPutUserRequest(userID uint64, req api.PutUserJSONRequestBody) model.User {
 	user := model.User{
 		ShortUserInfo: model.ShortUserInfo{
-			ID:         userID,
-			Email:      string(req.Email),
-			FirstName:  req.FirstName,
-			LastName:   req.LastName,
-			MiddleName: req.MiddleName,
+			ID:                userID,
+			Email:             string(req.Email),
+			FirstName:         req.FirstName,
+			LastName:          req.LastName,
+			MiddleName:        req.MiddleName,
+			MobilePhoneNumber: req.MobilePhoneNumber,
+			OfficePhoneNumber: req.OfficePhoneNumber,
 		},
 		DateOfBirth:         req.DateOfBirth.Time,
 		PlaceOfBirth:        req.PlaceOfBirth,
 		Grade:               req.Grade,
 		RegistrationAddress: req.RegistrationAddress,
 		ResidentialAddress:  req.ResidentialAddress,
-		Nationality:         req.Nationality,
 		Insurance:           model.Insurance{Number: req.Insurance.Number},
 		Taxpayer:            model.Taxpayer{Number: req.Taxpayer.Number},
 		PositionID:          req.PositionID,
@@ -66,12 +62,6 @@ func FromAPIPutUserRequest(userID uint64, req api.PutUserJSONRequestBody) model.
 		user.Gender = model.GenderFemale
 	case api.Male:
 		user.Gender = model.GenderMale
-	}
-	if req.PhoneNumbers != nil {
-		user.PhoneNumbers = make(map[string]string, len(req.PhoneNumbers))
-		for k, v := range req.PhoneNumbers {
-			user.PhoneNumbers[k] = string(v)
-		}
 	}
 	return user
 }
@@ -83,7 +73,7 @@ func ToAPIGetExpandedUserResponse(u *model.ExpandedUser) api.GetExpandedUserResp
 	expUser.Military = nil
 	expUser.Educations = ToAPIListEducations(u.Educations)
 	expUser.Trainings = ToAPIListTrainings(u.Trainings)
-	expUser.Passports = ToAPIExpandedPassports(u.Passports)
+	expUser.Passports = ToAPIPassports(u.Passports)
 	expUser.Vacations = ToAPIListVacations(u.Vacations)
 	expUser.Contracts = ToAPIListContracts(u.Contracts)
 
@@ -92,6 +82,8 @@ func ToAPIGetExpandedUserResponse(u *model.ExpandedUser) api.GetExpandedUserResp
 
 func ToAPIGetUserResponse(u *model.User) api.GetUserResponse {
 	resp := api.GetUserResponse{
+		MobilePhoneNumber:   u.MobilePhoneNumber,
+		OfficePhoneNumber:   u.OfficePhoneNumber,
 		DateOfBirth:         types.Date{Time: u.DateOfBirth},
 		DepartmentID:        u.DepartmentID,
 		Email:               types.Email(u.Email),
@@ -101,7 +93,6 @@ func ToAPIGetUserResponse(u *model.User) api.GetUserResponse {
 		ID:                  u.ID,
 		LastName:            u.LastName,
 		MiddleName:          u.MiddleName,
-		Nationality:         u.Nationality,
 		PlaceOfBirth:        u.PlaceOfBirth,
 		PositionID:          u.PositionID,
 		RegistrationAddress: u.RegistrationAddress,
@@ -125,12 +116,6 @@ func ToAPIGetUserResponse(u *model.User) api.GetUserResponse {
 			HasScan: u.PersonalDataProcessing.HasScan,
 		},
 	}
-	if u.PhoneNumbers != nil {
-		resp.PhoneNumbers = make(map[string]api.PhoneNumber, len(u.PhoneNumbers))
-		for k, v := range u.PhoneNumbers {
-			resp.PhoneNumbers[k] = api.PhoneNumber(v)
-		}
-	}
 	switch u.Gender {
 	case model.GenderFemale:
 		resp.Gender = api.Female
@@ -150,19 +135,15 @@ func ToAPIListUsers(users []model.ShortUserInfo) []api.ListUsersItem {
 
 func toAPIListUser(u model.ShortUserInfo) api.ListUsersItem {
 	item := api.ListUsersItem{
-		ID:         u.ID,
-		FirstName:  u.FirstName,
-		LastName:   u.LastName,
-		MiddleName: u.MiddleName,
-		Email:      types.Email(u.Email),
-		Position:   u.Position,
-		Department: u.Department,
-	}
-	if u.PhoneNumbers != nil {
-		item.PhoneNumbers = make(map[string]api.PhoneNumber, len(u.PhoneNumbers))
-		for k, v := range u.PhoneNumbers {
-			item.PhoneNumbers[k] = api.PhoneNumber(v)
-		}
+		ID:                u.ID,
+		FirstName:         u.FirstName,
+		LastName:          u.LastName,
+		MiddleName:        u.MiddleName,
+		Email:             types.Email(u.Email),
+		Position:          u.Position,
+		Department:        u.Department,
+		MobilePhoneNumber: u.MobilePhoneNumber,
+		OfficePhoneNumber: u.OfficePhoneNumber,
 	}
 	return item
 }

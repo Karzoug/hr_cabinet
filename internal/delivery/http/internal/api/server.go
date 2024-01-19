@@ -93,7 +93,7 @@ type ServerInterface interface {
 	DeletePassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
 
 	// (GET /users/{user_id}/passports/{passport_id})
-	GetPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64, params GetPassportParams)
+	GetPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
 
 	// (PATCH /users/{user_id}/passports/{passport_id})
 	PatchPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
@@ -101,23 +101,23 @@ type ServerInterface interface {
 	// (PUT /users/{user_id}/passports/{passport_id})
 	PutPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
 
-	// (GET /users/{user_id}/passports/{passport_id}/visas)
-	ListVisas(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
+	// (GET /users/{user_id}/visas)
+	ListVisas(w http.ResponseWriter, r *http.Request, userID uint64)
 
-	// (POST /users/{user_id}/passports/{passport_id}/visas)
-	AddVisa(w http.ResponseWriter, r *http.Request, userID, passportID uint64)
+	// (POST /users/{user_id}/visas)
+	AddVisa(w http.ResponseWriter, r *http.Request, userID uint64)
 
-	// (DELETE /users/{user_id}/passports/{passport_id}/visas/{visa_id})
-	DeleteVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64)
+	// (DELETE /users/{user_id}/visas/{visa_id})
+	DeleteVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64)
 
-	// (GET /users/{user_id}/passports/{passport_id}/visas/{visa_id})
-	GetVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64)
+	// (GET /users/{user_id}/visas/{visa_id})
+	GetVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64)
 
-	// (PATCH /users/{user_id}/passports/{passport_id}/visas/{visa_id})
-	PatchVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64)
+	// (PATCH /users/{user_id}/visas/{visa_id})
+	PatchVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64)
 
-	// (PUT /users/{user_id}/passports/{passport_id}/visas/{visa_id})
-	PutVisa(w http.ResponseWriter, r *http.Request, userID, passportID, visaID uint64)
+	// (PUT /users/{user_id}/visas/{visa_id})
+	PutVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64)
 
 	// (GET /users/{user_id}/photo)
 	DownloadPhoto(w http.ResponseWriter, r *http.Request, userID uint64)
@@ -1014,19 +1014,8 @@ func (siw *ServerInterfaceWrapper) GetPassport(w http.ResponseWriter, r *http.Re
 
 	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
-	// Parameter object where we will unmarshal all parameters from the context
-	var params GetPassportParams
-
-	// ------------- Optional query parameter "expanded" -------------
-
-	err = runtime.BindQueryParameter("form", true, false, "expanded", r.URL.Query(), &params.Expanded)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "expanded", Err: err})
-		return
-	}
-
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetPassport(w, r, userID, passportID, params)
+		siw.Handler.GetPassport(w, r, userID, passportID)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -1129,19 +1118,10 @@ func (siw *ServerInterfaceWrapper) ListVisas(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	// ------------- Path parameter "passport_id" -------------
-	var passportID uint64
-
-	err = runtime.BindStyledParameterWithLocation("simple", false, "passport_id", runtime.ParamLocationPath, chi.URLParam(r, "passport_id"), &passportID)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "passport_id", Err: err})
-		return
-	}
-
 	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.ListVisas(w, r, userID, passportID)
+		siw.Handler.ListVisas(w, r, userID)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -1166,19 +1146,10 @@ func (siw *ServerInterfaceWrapper) AddVisa(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// ------------- Path parameter "passport_id" -------------
-	var passportID uint64
-
-	err = runtime.BindStyledParameterWithLocation("simple", false, "passport_id", runtime.ParamLocationPath, chi.URLParam(r, "passport_id"), &passportID)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "passport_id", Err: err})
-		return
-	}
-
 	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.AddVisa(w, r, userID, passportID)
+		siw.Handler.AddVisa(w, r, userID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -1205,15 +1176,6 @@ func (siw *ServerInterfaceWrapper) DeleteVisa(w http.ResponseWriter, r *http.Req
 		return
 	}
 
-	// ------------- Path parameter "passport_id" -------------
-	var passportID uint64
-
-	err = runtime.BindStyledParameterWithLocation("simple", false, "passport_id", runtime.ParamLocationPath, chi.URLParam(r, "passport_id"), &passportID)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "passport_id", Err: err})
-		return
-	}
-
 	// ------------- Path parameter "visa_id" -------------
 	var visaID uint64
 
@@ -1226,7 +1188,7 @@ func (siw *ServerInterfaceWrapper) DeleteVisa(w http.ResponseWriter, r *http.Req
 	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.DeleteVisa(w, r, userID, passportID, visaID)
+		siw.Handler.DeleteVisa(w, r, userID, visaID)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -1251,15 +1213,6 @@ func (siw *ServerInterfaceWrapper) GetVisa(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// ------------- Path parameter "passport_id" -------------
-	var passportID uint64
-
-	err = runtime.BindStyledParameterWithLocation("simple", false, "passport_id", runtime.ParamLocationPath, chi.URLParam(r, "passport_id"), &passportID)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "passport_id", Err: err})
-		return
-	}
-
 	// ------------- Path parameter "visa_id" -------------
 	var visaID uint64
 
@@ -1272,7 +1225,7 @@ func (siw *ServerInterfaceWrapper) GetVisa(w http.ResponseWriter, r *http.Reques
 	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.GetVisa(w, r, userID, passportID, visaID)
+		siw.Handler.GetVisa(w, r, userID, visaID)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -1297,15 +1250,6 @@ func (siw *ServerInterfaceWrapper) PatchVisa(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	// ------------- Path parameter "passport_id" -------------
-	var passportID uint64
-
-	err = runtime.BindStyledParameterWithLocation("simple", false, "passport_id", runtime.ParamLocationPath, chi.URLParam(r, "passport_id"), &passportID)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "passport_id", Err: err})
-		return
-	}
-
 	// ------------- Path parameter "visa_id" -------------
 	var visaID uint64
 
@@ -1318,7 +1262,7 @@ func (siw *ServerInterfaceWrapper) PatchVisa(w http.ResponseWriter, r *http.Requ
 	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.PatchVisa(w, r, userID, passportID, visaID)
+		siw.Handler.PatchVisa(w, r, userID, visaID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -1345,15 +1289,6 @@ func (siw *ServerInterfaceWrapper) PutVisa(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// ------------- Path parameter "passport_id" -------------
-	var passportID uint64
-
-	err = runtime.BindStyledParameterWithLocation("simple", false, "passport_id", runtime.ParamLocationPath, chi.URLParam(r, "passport_id"), &passportID)
-	if err != nil {
-		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "passport_id", Err: err})
-		return
-	}
-
 	// ------------- Path parameter "visa_id" -------------
 	var visaID uint64
 
@@ -1366,7 +1301,7 @@ func (siw *ServerInterfaceWrapper) PutVisa(w http.ResponseWriter, r *http.Reques
 	ctx = context.WithValue(ctx, BearerAuthScopes, nil)
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.PutVisa(w, r, userID, passportID, visaID)
+		siw.Handler.PutVisa(w, r, userID, visaID)
 	}))
 
 	handler = chimwr.AllowContentType("application/json")(handler)
@@ -2189,22 +2124,22 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Put(options.BaseURL+"/users/{user_id}/passports/{passport_id}", wrapper.PutPassport)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas", wrapper.ListVisas)
+		r.Get(options.BaseURL+"/users/{user_id}/visas", wrapper.ListVisas)
 	})
 	r.Group(func(r chi.Router) {
-		r.Post(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas", wrapper.AddVisa)
+		r.Post(options.BaseURL+"/users/{user_id}/visas", wrapper.AddVisa)
 	})
 	r.Group(func(r chi.Router) {
-		r.Delete(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas/{visa_id}", wrapper.DeleteVisa)
+		r.Delete(options.BaseURL+"/users/{user_id}/visas/{visa_id}", wrapper.DeleteVisa)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas/{visa_id}", wrapper.GetVisa)
+		r.Get(options.BaseURL+"/users/{user_id}/visas/{visa_id}", wrapper.GetVisa)
 	})
 	r.Group(func(r chi.Router) {
-		r.Patch(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas/{visa_id}", wrapper.PatchVisa)
+		r.Patch(options.BaseURL+"/users/{user_id}/visas/{visa_id}", wrapper.PatchVisa)
 	})
 	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/users/{user_id}/passports/{passport_id}/visas/{visa_id}", wrapper.PutVisa)
+		r.Put(options.BaseURL+"/users/{user_id}/visas/{visa_id}", wrapper.PutVisa)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/users/{user_id}/photo", wrapper.DownloadPhoto)

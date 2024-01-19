@@ -72,14 +72,8 @@ func (h *handler) DeletePassport(w http.ResponseWriter, r *http.Request, userID 
 // @Produce application/json
 // @Success 200 {object} api.GetPassportResponse
 // @Router  /users/{user_id}/passports/{passport_id} [get]
-func (h *handler) GetPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64, params api.GetPassportParams) {
+func (h *handler) GetPassport(w http.ResponseWriter, r *http.Request, userID, passportID uint64) {
 	ctx := r.Context()
-
-	if params.Expanded != nil && *params.Expanded {
-		// TODO: implement this
-		w.WriteHeader(http.StatusNotImplemented)
-		return
-	}
 
 	p, err := h.userService.GetPassport(ctx, userID, passportID)
 	if err != nil {

@@ -8,7 +8,6 @@ type Contract struct {
 	HasScan         bool
 	Type            contractType
 	WorkTypeID      uint64
-	WorkType        string
 	ProbationPeriod *uint
 	DateBegin       time.Time
 	DateEnd         *time.Time

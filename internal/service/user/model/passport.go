@@ -3,24 +3,19 @@ package model
 import "time"
 
 type Passport struct {
-	ID         uint64
-	IssuedBy   string
-	IssuedDate time.Time
-	Number     string
-	Type       PassportType
-	VisasCount uint
-	HasScan    bool
+	ID           uint64
+	Citizenship  string
+	IssuedBy     *string
+	IssuedByCode *string
+	IssuedDate   time.Time
+	Number       string
+	Type         PassportType
+	HasScan      bool
 }
 
 type PassportType string
 
 const (
-	PassportTypeExternal   PassportType = "external"
-	PassportTypeForeigners PassportType = "foreigners"
-	PassportTypeInternal   PassportType = "internal"
+	PassportTypeNational      PassportType = "national"
+	PassportTypeInternational PassportType = "international"
 )
-
-type ExpandedPassport struct {
-	Passport
-	Visas []Visa
-}

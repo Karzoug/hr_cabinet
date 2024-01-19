@@ -1,8 +1,6 @@
 package convert
 
 import (
-	"time"
-
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
 )
@@ -19,7 +17,7 @@ func ToAPIScan(ms *model.Scan) api.Scan {
 		DocumentID:  docID,
 		Description: &ms.Description,
 		Url:         ms.URL,
-		UploadAt:    ms.UploadedAt.Format(time.RFC3339),
+		UploadAt:    ms.UploadedAt,
 	}
 }
 

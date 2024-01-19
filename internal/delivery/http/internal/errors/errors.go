@@ -56,6 +56,7 @@ func ResponseServiceError(w http.ResponseWriter, r *http.Request, err error) {
 		ResponseError(w, r,
 			http.StatusInternalServerError,
 			ErrInternalServerErrorMsg)
+		return
 	}
 	ResponseError(w, r,
 		serviceStatusToHTTPStatusCode(serviceErr),

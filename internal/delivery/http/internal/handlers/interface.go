@@ -34,10 +34,10 @@ type UserService interface {
 	AddPassport(ctx context.Context, userID uint64, ed umodel.Passport) (uint64, error)
 	UpdatePassport(ctx context.Context, userID uint64, p umodel.Passport) error
 
-	GetVisa(ctx context.Context, userID, passportID, visaID uint64) (*umodel.Visa, error)
-	ListVisas(ctx context.Context, userID, passportID uint64) ([]umodel.Visa, error)
-	AddVisa(ctx context.Context, userID, passportID uint64, mv umodel.Visa) (uint64, error)
-	UpdateVisa(ctx context.Context, userID, passportID uint64, v umodel.Visa) error
+	GetVisa(ctx context.Context, userID, visaID uint64) (*umodel.Visa, error)
+	ListVisas(ctx context.Context, userID uint64) ([]umodel.Visa, error)
+	AddVisa(ctx context.Context, userID uint64, mv umodel.Visa) (uint64, error)
+	UpdateVisa(ctx context.Context, userID uint64, v umodel.Visa) error
 
 	GetVacation(ctx context.Context, userID, vacationID uint64) (*umodel.Vacation, error)
 	ListVacations(ctx context.Context, userID uint64) ([]umodel.Vacation, error)
