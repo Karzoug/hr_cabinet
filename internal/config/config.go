@@ -14,7 +14,7 @@ import (
 )
 
 type Config struct {
-	EnvType  env.Type        `env:"ENV_TYPE" env-required:"production"`
+	EnvType  env.Type        `env:"ENV_TYPE" env-default:"production"`
 	LogLevel slog.Level      `env:"LOG_LEVEL" env-default:"INFO" env-description:"importance or severity of a log event (DEBUG/INFO/WARN/ERROR)"`
 	Recovery recovery.Config `env-prefix:"RECOVERY_"`
 	HTTP     http.Config     `env-prefix:"HTTP_"`

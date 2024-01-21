@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"testing"
 
 	"github.com/muonsoft/validation"
@@ -11,14 +12,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func rightJSONTEstHelper(ctx context.Context, t *testing.T, s string, value validation.Validatable) {
+func rightJSONTestHelper(ctx context.Context, t *testing.T, s string, value validation.Validatable) {
 	if err := json.Unmarshal([]byte(s), value); err != nil {
 		require.NoError(t, err)
 	}
 	assert.NoError(t, value.Validate(ctx, validator.Instance()))
 }
 
-func wrongJSONTEstHelper(ctx context.Context, t *testing.T, s string, value validation.Validatable) {
+func wrongJSONTestHelper(ctx context.Context, t *testing.T, s string, value validation.Validatable) {
 	if err := json.Unmarshal([]byte(s), value); err != nil {
 		require.NoError(t, err)
 	}
@@ -35,7 +36,7 @@ func TestAddEducationRequest_Validate(t *testing.T) {
 	  }`
 
 	var ed AddEducationJSONRequestBody
-	rightJSONTEstHelper(context.TODO(), t, edJSON, &ed)
+	rightJSONTestHelper(context.TODO(), t, edJSON, &ed)
 
 	edJSON2 := `{
 		"number": "1030180354933",
@@ -44,7 +45,7 @@ func TestAddEducationRequest_Validate(t *testing.T) {
 		"program": "Связи с общественностью"
 	  }`
 	var ed2 AddEducationRequest
-	wrongJSONTEstHelper(context.TODO(), t, edJSON2, &ed2)
+	wrongJSONTestHelper(context.TODO(), t, edJSON2, &ed2)
 }
 
 func TestAddContractRequest_Validate(t *testing.T) {
@@ -56,7 +57,7 @@ func TestAddContractRequest_Validate(t *testing.T) {
 	  }`
 
 	var c AddContractJSONRequestBody
-	rightJSONTEstHelper(context.TODO(), t, contractJSON, &c)
+	rightJSONTestHelper(context.TODO(), t, contractJSON, &c)
 }
 
 func TestAddUserRequest_Validate(t *testing.T) {
@@ -153,7 +154,7 @@ func TestAddUserRequest_Validate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var u AddUserJSONRequestBody
-			rightJSONTEstHelper(context.TODO(), t, tt.jsonString, &u)
+			rightJSONTestHelper(context.TODO(), t, tt.jsonString, &u)
 		})
 	}
 }
@@ -164,26 +165,174 @@ func TestInsurance_Validate(t *testing.T) {
 	}`
 
 	var i Insurance
-	rightJSONTEstHelper(context.TODO(), t, insuranceJSON, &i)
+	rightJSONTestHelper(context.TODO(), t, insuranceJSON, &i)
 }
 
-func TestLoginRequest_Validate(t *testing.T) {
-	authJSON := `{
-		"login": "anna@gazneft.ru",
-		"password": "pa$$word"
-	}`
+func TestLoginJSONRequestBody_Validate(t *testing.T) {
+	tests := []struct {
+		name       string
+		jsonString string
+		wantErr    bool
+	}{
+		{
+			name: "positive",
+			jsonString: `{
+					"login": "anna@gazneft.ru",
+					"password": "pa$$word"
+				}`,
+			wantErr: false,
+		},
+		{
+			name: "negative #1: bad email format",
+			jsonString: `{
+					"login": "anna-gazneft.ru",
+					"password": "pa$$word"
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #2: short password",
+			jsonString: `{
+					"login": "anna@gazneft.ru",
+					"password": "pa$"
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #3: empty password",
+			jsonString: `{
+					"login": "anna@gazneft.ru",
+					"password": ""
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #4: empty login",
+			jsonString: `{
+					"login": "",
+					"password": "pa$ehdfjguckg"
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #5: large password",
+			jsonString: `{
+					"login": "",
+					"password": "pa$ehdfjguckppa$"
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #6: bad email format",
+			jsonString: `{
+					"login": "A@b@c@example.com",
+					"password": "pa$ehdfjguckp$"
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #7: bad email format",
+			jsonString: `{
+					"login": "",
+					"password": "just\"not\"right@example.com"
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #8: bad email format",
+			jsonString: `{
+					"login": "",
+					"password": "this is"not\allowed@example.com"
+				}`,
+			wantErr: true,
+		},
+	}
 
-	var a LoginRequest
-	rightJSONTEstHelper(context.TODO(), t, authJSON, &a)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var b LoginJSONRequestBody
+			errJSON := json.Unmarshal([]byte(tt.jsonString), &b)
+			errValidate := b.Validate(context.TODO(), validator.Instance())
+			err := errors.Join(errJSON, errValidate)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
 }
 
-func TestInitChangePasswordRequest_Validate(t *testing.T) {
+func TestInitChangePasswordJSONRequestBody_Validate(t *testing.T) {
+	tests := []struct {
+		name       string
+		jsonString string
+		wantErr    bool
+	}{
+		{
+			name: "positive",
+			jsonString: `{
+					"login": "anna@gazneft.ru"
+				}`,
+			wantErr: false,
+		},
+		{
+			name: "negative #1: bad email format",
+			jsonString: `{
+					"login": "anna-gazneft.ru"
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #2: empty login",
+			jsonString: `{
+					"login": ""
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #3: bad email format",
+			jsonString: `{
+					"login": "A@b@c@example.com"
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #4: bad email format",
+			jsonString: `{
+					"login": ""
+				}`,
+			wantErr: true,
+		},
+		{
+			name: "negative #5: bad email format",
+			jsonString: `{
+					"login": ""
+				}`,
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			var b InitChangePasswordJSONRequestBody
+			errJSON := json.Unmarshal([]byte(tt.jsonString), &b)
+			errValidate := b.Validate(context.TODO(), validator.Instance())
+			err := errors.Join(errJSON, errValidate)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+			}
+		})
+	}
+
 	chPswJSON := `{
 		"login": "vasyapp@gazneft.ru"
 	  }`
 
 	var i InitChangePasswordJSONRequestBody
-	rightJSONTEstHelper(context.TODO(), t, chPswJSON, &i)
+	rightJSONTestHelper(context.TODO(), t, chPswJSON, &i)
 }
 
 func TestChangePasswordRequest_Validate(t *testing.T) {
@@ -193,7 +342,7 @@ func TestChangePasswordRequest_Validate(t *testing.T) {
 	  }`
 
 	var c ChangePasswordJSONRequestBody
-	rightJSONTEstHelper(context.TODO(), t, chPswJSON, &c)
+	rightJSONTestHelper(context.TODO(), t, chPswJSON, &c)
 }
 
 func TestAddPassportRequest_Validate(t *testing.T) {
@@ -205,7 +354,7 @@ func TestAddPassportRequest_Validate(t *testing.T) {
 	  }`
 
 	var p AddPassportJSONRequestBody
-	rightJSONTEstHelper(context.TODO(), t, passportJSON, &p)
+	rightJSONTestHelper(context.TODO(), t, passportJSON, &p)
 }
 
 func TestTaxpayer_Validate(t *testing.T) {
@@ -229,7 +378,7 @@ func TestTaxpayer_Validate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var tp Taxpayer
-			rightJSONTEstHelper(context.TODO(), t, tt.jsonString, &tp)
+			rightJSONTestHelper(context.TODO(), t, tt.jsonString, &tp)
 		})
 	}
 }
@@ -245,7 +394,7 @@ func TestAddTrainingRequest_Validate(t *testing.T) {
 	  }`
 
 	var tr AddTrainingJSONRequestBody
-	rightJSONTEstHelper(context.TODO(), t, trainingJSON, &tr)
+	rightJSONTestHelper(context.TODO(), t, trainingJSON, &tr)
 }
 
 func TestAddVisaRequest_Validate(t *testing.T) {
@@ -259,7 +408,7 @@ func TestAddVisaRequest_Validate(t *testing.T) {
 	  }`
 
 	var v AddVisaJSONRequestBody
-	rightJSONTEstHelper(context.TODO(), t, visaJSON, &v)
+	rightJSONTestHelper(context.TODO(), t, visaJSON, &v)
 }
 
 func TestPatchUserRequest_Validate(t *testing.T) {
@@ -303,7 +452,7 @@ func TestPatchUserRequest_Validate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var pu PatchUserJSONRequestBody
-			rightJSONTEstHelper(context.TODO(), t, tt.jsonString, &pu)
+			rightJSONTestHelper(context.TODO(), t, tt.jsonString, &pu)
 		})
 	}
 }
@@ -335,7 +484,7 @@ func TestPatchContractRequest_Validate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var pc PatchContractJSONRequestBody
-			rightJSONTEstHelper(context.TODO(), t, tt.jsonString, &pc)
+			rightJSONTestHelper(context.TODO(), t, tt.jsonString, &pc)
 		})
 	}
 }

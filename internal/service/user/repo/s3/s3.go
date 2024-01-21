@@ -23,7 +23,7 @@ type storage struct {
 }
 
 func New(ctx context.Context, client *minio.Client, cfg s3.Config) (*storage, error) {
-	const op = "s3 storage: new"
+	const op = "s3 storage new:"
 
 	s := &storage{
 		minioClient: client,
@@ -40,7 +40,7 @@ func New(ctx context.Context, client *minio.Client, cfg s3.Config) (*storage, er
 			bucketName, minio.MakeBucketOptions{}); err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
 		} else {
-			slog.Info(op, slog.String("bucket created", bucketName))
+			slog.Info(op, slog.String("message", "bucket created"), slog.String("bucket name", bucketName))
 		}
 	}
 

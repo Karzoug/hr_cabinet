@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS "passports"
     "id"                   bigserial PRIMARY KEY,
     "user_id"              bigint  NOT NULL,
     "number"               varchar NOT NULL,
-    "citizenship":         varchar NOT NULL,
+    "citizenship"         varchar NOT NULL,
     "type"                 passport_type,
     "issued_date"          date    NOT NULL,
     "issued_by"            varchar,
