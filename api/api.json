@@ -2,7 +2,7 @@
     "openapi": "3.0.2",
     "info": {
         "title": "Employee's cabinet",
-        "version": "0.26.0",
+        "version": "0.26.1",
         "description": "",
         "contact": {
             "name": "Yandex Practicum Students Team"
@@ -301,7 +301,8 @@
                     "name": "user_id",
                     "description": "employee ID",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -436,7 +437,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -444,7 +446,8 @@
                 {
                     "name": "contract_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -532,7 +535,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -617,7 +621,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -630,7 +635,8 @@
                     {
                         "name": "user_id",
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "x-go-type": "uint64"
                         },
                         "in": "path",
                         "required": true
@@ -681,7 +687,8 @@
                     {
                         "name": "user_id",
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "x-go-type": "uint64"
                         },
                         "in": "path",
                         "required": true
@@ -934,7 +941,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1022,7 +1030,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1157,7 +1166,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1165,7 +1175,8 @@
                 {
                     "name": "vacation_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1253,7 +1264,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1388,7 +1400,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1396,7 +1409,8 @@
                 {
                     "name": "training_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1481,7 +1495,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1616,7 +1631,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1624,7 +1640,8 @@
                 {
                     "name": "visa_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1691,7 +1708,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1699,7 +1717,8 @@
                 {
                     "name": "scan_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1753,7 +1772,8 @@
                                         "$ref": "#/components/schemas/ScanType"
                                     },
                                     "document_id": {
-                                        "type": "integer"
+                                        "type": "integer",
+                                        "x-go-type": "uint64"
                                     },
                                     "description": {
                                         "type": "string"
@@ -1803,7 +1823,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1938,7 +1959,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -1946,7 +1968,8 @@
                 {
                     "name": "education_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -2150,7 +2173,8 @@
                 {
                     "name": "user_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -2158,7 +2182,8 @@
                 {
                     "name": "passport_id",
                     "schema": {
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "in": "path",
                     "required": true
@@ -2514,7 +2539,8 @@
                     },
                     "work_type_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "probation_period": {
                         "description": "",
@@ -2622,7 +2648,8 @@
                     },
                     "id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "has_scan": {
                         "description": "",
@@ -2692,7 +2719,8 @@
                     },
                     "id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     }
                 }
             },
@@ -2801,7 +2829,8 @@
                     },
                     "id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "has_scan": {
                         "description": "",
@@ -3122,7 +3151,8 @@
                     },
                     "id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "recruited_users_number": {
                         "description": "number of recruited employees",
@@ -3352,7 +3382,8 @@
                     },
                     "id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "has_scan": {
                         "description": "",
@@ -3458,7 +3489,8 @@
                     },
                     "id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     }
                 },
                 "example": {
@@ -3515,11 +3547,13 @@
                     },
                     "position_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "department_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "email": {
                         "format": "email",
@@ -3726,7 +3760,8 @@
                     },
                     "id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "has_scan": {
                         "description": "",
@@ -3735,7 +3770,8 @@
                     },
                     "work_type_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "probation_period": {
                         "description": "",
@@ -3779,7 +3815,8 @@
                     },
                     "work_type_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "probation_period": {
                         "description": "",
@@ -3812,7 +3849,8 @@
                     },
                     "work_type_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "probation_period": {
                         "description": "",
@@ -3851,7 +3889,8 @@
                     "id": {
                         "description": "",
                         "type": "integer",
-                        "example": 3
+                        "example": 3,
+                        "x-go-type": "uint64"
                     },
                     "type": {
                         "$ref": "#/components/schemas/ScanType",
@@ -3860,7 +3899,8 @@
                     "document_id": {
                         "description": "document ID (if necessary), passport ID for passport scan, for example",
                         "type": "integer",
-                        "example": "1"
+                        "example": "1",
+                        "x-go-type": "uint64"
                     },
                     "description": {
                         "description": "",
@@ -3950,7 +3990,8 @@
                         "properties": {
                             "id": {
                                 "description": "",
-                                "type": "integer"
+                                "type": "integer",
+                                "x-go-type": "uint64"
                             },
                             "position_track": {
                                 "$ref": "#/components/schemas/PositionTrack",
@@ -4083,11 +4124,13 @@
                     },
                     "position_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "department_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "email": {
                         "format": "email",
@@ -4212,11 +4255,13 @@
                     },
                     "position_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "department_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "email": {
                         "format": "email",
@@ -4359,7 +4404,8 @@
                 "properties": {
                     "id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "first_name": {
                         "description": "",
@@ -4380,11 +4426,13 @@
                     },
                     "position_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "department_id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "email": {
                         "format": "email",
@@ -4653,7 +4701,8 @@
                     },
                     "id": {
                         "description": "",
-                        "type": "integer"
+                        "type": "integer",
+                        "x-go-type": "uint64"
                     },
                     "has_scan": {
                         "description": "",
