@@ -12,8 +12,8 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-func (s *storage) GetVacation(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error) {
-	const op = "postgresql user storage: get vacation"
+func (s *storage) Get(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error) {
+	const op = "postgresql vacation storage: get"
 
 	rows, err := s.DB.Query(ctx,
 		`SELECT 
@@ -38,15 +38,14 @@ func (s *storage) GetVacation(ctx context.Context, userID, vacationID uint64) (*
 	return &mv, nil
 }
 
-var listVacationsQuery = `SELECT 
-		id, date_begin, date_end 
-		FROM vacations
-		WHERE user_id = @user_id`
+func (s *storage) List(ctx context.Context, userID uint64) ([]model.Vacation, error) {
+	const op = "postgresql vacation storage: list"
 
-func (s *storage) ListVacations(ctx context.Context, userID uint64) ([]model.Vacation, error) {
-	const op = "postgresql user storage: list vacations"
-
-	rows, err := s.DB.Query(ctx, listVacationsQuery, pgx.NamedArgs{"user_id": userID})
+	rows, err := s.DB.Query(ctx, `SELECT 
+	id, date_begin, date_end 
+	FROM vacations
+	WHERE user_id = @user_id`,
+		pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -65,8 +64,8 @@ func (s *storage) ListVacations(ctx context.Context, userID uint64) ([]model.Vac
 	return vacations, nil
 }
 
-func (s *storage) AddVacation(ctx context.Context, userID uint64, v model.Vacation) (uint64, error) {
-	const op = "postgresql user storage: add vacation"
+func (s *storage) Add(ctx context.Context, userID uint64, v model.Vacation) (uint64, error) {
+	const op = "postgresql vacation storage: add"
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO vacations
 		("user_id", "date_begin", "date_end")
@@ -89,8 +88,8 @@ func (s *storage) AddVacation(ctx context.Context, userID uint64, v model.Vacati
 	return v.ID, nil
 }
 
-func (s *storage) UpdateVacation(ctx context.Context, userID uint64, v model.Vacation) error {
-	const op = "postrgresql user storage: update vacation"
+func (s *storage) Update(ctx context.Context, userID uint64, v model.Vacation) error {
+	const op = "postrgresql vacation storage: update"
 
 	tag, err := s.DB.Exec(ctx, `UPDATE vacations
 	SET date_begin = @date_begin, date_end = @date_end

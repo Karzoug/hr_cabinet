@@ -1,4 +1,4 @@
-package user
+package visa
 
 import (
 	"context"
@@ -10,10 +10,10 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-func (s *service) GetVisa(ctx context.Context, userID, visaID uint64) (*model.Visa, error) {
-	const op = "user service: get visa"
+func (s *service) Get(ctx context.Context, userID, visaID uint64) (*model.Visa, error) {
+	const op = "visa service: get"
 
-	v, err := s.userRepository.GetVisa(ctx, userID, visaID)
+	v, err := s.dbRepository.Get(ctx, userID, visaID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return nil, serr.NewError(serr.NotFound, "visa not found")
@@ -23,20 +23,20 @@ func (s *service) GetVisa(ctx context.Context, userID, visaID uint64) (*model.Vi
 	return v, nil
 }
 
-func (s *service) ListVisas(ctx context.Context, userID uint64) ([]model.Visa, error) {
-	const op = "user service: list visas"
+func (s *service) List(ctx context.Context, userID uint64) ([]model.Visa, error) {
+	const op = "visa service: list"
 
-	vs, err := s.userRepository.ListVisas(ctx, userID)
+	vs, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	return vs, nil
 }
 
-func (s *service) AddVisa(ctx context.Context, userID uint64, mv model.Visa) (uint64, error) {
-	const op = "user service: add visa"
+func (s *service) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64, error) {
+	const op = "visa service: add"
 
-	id, err := s.userRepository.AddVisa(ctx, userID, mv)
+	id, err := s.dbRepository.Add(ctx, userID, mv)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrConflict) {
 			return 0, serr.NewError(serr.Conflict, "not added: user problem")
@@ -46,10 +46,10 @@ func (s *service) AddVisa(ctx context.Context, userID uint64, mv model.Visa) (ui
 	return id, nil
 }
 
-func (s *service) UpdateVisa(ctx context.Context, userID uint64, v model.Visa) error {
-	const op = "user service: update visa"
+func (s *service) Update(ctx context.Context, userID uint64, v model.Visa) error {
+	const op = "visa service: update"
 
-	err := s.userRepository.UpdateVisa(ctx, userID, v)
+	err := s.dbRepository.Update(ctx, userID, v)
 	if err != nil {
 		switch {
 		case errors.Is(err, repoerr.ErrRecordNotAffected):

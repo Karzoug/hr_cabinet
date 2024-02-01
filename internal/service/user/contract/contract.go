@@ -1,4 +1,4 @@
-package user
+package contract
 
 import (
 	"context"
@@ -10,10 +10,10 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-func (s *service) GetContract(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
+func (s *service) Get(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
 	const op = "user service: get contract"
 
-	tr, err := s.userRepository.GetContract(ctx, userID, contractID)
+	tr, err := s.dbRepository.Get(ctx, userID, contractID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return nil, serr.NewError(serr.NotFound, "contract not found")
@@ -23,10 +23,10 @@ func (s *service) GetContract(ctx context.Context, userID, contractID uint64) (*
 	return tr, nil
 }
 
-func (s *service) ListContracts(ctx context.Context, userID uint64) ([]model.Contract, error) {
+func (s *service) List(ctx context.Context, userID uint64) ([]model.Contract, error) {
 	const op = "user service: list contracts"
 
-	ctrs, err := s.userRepository.ListContracts(ctx, userID)
+	ctrs, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", op, err)
@@ -35,10 +35,10 @@ func (s *service) ListContracts(ctx context.Context, userID uint64) ([]model.Con
 	return ctrs, nil
 }
 
-func (s *service) AddContract(ctx context.Context, userID uint64, c model.Contract) (uint64, error) {
+func (s *service) Add(ctx context.Context, userID uint64, c model.Contract) (uint64, error) {
 	const op = "user service: add contract"
 
-	id, err := s.userRepository.AddContract(ctx, userID, c)
+	id, err := s.dbRepository.Add(ctx, userID, c)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return 0, serr.NewError(serr.Conflict, "not added: user problem")
@@ -48,10 +48,10 @@ func (s *service) AddContract(ctx context.Context, userID uint64, c model.Contra
 	return id, nil
 }
 
-func (s *service) UpdateContract(ctx context.Context, userID uint64, c model.Contract) error {
+func (s *service) Update(ctx context.Context, userID uint64, c model.Contract) error {
 	const op = "user service: update contract"
 
-	err := s.userRepository.UpdateContract(ctx, userID, c)
+	err := s.dbRepository.Update(ctx, userID, c)
 	if err != nil {
 		switch {
 		case errors.Is(err, repoerr.ErrRecordNotAffected):

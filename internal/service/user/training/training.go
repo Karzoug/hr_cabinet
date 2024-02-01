@@ -1,4 +1,4 @@
-package user
+package training
 
 import (
 	"context"
@@ -10,10 +10,10 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-func (s *service) GetTraining(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
-	const op = "user service: get training"
+func (s *service) Get(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
+	const op = "training service: get"
 
-	tr, err := s.userRepository.GetTraining(ctx, userID, trainingID)
+	tr, err := s.dbRepository.Get(ctx, userID, trainingID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return nil, serr.NewError(serr.NotFound, "training not found")
@@ -23,20 +23,20 @@ func (s *service) GetTraining(ctx context.Context, userID, trainingID uint64) (*
 	return tr, nil
 }
 
-func (s *service) ListTrainings(ctx context.Context, userID uint64) ([]model.Training, error) {
-	const op = "user service: list trainings"
+func (s *service) List(ctx context.Context, userID uint64) ([]model.Training, error) {
+	const op = "training service: list"
 
-	trs, err := s.userRepository.ListTrainings(ctx, userID)
+	trs, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	return trs, nil
 }
 
-func (s *service) AddTraining(ctx context.Context, userID uint64, ed model.Training) (uint64, error) {
-	const op = "user service: add training"
+func (s *service) Add(ctx context.Context, userID uint64, ed model.Training) (uint64, error) {
+	const op = "training service: add"
 
-	id, err := s.userRepository.AddTraining(ctx, userID, ed)
+	id, err := s.dbRepository.Add(ctx, userID, ed)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrConflict) {
 			return 0, serr.NewError(serr.Conflict, "not added: user problem")
@@ -46,10 +46,10 @@ func (s *service) AddTraining(ctx context.Context, userID uint64, ed model.Train
 	return id, nil
 }
 
-func (s *service) UpdateTraining(ctx context.Context, userID uint64, tr model.Training) error {
-	const op = "user service: update training"
+func (s *service) Update(ctx context.Context, userID uint64, tr model.Training) error {
+	const op = "training service: update"
 
-	err := s.userRepository.UpdateTraining(ctx, userID, tr)
+	err := s.dbRepository.Update(ctx, userID, tr)
 	if err != nil {
 		switch {
 		case errors.Is(err, repoerr.ErrRecordNotAffected):

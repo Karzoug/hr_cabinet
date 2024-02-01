@@ -1,4 +1,4 @@
-package user
+package vacation
 
 import (
 	"context"
@@ -11,9 +11,9 @@ import (
 )
 
 func (s *service) GetVacation(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error) {
-	const op = "user service: get vacation"
+	const op = "vacation service: get"
 
-	v, err := s.userRepository.GetVacation(ctx, userID, vacationID)
+	v, err := s.dbRepository.Get(ctx, userID, vacationID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return nil, serr.NewError(serr.NotFound, "vacation not found")
@@ -24,19 +24,19 @@ func (s *service) GetVacation(ctx context.Context, userID, vacationID uint64) (*
 }
 
 func (s *service) ListVacations(ctx context.Context, userID uint64) ([]model.Vacation, error) {
-	const op = "user service: list vacations"
+	const op = "vacation service: list"
 
-	vcs, err := s.userRepository.ListVacations(ctx, userID)
+	vcs, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	return vcs, nil
 }
 
-func (s *service) AddVacation(ctx context.Context, userID uint64, v model.Vacation) (uint64, error) {
-	const op = "user service: add vacation"
+func (s *service) Add(ctx context.Context, userID uint64, v model.Vacation) (uint64, error) {
+	const op = "vacation service: add"
 
-	id, err := s.userRepository.AddVacation(ctx, userID, v)
+	id, err := s.dbRepository.Add(ctx, userID, v)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrConflict) {
 			return 0, serr.NewError(serr.Conflict, "not added: user problem")
@@ -46,10 +46,10 @@ func (s *service) AddVacation(ctx context.Context, userID uint64, v model.Vacati
 	return id, nil
 }
 
-func (s *service) UpdateVacation(ctx context.Context, userID uint64, v model.Vacation) error {
-	const op = "user service: update vacation"
+func (s *service) Update(ctx context.Context, userID uint64, v model.Vacation) error {
+	const op = "vacation service: update"
 
-	err := s.userRepository.UpdateVacation(ctx, userID, v)
+	err := s.dbRepository.Update(ctx, userID, v)
 	if err != nil {
 		switch {
 		case errors.Is(err, repoerr.ErrRecordNotAffected):

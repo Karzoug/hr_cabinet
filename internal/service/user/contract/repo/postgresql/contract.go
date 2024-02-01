@@ -12,16 +12,15 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-const listContractsQuery = `SELECT 
-contracts.id as id, number, contract_type, work_type_id, probation_period, date_begin, date_end,
-(SELECT COUNT(*)>0 FROM scans WHERE scans.document_id=contracts.id AND scans.type='Трудовой договор') AS has_scan
-FROM contracts
-WHERE user_id = @user_id`
+func (s *storage) List(ctx context.Context, userID uint64) ([]model.Contract, error) {
+	const op = "postgresql contract storage: list"
 
-func (s *storage) ListContracts(ctx context.Context, userID uint64) ([]model.Contract, error) {
-	const op = "postgresql user storage: list contracts"
-
-	rows, err := s.DB.Query(ctx, listContractsQuery, pgx.NamedArgs{"user_id": userID})
+	rows, err := s.DB.Query(ctx, `SELECT 
+	contracts.id as id, number, contract_type, work_type_id, probation_period, date_begin, date_end,
+	(SELECT COUNT(*)>0 FROM scans WHERE scans.document_id=contracts.id AND scans.type='Трудовой договор') AS has_scan
+	FROM contracts
+	WHERE user_id = @user_id`,
+		pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
@@ -32,14 +31,14 @@ func (s *storage) ListContracts(ctx context.Context, userID uint64) ([]model.Con
 
 	contracts := make([]model.Contract, len(trs))
 	for i, tr := range trs {
-		contracts[i] = convertContractToModelContract(tr)
+		contracts[i] = fromDBO(tr)
 	}
 
 	return contracts, nil
 }
 
-func (s *storage) GetContract(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
-	const op = "postgresql user storage: get contract"
+func (s *storage) Get(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
+	const op = "postgresql contract storage: get"
 
 	//стр-ра
 	rows, err := s.DB.Query(ctx,
@@ -60,14 +59,14 @@ func (s *storage) GetContract(ctx context.Context, userID, contractID uint64) (*
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	mc := convertContractToModelContract(c)
+	mc := fromDBO(c)
 	return &mc, nil
 }
 
-func (s *storage) AddContract(ctx context.Context, userID uint64, mc model.Contract) (uint64, error) {
-	const op = "postgresql user storage: add contract"
+func (s *storage) Add(ctx context.Context, userID uint64, mc model.Contract) (uint64, error) {
+	const op = "postgresql contract storage: add"
 
-	c := convertModelContractToContract(mc)
+	c := toDBO(mc)
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO contracts
 		("user_id", "number", "contract_type", "work_type_id", "probation_period", "date_begin", "date_end")
@@ -98,10 +97,10 @@ func (s *storage) AddContract(ctx context.Context, userID uint64, mc model.Contr
 	return c.ID, nil
 }
 
-func (s *storage) UpdateContract(ctx context.Context, userID uint64, mc model.Contract) error {
-	const op = "postgresql user storage: update contract"
+func (s *storage) Update(ctx context.Context, userID uint64, mc model.Contract) error {
+	const op = "postgresql contract storage: update"
 
-	c := convertModelContractToContract(mc)
+	c := toDBO(mc)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE contracts
 		SET number = @number, contract_type = @contract_type, work_type_id = @work_type_id, 

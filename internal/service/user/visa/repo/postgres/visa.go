@@ -12,14 +12,8 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-const listVisasQuery = `SELECT 
-id, number, issued_state, 
-valid_to, valid_from, type 
-FROM visas
-WHERE visas.user_id = @user_id`
-
-func (s *storage) ListVisas(ctx context.Context, userID uint64) ([]model.Visa, error) {
-	const op = "postrgresql user storage: list visas"
+func (s *storage) List(ctx context.Context, userID uint64) ([]model.Visa, error) {
+	const op = "postrgresql visa storage: list"
 
 	rows, err := s.DB.Query(ctx, `SELECT 
 	id, number, issued_state, 
@@ -45,8 +39,8 @@ func (s *storage) ListVisas(ctx context.Context, userID uint64) ([]model.Visa, e
 	return visas, nil
 }
 
-func (s *storage) GetVisa(ctx context.Context, userID, visaID uint64) (*model.Visa, error) {
-	const op = "postrgresql user storage: get visa"
+func (s *storage) Get(ctx context.Context, userID, visaID uint64) (*model.Visa, error) {
+	const op = "postrgresql visa storage: get"
 
 	rows, err := s.DB.Query(ctx,
 		`SELECT id, number, issued_state, 
@@ -69,8 +63,8 @@ func (s *storage) GetVisa(ctx context.Context, userID, visaID uint64) (*model.Vi
 	return &med, nil
 }
 
-func (s *storage) AddVisa(ctx context.Context, userID uint64, mv model.Visa) (uint64, error) {
-	const op = "postrgresql user storage: add visa"
+func (s *storage) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64, error) {
+	const op = "postrgresql visa storage: add"
 
 	v := convertModelVisaToVisa(mv)
 
@@ -102,8 +96,8 @@ func (s *storage) AddVisa(ctx context.Context, userID uint64, mv model.Visa) (ui
 	return v.ID, nil
 }
 
-func (s *storage) UpdateVisa(ctx context.Context, userID uint64, mv model.Visa) error {
-	const op = "postrgresql user storage: update visa"
+func (s *storage) Update(ctx context.Context, userID uint64, mv model.Visa) error {
+	const op = "postrgresql visa storage: update"
 
 	v := convertModelVisaToVisa(mv)
 

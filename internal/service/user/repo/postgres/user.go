@@ -85,127 +85,127 @@ func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	return &mu, nil
 }
 
-// GetExpandedUser returns summary information about the user.
-// (!) This is a complex query that potentially returns a lot of data.
-// Use context with timeout.
-func (s *storage) GetExpandedUser(ctx context.Context, userID uint64) (*model.ExpandedUser, error) {
-	const op = "postgresql user storage: get expanded user"
+// // GetExpandedUser returns summary information about the user.
+// // (!) This is a complex query that potentially returns a lot of data.
+// // Use context with timeout.
+// func (s *storage) GetExpandedUser(ctx context.Context, userID uint64) (*model.ExpandedUser, error) {
+// 	const op = "postgresql user storage: get expanded user"
 
-	batch := &pgx.Batch{}
-	batch.Queue(getUserQuery, pgx.NamedArgs{"user_id": userID})
-	batch.Queue(listEducationsQuery, pgx.NamedArgs{"user_id": userID})
-	batch.Queue(listTrainingsQuery, pgx.NamedArgs{"user_id": userID})
-	batch.Queue(listPassportsQuery, pgx.NamedArgs{"user_id": userID})
-	batch.Queue(listVisasQuery, pgx.NamedArgs{"user_id": userID})
-	batch.Queue(listVacationsQuery, pgx.NamedArgs{"user_id": userID})
-	batch.Queue(listContractsQuery, pgx.NamedArgs{"user_id": userID})
-	br := s.DB.SendBatch(ctx, batch)
-	defer br.Close()
+// 	batch := &pgx.Batch{}
+// 	batch.Queue(getUserQuery, pgx.NamedArgs{"user_id": userID})
+// 	batch.Queue(listEducationsQuery, pgx.NamedArgs{"user_id": userID})
+// 	batch.Queue(listTrainingsQuery, pgx.NamedArgs{"user_id": userID})
+// 	batch.Queue(listPassportsQuery, pgx.NamedArgs{"user_id": userID})
+// 	batch.Queue(listVisasQuery, pgx.NamedArgs{"user_id": userID})
+// 	batch.Queue(listVacationsQuery, pgx.NamedArgs{"user_id": userID})
+// 	batch.Queue(listContractsQuery, pgx.NamedArgs{"user_id": userID})
+// 	br := s.DB.SendBatch(ctx, batch)
+// 	defer br.Close()
 
-	var expUser model.ExpandedUser
+// 	var expUser model.ExpandedUser
 
-	// TODO: duplicate code, refactor later maybe
+// 	// TODO: duplicate code, refactor later maybe
 
-	// get user
-	rows, err := br.Query()
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	u, err := pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByNameLax[user])
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, repoerr.ErrRecordNotFound
-		}
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	expUser.User = convertUserToModelUser(u)
+// 	// get user
+// 	rows, err := br.Query()
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	u, err := pgx.CollectExactlyOneRow(rows, pgx.RowToAddrOfStructByNameLax[user])
+// 	if err != nil {
+// 		if errors.Is(err, pgx.ErrNoRows) {
+// 			return nil, repoerr.ErrRecordNotFound
+// 		}
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	expUser.User = convertUserToModelUser(u)
 
-	// get educations
-	rows, err = br.Query()
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	eds, err := pgx.CollectRows[education](rows, pgx.RowToStructByNameLax[education])
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	expUser.Educations = make([]model.Education, len(eds))
-	for i, ed := range eds {
-		expUser.Educations[i] = convertEducationToModelEducation(ed)
-	}
+// 	// get educations
+// 	rows, err = br.Query()
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	eds, err := pgx.CollectRows[education](rows, pgx.RowToStructByNameLax[education])
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	expUser.Educations = make([]model.Education, len(eds))
+// 	for i, ed := range eds {
+// 		expUser.Educations[i] = convertEducationToModelEducation(ed)
+// 	}
 
-	// get trainings
-	rows, err = br.Query()
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	trs, err := pgx.CollectRows[training](rows, pgx.RowToStructByNameLax[training])
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	expUser.Trainings = make([]model.Training, len(trs))
-	for i, tr := range trs {
-		expUser.Trainings[i] = convertTrainingToModelTraining(tr)
-	}
+// 	// get trainings
+// 	rows, err = br.Query()
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	trs, err := pgx.CollectRows[training](rows, pgx.RowToStructByNameLax[training])
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	expUser.Trainings = make([]model.Training, len(trs))
+// 	for i, tr := range trs {
+// 		expUser.Trainings[i] = convertTrainingToModelTraining(tr)
+// 	}
 
-	// get passports
-	rows, err = br.Query()
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	psps, err := pgx.CollectRows[passport](rows, pgx.RowToStructByNameLax[passport])
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	expUser.Passports = make([]model.Passport, len(psps))
-	for i, psp := range psps {
-		expUser.Passports[i] = convertPassportToModelPassport(psp)
-	}
+// 	// get passports
+// 	rows, err = br.Query()
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	psps, err := pgx.CollectRows[passport](rows, pgx.RowToStructByNameLax[passport])
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	expUser.Passports = make([]model.Passport, len(psps))
+// 	for i, psp := range psps {
+// 		expUser.Passports[i] = convertPassportToModelPassport(psp)
+// 	}
 
-	// get visas
-	rows, err = br.Query()
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	visas, err := pgx.CollectRows[visa](rows, pgx.RowToStructByNameLax[visa])
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	expUser.Visas = make([]model.Visa, len(visas))
-	for i, v := range visas {
-		expUser.Visas[i] = convertVisaToModelVisa(v)
-	}
+// 	// get visas
+// 	rows, err = br.Query()
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	visas, err := pgx.CollectRows[visa](rows, pgx.RowToStructByNameLax[visa])
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	expUser.Visas = make([]model.Visa, len(visas))
+// 	for i, v := range visas {
+// 		expUser.Visas[i] = convertVisaToModelVisa(v)
+// 	}
 
-	// get vacations
-	rows, err = br.Query()
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	vs, err := pgx.CollectRows[vacation](rows, pgx.RowToStructByNameLax[vacation])
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	expUser.Vacations = make([]model.Vacation, len(vs))
-	for i, v := range vs {
-		expUser.Vacations[i] = convertVacationToModelVacation(v)
-	}
+// 	// get vacations
+// 	rows, err = br.Query()
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	vs, err := pgx.CollectRows[vacation](rows, pgx.RowToStructByNameLax[vacation])
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	expUser.Vacations = make([]model.Vacation, len(vs))
+// 	for i, v := range vs {
+// 		expUser.Vacations[i] = convertVacationToModelVacation(v)
+// 	}
 
-	// get contracts
-	rows, err = br.Query()
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	cs, err := pgx.CollectRows[contract](rows, pgx.RowToStructByNameLax[contract])
-	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
-	}
-	expUser.Contracts = make([]model.Contract, len(cs))
-	for i, c := range cs {
-		expUser.Contracts[i] = convertContractToModelContract(c)
-	}
+// 	// get contracts
+// 	rows, err = br.Query()
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	cs, err := pgx.CollectRows[contract](rows, pgx.RowToStructByNameLax[contract])
+// 	if err != nil {
+// 		return nil, fmt.Errorf("%s: %w", op, err)
+// 	}
+// 	expUser.Contracts = make([]model.Contract, len(cs))
+// 	for i, c := range cs {
+// 		expUser.Contracts[i] = convertContractToModelContract(c)
+// 	}
 
-	return &expUser, nil
-}
+// 	return &expUser, nil
+// }
 
 func (s *storage) ListShortUserInfo(ctx context.Context, pms model.ListUsersParams) ([]model.ShortUserInfo, int, error) {
 	const op = "postgresql user storage: list short user info"

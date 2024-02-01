@@ -1,4 +1,4 @@
-package user
+package photo
 
 import (
 	"context"
@@ -12,8 +12,13 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-func (s *service) DownloadPhoto(ctx context.Context, userID uint64, hash string) (model.File, func() error, error) {
-	const op = "user service: download photo"
+const (
+	MaxPhotoSize  = 20 << 20 // bytes
+	photoFileName = "photo"
+)
+
+func (s *service) Download(ctx context.Context, userID uint64, hash string) (model.File, func() error, error) {
+	const op = "photo service: download"
 
 	f, closeFn, err := s.fileRepository.Download(ctx, strconv.FormatUint(userID, 10), photoFileName, hash)
 	if err != nil {
@@ -36,7 +41,7 @@ func (s *service) DownloadPhoto(ctx context.Context, userID uint64, hash string)
 }
 
 func (s *service) UploadPhoto(ctx context.Context, userID uint64, f model.File) error {
-	const op = "user service: upload photo"
+	const op = "photo service: upload"
 
 	if f.Size > MaxPhotoSize {
 		return serr.NewError(serr.ContentTooLarge, "photo file size too large")

@@ -7,8 +7,8 @@ import (
 	"strconv"
 
 	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
-	uservice "github.com/Employee-s-file-cabinet/backend/internal/service/user"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
+	"github.com/Employee-s-file-cabinet/backend/internal/service/user/photo"
 )
 
 const (
@@ -68,14 +68,14 @@ func (h *handler) UploadPhoto(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	if length > uservice.MaxPhotoSize {
+	if length > photo.MaxPhotoSize {
 		srverr.ResponseError(w, r,
 			http.StatusBadRequest,
 			errLimitRequestBodySizeMsg)
 		return
 	}
 
-	lr := http.MaxBytesReader(w, r.Body, uservice.MaxPhotoSize)
+	lr := http.MaxBytesReader(w, r.Body, photo.MaxPhotoSize)
 	defer lr.Close()
 
 	if err := h.userService.UploadPhoto(ctx, userID, model.File{

@@ -1,4 +1,4 @@
-package user
+package scan
 
 import (
 	"context"
@@ -16,10 +16,10 @@ const (
 	MaxScanSize = 20 << 20 // bytes
 )
 
-func (s *service) GetScan(ctx context.Context, userID, scanID uint64) (*model.Scan, error) {
+func (s *service) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, error) {
 	const op = "user service: get scan"
 
-	sc, err := s.userRepository.GetScan(ctx, userID, scanID)
+	sc, err := s.scanRepository.Get(ctx, userID, scanID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return nil, serr.NewError(serr.NotFound, "user or scan file not found")
@@ -38,10 +38,10 @@ func (s *service) GetScan(ctx context.Context, userID, scanID uint64) (*model.Sc
 	return sc, nil
 }
 
-func (s *service) ListScans(ctx context.Context, userID uint64) ([]model.Scan, error) {
+func (s *service) List(ctx context.Context, userID uint64) ([]model.Scan, error) {
 	const op = "user service: list scans"
 
-	scans, err := s.userRepository.ListScans(ctx, userID)
+	scans, err := s.scanRepository.List(ctx, userID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return nil, serr.NewError(serr.NotFound, "user not found")
@@ -51,7 +51,7 @@ func (s *service) ListScans(ctx context.Context, userID uint64) ([]model.Scan, e
 	return scans, nil
 }
 
-func (s *service) UploadScan(ctx context.Context, userID uint64, ms model.Scan, f model.File) (uint64, error) {
+func (s *service) Upload(ctx context.Context, userID uint64, ms model.Scan, f model.File) (uint64, error) {
 	const op = "user service: upload scan"
 
 	if f.Size > MaxScanSize {
@@ -77,7 +77,7 @@ func (s *service) UploadScan(ctx context.Context, userID uint64, ms model.Scan, 
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}
 
-	id, err := s.userRepository.AddScan(ctx, userID, ms)
+	id, err := s.scanRepository.Add(ctx, userID, ms)
 	if err != nil {
 		return 0, fmt.Errorf("%s: %w", op, err)
 	}

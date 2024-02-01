@@ -1,4 +1,4 @@
-package user
+package education
 
 import (
 	"context"
@@ -10,10 +10,10 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-func (s *service) GetEducation(ctx context.Context, userID, educationID uint64) (*model.Education, error) {
-	const op = "user service: get education"
+func (s *service) Get(ctx context.Context, userID, educationID uint64) (*model.Education, error) {
+	const op = "education service: get"
 
-	ed, err := s.userRepository.GetEducation(ctx, userID, educationID)
+	ed, err := s.dbRepository.Get(ctx, userID, educationID)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrRecordNotFound) {
 			return nil, serr.NewError(serr.NotFound, "education not found")
@@ -23,20 +23,20 @@ func (s *service) GetEducation(ctx context.Context, userID, educationID uint64) 
 	return ed, nil
 }
 
-func (s *service) ListEducations(ctx context.Context, userID uint64) ([]model.Education, error) {
-	const op = "user service: list educations"
+func (s *service) List(ctx context.Context, userID uint64) ([]model.Education, error) {
+	const op = "education service: list"
 
-	eds, err := s.userRepository.ListEducations(ctx, userID)
+	eds, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
 	return eds, nil
 }
 
-func (s *service) AddEducation(ctx context.Context, userID uint64, ed model.Education) (uint64, error) {
-	const op = "user service: add education"
+func (s *service) Add(ctx context.Context, userID uint64, ed model.Education) (uint64, error) {
+	const op = "education service: add"
 
-	id, err := s.userRepository.AddEducation(ctx, userID, ed)
+	id, err := s.dbRepository.Add(ctx, userID, ed)
 	if err != nil {
 		if errors.Is(err, repoerr.ErrConflict) {
 			return 0, serr.NewError(serr.Conflict, "not added: user problem")
@@ -46,10 +46,10 @@ func (s *service) AddEducation(ctx context.Context, userID uint64, ed model.Educ
 	return id, nil
 }
 
-func (s *service) UpdateEducation(ctx context.Context, userID uint64, ed model.Education) error {
-	const op = "user service: update education"
+func (s *service) Update(ctx context.Context, userID uint64, ed model.Education) error {
+	const op = "education service: update"
 
-	err := s.userRepository.UpdateEducation(ctx, userID, ed)
+	err := s.dbRepository.Update(ctx, userID, ed)
 	if err != nil {
 		switch {
 		case errors.Is(err, repoerr.ErrRecordNotAffected):

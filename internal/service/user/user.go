@@ -10,12 +10,6 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-const (
-	MaxPhotoSize  = 20 << 20 // bytes
-	photoFileName = "photo"
-	//errUserNotFoundText = "user not found"
-)
-
 func (s *service) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	const op = "user service: get user"
 

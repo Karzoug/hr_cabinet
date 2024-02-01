@@ -19,8 +19,8 @@ cost, date_end, date_begin,
 FROM trainings
 WHERE user_id = @user_id`
 
-func (s *storage) ListTrainings(ctx context.Context, userID uint64) ([]model.Training, error) {
-	const op = "postgresql user storage: list trainings"
+func (s *storage) List(ctx context.Context, userID uint64) ([]model.Training, error) {
+	const op = "postgresql training storage: list"
 
 	rows, err := s.DB.Query(ctx, listTrainingsQuery, pgx.NamedArgs{"user_id": userID})
 	if err != nil {
@@ -39,8 +39,8 @@ func (s *storage) ListTrainings(ctx context.Context, userID uint64) ([]model.Tra
 	return trainings, nil
 }
 
-func (s *storage) GetTraining(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
-	const op = "postgresql user storage: get training"
+func (s *storage) Get(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
+	const op = "postgresql training storage: get"
 
 	rows, err := s.DB.Query(ctx,
 		`SELECT
@@ -65,8 +65,8 @@ func (s *storage) GetTraining(ctx context.Context, userID, trainingID uint64) (*
 	return &med, nil
 }
 
-func (s *storage) AddTraining(ctx context.Context, userID uint64, tr model.Training) (uint64, error) {
-	const op = "postgresql user storage: add training"
+func (s *storage) Add(ctx context.Context, userID uint64, tr model.Training) (uint64, error) {
+	const op = "postgresql training storage: add"
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO trainings
 		("user_id", "title_of_program", "title_of_institution", 
@@ -94,8 +94,8 @@ func (s *storage) AddTraining(ctx context.Context, userID uint64, tr model.Train
 	return tr.ID, nil
 }
 
-func (s *storage) UpdateTraining(ctx context.Context, userID uint64, tr model.Training) error {
-	const op = "postrgresql user storage: update training"
+func (s *storage) Update(ctx context.Context, userID uint64, tr model.Training) error {
+	const op = "postrgresql training storage: update"
 
 	tag, err := s.DB.Exec(ctx, `UPDATE trainings
 	SET title_of_program = @title_of_program, title_of_institution = @title_of_institution, 

@@ -12,14 +12,8 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-const listPassportsQuery = `SELECT 
-id, number, citizenship, type, issued_date, issued_by, issued_by_code,
-(SELECT COUNT(*)>0 FROM scans WHERE scans.document_id=passports.id AND scans.type='Паспорт') AS has_scan
-FROM passports
-WHERE passports.user_id = @user_id`
-
-func (s *storage) ListPassports(ctx context.Context, userID uint64) ([]model.Passport, error) {
-	const op = "postrgresql user storage: list passports"
+func (s *storage) List(ctx context.Context, userID uint64) ([]model.Passport, error) {
+	const op = "postrgresql passport storage: list"
 
 	rows, err := s.DB.Query(ctx,
 		`SELECT id, number, citizenship, type, issued_date, issued_by, issued_by_code,		
@@ -43,8 +37,8 @@ func (s *storage) ListPassports(ctx context.Context, userID uint64) ([]model.Pas
 	return passports, nil
 }
 
-func (s *storage) GetPassport(ctx context.Context, userID, passportID uint64) (*model.Passport, error) {
-	const op = "postrgresql user storage: get passport"
+func (s *storage) Get(ctx context.Context, userID, passportID uint64) (*model.Passport, error) {
+	const op = "postrgresql passport storage: get"
 
 	rows, err := s.DB.Query(ctx,
 		`SELECT id, number, citizenship, type, issued_date, issued_by, issued_by_code,
@@ -67,8 +61,8 @@ func (s *storage) GetPassport(ctx context.Context, userID, passportID uint64) (*
 	return &med, nil
 }
 
-func (s *storage) AddPassport(ctx context.Context, userID uint64, mp model.Passport) (uint64, error) {
-	const op = "postrgresql user storage: add passport"
+func (s *storage) Add(ctx context.Context, userID uint64, mp model.Passport) (uint64, error) {
+	const op = "postrgresql passport storage: add"
 
 	p := convertModelPassportToPassport(mp)
 
@@ -97,8 +91,8 @@ func (s *storage) AddPassport(ctx context.Context, userID uint64, mp model.Passp
 	return p.ID, nil
 }
 
-func (s *storage) UpdatePassport(ctx context.Context, userID uint64, mp model.Passport) error {
-	const op = "postrgresql user storage: update passport"
+func (s *storage) Update(ctx context.Context, userID uint64, mp model.Passport) error {
+	const op = "postrgresql passport storage: update"
 
 	p := convertModelPassportToPassport(mp)
 
