@@ -10,6 +10,16 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
+type service struct {
+	dbRepository dbRepository
+}
+
+func NewService(dbRepository dbRepository) *service {
+	return &service{
+		dbRepository: dbRepository,
+	}
+}
+
 func (s *service) Get(ctx context.Context, userID, passportID uint64) (*model.Passport, error) {
 	const op = "passport service: get"
 

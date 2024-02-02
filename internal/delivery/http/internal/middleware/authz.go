@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log/slog"
 	"net/http"
 	"strings"
 
@@ -19,6 +20,7 @@ type TokenManager interface {
 type Authorizer struct {
 	TokenManager TokenManager
 	Enforcer     *casbin.Enforcer
+	logger       *slog.Logger
 }
 
 func (a *Authorizer) AuthorizeMiddleware(next http.Handler) http.Handler {
@@ -31,14 +33,14 @@ func (a *Authorizer) AuthorizeMiddleware(next http.Handler) http.Handler {
 		if err != nil {
 			srverrors.ResponseError(w, r,
 				http.StatusForbidden,
-				http.ErrNoCookie.Error())
+				http.ErrNoCookie.Error(), a.logger)
 			return
 		}
 		sign, err := cookie.GetSignature(r)
 		if err != nil {
 			srverrors.ResponseError(w, r,
 				http.StatusForbidden,
-				http.ErrNoCookie.Error())
+				http.ErrNoCookie.Error(), a.logger)
 			return
 		}
 
@@ -46,7 +48,7 @@ func (a *Authorizer) AuthorizeMiddleware(next http.Handler) http.Handler {
 		if err != nil {
 			srverrors.ResponseError(w, r,
 				http.StatusUnauthorized,
-				"access token is missing or invalid")
+				"access token is missing or invalid", a.logger)
 			return
 		}
 
@@ -58,7 +60,7 @@ func (a *Authorizer) AuthorizeMiddleware(next http.Handler) http.Handler {
 		if !result {
 			srverrors.ResponseError(w, r,
 				http.StatusUnauthorized,
-				"user is not allowed to access")
+				"user is not allowed to access", a.logger)
 			return
 		}
 	})

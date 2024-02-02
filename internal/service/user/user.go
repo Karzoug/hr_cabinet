@@ -10,6 +10,16 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
+type service struct {
+	userRepository userRepository
+}
+
+func NewService(userRepository userRepository) *service {
+	return &service{
+		userRepository: userRepository,
+	}
+}
+
 func (s *service) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	const op = "user service: get user"
 

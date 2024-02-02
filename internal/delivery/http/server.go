@@ -16,7 +16,7 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/config/env"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
-	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/handlers"
+	handlers "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/handler"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/middleware"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
 )
@@ -56,12 +56,12 @@ func New(cfg Config, envType env.Type,
 	handler := handlers.New(envType, userService, authService, passwordRecoveryService, logger)
 
 	mux := chi.NewRouter()
-	mux.NotFound(srverr.NotFound)
-	mux.MethodNotAllowed(srverr.MethodNotAllowed)
+	mux.NotFound(srverr.NotFoundHandlerFn(logger))
+	mux.MethodNotAllowed(srverr.MethodNotAllowedHandlerFn(logger))
 
 	// Add middlewares
-	mux.Use(middleware.LogAccess)
-	mux.Use(middleware.RecoverPanic)
+	mux.Use(middleware.LogAccessFn(s.logger))
+	mux.Use(middleware.RecoverPanicFn(s.logger))
 
 	// CORS middleware
 	switch envType {
@@ -109,10 +109,10 @@ func New(cfg Config, envType env.Type,
 				msg = err.Error()
 			}
 			if err := response.JSON(w, http.StatusBadRequest, api.Error{Message: msg}); err != nil {
-				srverr.LogError(r, err, false)
+				srverr.LogError(r, err, false, s.logger)
 				srverr.ResponseError(w, r,
 					http.StatusInternalServerError,
-					srverr.ErrInternalServerErrorMsg)
+					srverr.ErrInternalServerErrorMsg, s.logger)
 			}
 		},
 	})

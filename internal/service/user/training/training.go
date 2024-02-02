@@ -10,6 +10,16 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
+type service struct {
+	dbRepository dbRepository
+}
+
+func NewService(dbRepository dbRepository) *service {
+	return &service{
+		dbRepository: dbRepository,
+	}
+}
+
 func (s *service) Get(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
 	const op = "training service: get"
 

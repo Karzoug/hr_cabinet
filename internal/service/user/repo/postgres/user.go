@@ -10,10 +10,21 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
+	pq "github.com/Employee-s-file-cabinet/backend/pkg/postgresql"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
 const LimitListUsers = 10
+
+type storage struct {
+	*pq.DB
+}
+
+func NewUserStorage(db *pq.DB) (*storage, error) {
+	return &storage{
+		DB: db,
+	}, nil
+}
 
 func (s *storage) Exist(ctx context.Context, userID uint64) (bool, error) {
 	const op = "postrgresql user storage: exist user"

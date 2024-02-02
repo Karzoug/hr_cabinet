@@ -13,8 +13,24 @@ import (
 )
 
 const (
-	MaxScanSize = 20 << 20 // bytes
+	MaxSize = 20 << 20 // bytes
 )
+
+type service struct {
+	userRepository userRepository
+	scanRepository scanRepository
+	fileRepository s3FileRepository
+}
+
+func NewService(userRepository userRepository,
+	scanRepository scanRepository,
+	fileRepository s3FileRepository) *service {
+	return &service{
+		userRepository: userRepository,
+		scanRepository: scanRepository,
+		fileRepository: fileRepository,
+	}
+}
 
 func (s *service) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, error) {
 	const op = "user service: get scan"
@@ -54,7 +70,7 @@ func (s *service) List(ctx context.Context, userID uint64) ([]model.Scan, error)
 func (s *service) Upload(ctx context.Context, userID uint64, ms model.Scan, f model.File) (uint64, error) {
 	const op = "user service: upload scan"
 
-	if f.Size > MaxScanSize {
+	if f.Size > MaxSize {
 		return 0, serr.NewError(serr.ContentTooLarge, "scan file size too large")
 	}
 

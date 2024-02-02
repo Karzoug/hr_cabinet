@@ -10,6 +10,16 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
+type service struct {
+	dbRepository dbRepository
+}
+
+func NewService(dbRepository dbRepository) *service {
+	return &service{
+		dbRepository: dbRepository,
+	}
+}
+
 func (s *service) GetVacation(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error) {
 	const op = "vacation service: get"
 

@@ -9,10 +9,21 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
+	pq "github.com/Employee-s-file-cabinet/backend/pkg/postgresql"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-func (s *storage) GetScan(ctx context.Context, userID, scanID uint64) (*model.Scan, error) {
+type storage struct {
+	*pq.DB
+}
+
+func NewUserStorage(db *pq.DB) (*storage, error) {
+	return &storage{
+		DB: db,
+	}, nil
+}
+
+func (s *storage) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, error) {
 	const op = "postgresql user storage: get scan"
 
 	rows, err := s.DB.Query(ctx,
@@ -38,7 +49,7 @@ func (s *storage) GetScan(ctx context.Context, userID, scanID uint64) (*model.Sc
 	return &ms, nil
 }
 
-func (s *storage) ListScans(ctx context.Context, userID uint64) ([]model.Scan, error) {
+func (s *storage) List(ctx context.Context, userID uint64) ([]model.Scan, error) {
 	const op = "postgresql user storage: list scans"
 
 	rows, err := s.DB.Query(ctx,
@@ -65,7 +76,7 @@ func (s *storage) ListScans(ctx context.Context, userID uint64) ([]model.Scan, e
 	return scans, nil
 }
 
-func (s *storage) AddScan(ctx context.Context, userID uint64, ms model.Scan) (uint64, error) {
+func (s *storage) Add(ctx context.Context, userID uint64, ms model.Scan) (uint64, error) {
 	const op = "postgresql user storage: add scan"
 
 	sc := convertModelScanToScan(ms)

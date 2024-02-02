@@ -17,6 +17,18 @@ const (
 	photoFileName = "photo"
 )
 
+type service struct {
+	userRepository userRepository
+	fileRepository s3FileRepository
+}
+
+func NewService(userRepository userRepository, fileRepository s3FileRepository) *service {
+	return &service{
+		userRepository: userRepository,
+		fileRepository: fileRepository,
+	}
+}
+
 func (s *service) Download(ctx context.Context, userID uint64, hash string) (model.File, func() error, error) {
 	const op = "photo service: download"
 

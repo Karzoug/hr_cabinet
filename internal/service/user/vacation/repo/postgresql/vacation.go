@@ -9,8 +9,19 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
+	pq "github.com/Employee-s-file-cabinet/backend/pkg/postgresql"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
+
+type storage struct {
+	*pq.DB
+}
+
+func NewUserStorage(db *pq.DB) (*storage, error) {
+	return &storage{
+		DB: db,
+	}, nil
+}
 
 func (s *storage) Get(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error) {
 	const op = "postgresql vacation storage: get"

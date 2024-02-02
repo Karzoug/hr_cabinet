@@ -12,8 +12,8 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/convert"
 	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
-	uservice "github.com/Employee-s-file-cabinet/backend/internal/service/user"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
+	"github.com/Employee-s-file-cabinet/backend/internal/service/user/scan"
 )
 
 // @Produce application/json
@@ -48,7 +48,7 @@ func (h *handler) UploadScan(w http.ResponseWriter, r *http.Request, userID uint
 		return
 	}
 
-	scan, err := handleScanMultipartRequest(ctx, r)
+	sc, err := handleScanMultipartRequest(ctx, r)
 	if err != nil {
 		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error())
 		return
@@ -60,19 +60,19 @@ func (h *handler) UploadScan(w http.ResponseWriter, r *http.Request, userID uint
 		return
 	}
 
-	if header.Size > uservice.MaxScanSize {
+	if header.Size > scan.MaxSize {
 		srverr.ResponseError(w, r, http.StatusBadRequest, errLimitRequestBodySizeMsg)
 		return
 	}
 
-	sr := http.MaxBytesReader(w, file, uservice.MaxScanSize)
+	sr := http.MaxBytesReader(w, file, scan.MaxSize)
 	defer sr.Close()
 
 	id, err := h.userService.UploadScan(ctx, userID,
 		model.Scan{
-			DocumentID:  uint64(*scan.DocumentID),
-			Type:        model.ScanType(scan.Type),
-			Description: *scan.Description,
+			DocumentID:  uint64(*sc.DocumentID),
+			Type:        model.ScanType(sc.Type),
+			Description: *sc.Description,
 		},
 		model.File{
 			Reader:      sr,

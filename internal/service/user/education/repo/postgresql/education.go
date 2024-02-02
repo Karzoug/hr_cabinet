@@ -9,8 +9,19 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
+	pq "github.com/Employee-s-file-cabinet/backend/pkg/postgresql"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
+
+type storage struct {
+	*pq.DB
+}
+
+func NewUserStorage(db *pq.DB) (*storage, error) {
+	return &storage{
+		DB: db,
+	}, nil
+}
 
 func (s *storage) List(ctx context.Context, userID uint64) ([]model.Education, error) {
 	const op = "postgresql user storage: list"

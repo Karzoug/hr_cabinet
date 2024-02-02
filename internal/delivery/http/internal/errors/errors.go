@@ -15,7 +15,7 @@ import (
 const ErrInternalServerErrorMsg = "the server encountered a problem and could not process your request"
 
 // LogError logs the server error, with or without stack trace.
-func LogError(r *http.Request, err error, withStack bool) {
+func LogError(r *http.Request, err error, withStack bool, logger *slog.Logger) {
 	var (
 		message = err.Error()
 		method  = r.Method
@@ -32,7 +32,8 @@ func LogError(r *http.Request, err error, withStack bool) {
 }
 
 // ResponseError converts error message to api.Error and writes this one in JSON format to response writer.
-func ResponseError(w http.ResponseWriter, r *http.Request, status int, errMessage string) {
+func ResponseError(w http.ResponseWriter, r *http.Request,
+	status int, errMessage string, logger *slog.Logger) {
 	message := strings.ToUpper(errMessage[:1]) + errMessage[1:]
 	if status == http.StatusNotModified {
 		// RFC 2616:
@@ -44,31 +45,35 @@ func ResponseError(w http.ResponseWriter, r *http.Request, status int, errMessag
 	if err := response.JSON(w,
 		status,
 		api.Error{Message: message}); err != nil {
-		LogError(r, err, false)
+		LogError(r, err, false, logger)
 	}
 }
 
 // ResponseServiceError converts a service error to api.Error and writes this one in JSON format to response writer.
-func ResponseServiceError(w http.ResponseWriter, r *http.Request, err error) {
+func ResponseServiceError(w http.ResponseWriter, r *http.Request, err error, logger *slog.Logger) {
 	serviceErr := new(service.Error)
 	if !errors.As(err, &serviceErr) {
-		LogError(r, err, false)
+		LogError(r, err, false, logger)
 		ResponseError(w, r,
 			http.StatusInternalServerError,
-			ErrInternalServerErrorMsg)
+			ErrInternalServerErrorMsg, logger)
 		return
 	}
 	ResponseError(w, r,
 		serviceStatusToHTTPStatusCode(serviceErr),
-		serviceErr.Error())
+		serviceErr.Error(), logger)
 }
 
-func NotFound(w http.ResponseWriter, r *http.Request) {
-	ResponseError(w, r, http.StatusNotFound, "the requested resource could not be found")
+func NotFoundHandlerFn(logger *slog.Logger) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ResponseError(w, r, http.StatusNotFound, "the requested resource could not be found", logger)
+	}
 }
 
-func MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
-	ResponseError(w, r, http.StatusMethodNotAllowed, "the method is not supported for this resource")
+func MethodNotAllowedHandlerFn(logger *slog.Logger) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ResponseError(w, r, http.StatusMethodNotAllowed, "the method is not supported for this resource", logger)
+	}
 }
 
 func serviceStatusToHTTPStatusCode(err *service.Error) int {

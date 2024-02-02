@@ -9,20 +9,30 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user/model"
+	pq "github.com/Employee-s-file-cabinet/backend/pkg/postgresql"
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-const listTrainingsQuery = `SELECT
-id, title_of_program, title_of_institution,
-cost, date_end, date_begin,
-(SELECT COUNT(*)>0 FROM scans WHERE scans.document_id=trainings.id AND scans.type='Сертификат') AS has_scan
-FROM trainings
-WHERE user_id = @user_id`
+type storage struct {
+	*pq.DB
+}
+
+func NewUserStorage(db *pq.DB) (*storage, error) {
+	return &storage{
+		DB: db,
+	}, nil
+}
 
 func (s *storage) List(ctx context.Context, userID uint64) ([]model.Training, error) {
 	const op = "postgresql training storage: list"
 
-	rows, err := s.DB.Query(ctx, listTrainingsQuery, pgx.NamedArgs{"user_id": userID})
+	rows, err := s.DB.Query(ctx, `SELECT
+	id, title_of_program, title_of_institution,
+	cost, date_end, date_begin,
+	(SELECT COUNT(*)>0 FROM scans WHERE scans.document_id=trainings.id AND scans.type='Сертификат') AS has_scan
+	FROM trainings
+	WHERE user_id = @user_id`,
+		pgx.NamedArgs{"user_id": userID})
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", op, err)
 	}
