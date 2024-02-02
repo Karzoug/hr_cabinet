@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"time"
 
 	"github.com/minio/minio-go/v7"
 
@@ -18,17 +17,13 @@ const (
 )
 
 type storage struct {
-	minioClient *minio.Client
-	urlExpires  time.Duration
+	s3Client s3.Client
 }
 
-func New(ctx context.Context, client *minio.Client, cfg s3.Config) (*storage, error) {
-	const op = "s3 storage new:"
+func New(ctx context.Context, client s3.Client) (*storage, error) {
+	const op = "s3 storage: new storage"
 
-	s := &storage{
-		minioClient: client,
-		urlExpires:  cfg.URLExpires,
-	}
+	s := &storage{s3Client: client}
 
 	// check to see if we already own the bucket
 	exists, err := client.BucketExists(ctx, bucketName)
@@ -50,7 +45,7 @@ func New(ctx context.Context, client *minio.Client, cfg s3.Config) (*storage, er
 func (s *storage) Upload(ctx context.Context, f s3.File) error {
 	const op = "s3 storage: upload file"
 
-	_, err := s.minioClient.PutObject(ctx,
+	_, err := s.s3Client.PutObject(ctx,
 		bucketName,
 		f.Prefix+"_"+f.Name,
 		f.Reader,
@@ -72,7 +67,7 @@ func (s *storage) Download(ctx context.Context, prefix, name, etag string) (s3.F
 			return s3.File{}, nil, fmt.Errorf("%s: %w", op, err)
 		}
 	}
-	reader, err := s.minioClient.GetObject(ctx,
+	reader, err := s.s3Client.GetObject(ctx,
 		bucketName,
 		prefix+"_"+name,
 		opts,
@@ -105,9 +100,9 @@ func (s *storage) Download(ctx context.Context, prefix, name, etag string) (s3.F
 }
 
 func (s *storage) PresignedURL(ctx context.Context, prefix, name string) (string, error) {
-	const op = "s3 storage: object presigned url"
+	const op = "s3 storage: file presigned url"
 
-	url, err := s.minioClient.PresignedGetObject(ctx, bucketName, fmt.Sprintf("%s_%s", prefix, name), s.urlExpires, nil)
+	url, err := s.s3Client.PresignedGetObject(ctx, bucketName, fmt.Sprintf("%s_%s", prefix, name), s.s3Client.URLExpires, nil)
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", op, err)
 	}

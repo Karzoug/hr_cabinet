@@ -14,16 +14,14 @@ import (
 )
 
 type storage struct {
-	*pq.DB
+	pq.DB
 }
 
-func NewUserStorage(db *pq.DB) (*storage, error) {
-	return &storage{
-		DB: db,
-	}, nil
+func New(db pq.DB) storage {
+	return storage{DB: db}
 }
 
-func (s *storage) List(ctx context.Context, userID uint64) ([]model.Passport, error) {
+func (s storage) List(ctx context.Context, userID uint64) ([]model.Passport, error) {
 	const op = "postrgresql passport storage: list"
 
 	rows, err := s.DB.Query(ctx,
@@ -42,13 +40,13 @@ func (s *storage) List(ctx context.Context, userID uint64) ([]model.Passport, er
 
 	passports := make([]model.Passport, len(psps))
 	for i, ed := range psps {
-		passports[i] = convertPassportToModelPassport(ed)
+		passports[i] = convertFromDBO(ed)
 	}
 
 	return passports, nil
 }
 
-func (s *storage) Get(ctx context.Context, userID, passportID uint64) (*model.Passport, error) {
+func (s storage) Get(ctx context.Context, userID, passportID uint64) (*model.Passport, error) {
 	const op = "postrgresql passport storage: get"
 
 	rows, err := s.DB.Query(ctx,
@@ -68,14 +66,14 @@ func (s *storage) Get(ctx context.Context, userID, passportID uint64) (*model.Pa
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	med := convertPassportToModelPassport(p)
+	med := convertFromDBO(p)
 	return &med, nil
 }
 
-func (s *storage) Add(ctx context.Context, userID uint64, mp model.Passport) (uint64, error) {
+func (s storage) Add(ctx context.Context, userID uint64, mp model.Passport) (uint64, error) {
 	const op = "postrgresql passport storage: add"
 
-	p := convertModelPassportToPassport(mp)
+	p := convertToDBO(mp)
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO passports
 		("user_id", "number", "citizenship" "type", "issued_date", "issued_by", "issued_by_code")
@@ -102,10 +100,10 @@ func (s *storage) Add(ctx context.Context, userID uint64, mp model.Passport) (ui
 	return p.ID, nil
 }
 
-func (s *storage) Update(ctx context.Context, userID uint64, mp model.Passport) error {
+func (s storage) Update(ctx context.Context, userID uint64, mp model.Passport) error {
 	const op = "postrgresql passport storage: update"
 
-	p := convertModelPassportToPassport(mp)
+	p := convertToDBO(mp)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE passports
 	SET number = @number, 

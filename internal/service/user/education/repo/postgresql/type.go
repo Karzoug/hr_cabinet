@@ -16,6 +16,6 @@ type education struct {
 	HasScan           bool      `db:"has_scan"`
 }
 
-func convertEducationToModelEducation(ed education) model.Education {
+func convertFromDBO(ed education) model.Education {
 	return model.Education(ed)
 }

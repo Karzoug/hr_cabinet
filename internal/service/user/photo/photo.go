@@ -17,20 +17,20 @@ const (
 	photoFileName = "photo"
 )
 
-type service struct {
+type Subservice struct {
 	userRepository userRepository
 	fileRepository s3FileRepository
 }
 
-func NewService(userRepository userRepository, fileRepository s3FileRepository) *service {
-	return &service{
+func New(userRepository userRepository, fileRepository s3FileRepository) Subservice {
+	return Subservice{
 		userRepository: userRepository,
 		fileRepository: fileRepository,
 	}
 }
 
-func (s *service) Download(ctx context.Context, userID uint64, hash string) (model.File, func() error, error) {
-	const op = "photo service: download"
+func (s Subservice) Download(ctx context.Context, userID uint64, hash string) (model.File, func() error, error) {
+	const op = "user service: download photo"
 
 	f, closeFn, err := s.fileRepository.Download(ctx, strconv.FormatUint(userID, 10), photoFileName, hash)
 	if err != nil {
@@ -52,8 +52,8 @@ func (s *service) Download(ctx context.Context, userID uint64, hash string) (mod
 	}, closeFn, nil
 }
 
-func (s *service) UploadPhoto(ctx context.Context, userID uint64, f model.File) error {
-	const op = "photo service: upload"
+func (s Subservice) UploadPhoto(ctx context.Context, userID uint64, f model.File) error {
+	const op = "user service: upload photo"
 
 	if f.Size > MaxPhotoSize {
 		return serr.NewError(serr.ContentTooLarge, "photo file size too large")

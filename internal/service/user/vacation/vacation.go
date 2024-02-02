@@ -10,18 +10,18 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-type service struct {
+type Subservice struct {
 	dbRepository dbRepository
 }
 
-func NewService(dbRepository dbRepository) *service {
-	return &service{
+func New(dbRepository dbRepository) Subservice {
+	return Subservice{
 		dbRepository: dbRepository,
 	}
 }
 
-func (s *service) GetVacation(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error) {
-	const op = "vacation service: get"
+func (s Subservice) GetVacation(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error) {
+	const op = "user service: get vacation"
 
 	v, err := s.dbRepository.Get(ctx, userID, vacationID)
 	if err != nil {
@@ -33,8 +33,8 @@ func (s *service) GetVacation(ctx context.Context, userID, vacationID uint64) (*
 	return v, nil
 }
 
-func (s *service) ListVacations(ctx context.Context, userID uint64) ([]model.Vacation, error) {
-	const op = "vacation service: list"
+func (s Subservice) ListVacations(ctx context.Context, userID uint64) ([]model.Vacation, error) {
+	const op = "user service: list vacations"
 
 	vcs, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
@@ -43,8 +43,8 @@ func (s *service) ListVacations(ctx context.Context, userID uint64) ([]model.Vac
 	return vcs, nil
 }
 
-func (s *service) Add(ctx context.Context, userID uint64, v model.Vacation) (uint64, error) {
-	const op = "vacation service: add"
+func (s Subservice) Add(ctx context.Context, userID uint64, v model.Vacation) (uint64, error) {
+	const op = "user service: add vacation"
 
 	id, err := s.dbRepository.Add(ctx, userID, v)
 	if err != nil {
@@ -56,8 +56,8 @@ func (s *service) Add(ctx context.Context, userID uint64, v model.Vacation) (uin
 	return id, nil
 }
 
-func (s *service) Update(ctx context.Context, userID uint64, v model.Vacation) error {
-	const op = "vacation service: update"
+func (s Subservice) Update(ctx context.Context, userID uint64, v model.Vacation) error {
+	const op = "user service: update vacation"
 
 	err := s.dbRepository.Update(ctx, userID, v)
 	if err != nil {

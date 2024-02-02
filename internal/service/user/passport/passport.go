@@ -10,18 +10,18 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-type service struct {
+type Subservice struct {
 	dbRepository dbRepository
 }
 
-func NewService(dbRepository dbRepository) *service {
-	return &service{
+func New(dbRepository dbRepository) Subservice {
+	return Subservice{
 		dbRepository: dbRepository,
 	}
 }
 
-func (s *service) Get(ctx context.Context, userID, passportID uint64) (*model.Passport, error) {
-	const op = "passport service: get"
+func (s Subservice) Get(ctx context.Context, userID, passportID uint64) (*model.Passport, error) {
+	const op = "user service: get passport"
 
 	p, err := s.dbRepository.Get(ctx, userID, passportID)
 	if err != nil {
@@ -33,8 +33,8 @@ func (s *service) Get(ctx context.Context, userID, passportID uint64) (*model.Pa
 	return p, nil
 }
 
-func (s *service) List(ctx context.Context, userID uint64) ([]model.Passport, error) {
-	const op = "passport service: list"
+func (s Subservice) List(ctx context.Context, userID uint64) ([]model.Passport, error) {
+	const op = "user service: list passports"
 
 	psps, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
@@ -43,8 +43,8 @@ func (s *service) List(ctx context.Context, userID uint64) ([]model.Passport, er
 	return psps, nil
 }
 
-func (s *service) Add(ctx context.Context, userID uint64, mp model.Passport) (uint64, error) {
-	const op = "passport service: add"
+func (s Subservice) Add(ctx context.Context, userID uint64, mp model.Passport) (uint64, error) {
+	const op = "user service: add passport"
 
 	id, err := s.dbRepository.Add(ctx, userID, mp)
 	if err != nil {
@@ -56,8 +56,8 @@ func (s *service) Add(ctx context.Context, userID uint64, mp model.Passport) (ui
 	return id, nil
 }
 
-func (s *service) Update(ctx context.Context, userID uint64, p model.Passport) error {
-	const op = "passport service: update"
+func (s Subservice) Update(ctx context.Context, userID uint64, p model.Passport) error {
+	const op = "user service: update passport"
 
 	err := s.dbRepository.Update(ctx, userID, p)
 	if err != nil {

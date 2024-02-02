@@ -19,8 +19,6 @@ import (
 	recoverydb "github.com/Employee-s-file-cabinet/backend/internal/service/recovery/repo/postgres"
 	recoverykv "github.com/Employee-s-file-cabinet/backend/internal/service/recovery/repo/ttlmap"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
-	userdb "github.com/Employee-s-file-cabinet/backend/internal/service/user/repo/postgres"
-	users3 "github.com/Employee-s-file-cabinet/backend/internal/service/user/repo/s3"
 )
 
 func Run(ctx context.Context, cfg *config.Config, logger *slog.Logger) error {
@@ -34,17 +32,10 @@ func Run(ctx context.Context, cfg *config.Config, logger *slog.Logger) error {
 	if err != nil {
 		return err
 	}
-
-	// create user service
-	userDBRepo, err := userdb.NewUserStorage(db)
+	userService, err := user.New(ctx, db, s3Client)
 	if err != nil {
 		return err
 	}
-	userFileRepo, err := users3.New(ctx, s3Client, cfg.S3)
-	if err != nil {
-		return err
-	}
-	userService := user.NewService(userDBRepo, userFileRepo)
 
 	// create auth service
 	tokenMng, err := token.NewPasetoMaker(cfg.HTTP.Token.SecretKey, cfg.HTTP.Token.Lifetime)

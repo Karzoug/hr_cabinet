@@ -16,23 +16,23 @@ const (
 	MaxSize = 20 << 20 // bytes
 )
 
-type service struct {
+type Subservice struct {
 	userRepository userRepository
 	scanRepository scanRepository
 	fileRepository s3FileRepository
 }
 
-func NewService(userRepository userRepository,
+func New(userRepository userRepository,
 	scanRepository scanRepository,
-	fileRepository s3FileRepository) *service {
-	return &service{
+	fileRepository s3FileRepository) Subservice {
+	return Subservice{
 		userRepository: userRepository,
 		scanRepository: scanRepository,
 		fileRepository: fileRepository,
 	}
 }
 
-func (s *service) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, error) {
+func (s Subservice) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, error) {
 	const op = "user service: get scan"
 
 	sc, err := s.scanRepository.Get(ctx, userID, scanID)
@@ -54,7 +54,7 @@ func (s *service) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, 
 	return sc, nil
 }
 
-func (s *service) List(ctx context.Context, userID uint64) ([]model.Scan, error) {
+func (s Subservice) List(ctx context.Context, userID uint64) ([]model.Scan, error) {
 	const op = "user service: list scans"
 
 	scans, err := s.scanRepository.List(ctx, userID)
@@ -67,7 +67,7 @@ func (s *service) List(ctx context.Context, userID uint64) ([]model.Scan, error)
 	return scans, nil
 }
 
-func (s *service) Upload(ctx context.Context, userID uint64, ms model.Scan, f model.File) (uint64, error) {
+func (s Subservice) Upload(ctx context.Context, userID uint64, ms model.Scan, f model.File) (uint64, error) {
 	const op = "user service: upload scan"
 
 	if f.Size > MaxSize {

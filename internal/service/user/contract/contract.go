@@ -10,17 +10,17 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-type service struct {
+type Subservice struct {
 	dbRepository dbRepository
 }
 
-func NewService(dbRepository dbRepository) *service {
-	return &service{
+func New(dbRepository dbRepository) Subservice {
+	return Subservice{
 		dbRepository: dbRepository,
 	}
 }
 
-func (s *service) Get(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
+func (s Subservice) Get(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
 	const op = "user service: get contract"
 
 	tr, err := s.dbRepository.Get(ctx, userID, contractID)
@@ -33,7 +33,7 @@ func (s *service) Get(ctx context.Context, userID, contractID uint64) (*model.Co
 	return tr, nil
 }
 
-func (s *service) List(ctx context.Context, userID uint64) ([]model.Contract, error) {
+func (s Subservice) List(ctx context.Context, userID uint64) ([]model.Contract, error) {
 	const op = "user service: list contracts"
 
 	ctrs, err := s.dbRepository.List(ctx, userID)
@@ -45,7 +45,7 @@ func (s *service) List(ctx context.Context, userID uint64) ([]model.Contract, er
 	return ctrs, nil
 }
 
-func (s *service) Add(ctx context.Context, userID uint64, c model.Contract) (uint64, error) {
+func (s Subservice) Add(ctx context.Context, userID uint64, c model.Contract) (uint64, error) {
 	const op = "user service: add contract"
 
 	id, err := s.dbRepository.Add(ctx, userID, c)
@@ -58,7 +58,7 @@ func (s *service) Add(ctx context.Context, userID uint64, c model.Contract) (uin
 	return id, nil
 }
 
-func (s *service) Update(ctx context.Context, userID uint64, c model.Contract) error {
+func (s Subservice) Update(ctx context.Context, userID uint64, c model.Contract) error {
 	const op = "user service: update contract"
 
 	err := s.dbRepository.Update(ctx, userID, c)

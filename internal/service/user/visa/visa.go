@@ -10,18 +10,18 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-type service struct {
+type Subservice struct {
 	dbRepository dbRepository
 }
 
-func NewService(dbRepository dbRepository) *service {
-	return &service{
+func New(dbRepository dbRepository) Subservice {
+	return Subservice{
 		dbRepository: dbRepository,
 	}
 }
 
-func (s *service) Get(ctx context.Context, userID, visaID uint64) (*model.Visa, error) {
-	const op = "visa service: get"
+func (s Subservice) Get(ctx context.Context, userID, visaID uint64) (*model.Visa, error) {
+	const op = "user Subservice: get visa"
 
 	v, err := s.dbRepository.Get(ctx, userID, visaID)
 	if err != nil {
@@ -33,8 +33,8 @@ func (s *service) Get(ctx context.Context, userID, visaID uint64) (*model.Visa, 
 	return v, nil
 }
 
-func (s *service) List(ctx context.Context, userID uint64) ([]model.Visa, error) {
-	const op = "visa service: list"
+func (s Subservice) List(ctx context.Context, userID uint64) ([]model.Visa, error) {
+	const op = "user Subservice: list visas"
 
 	vs, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
@@ -43,8 +43,8 @@ func (s *service) List(ctx context.Context, userID uint64) ([]model.Visa, error)
 	return vs, nil
 }
 
-func (s *service) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64, error) {
-	const op = "visa service: add"
+func (s Subservice) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64, error) {
+	const op = "user Subservice: add visa"
 
 	id, err := s.dbRepository.Add(ctx, userID, mv)
 	if err != nil {
@@ -56,8 +56,8 @@ func (s *service) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64
 	return id, nil
 }
 
-func (s *service) Update(ctx context.Context, userID uint64, v model.Visa) error {
-	const op = "visa service: update"
+func (s Subservice) Update(ctx context.Context, userID uint64, v model.Visa) error {
+	const op = "user Subservice: update visa"
 
 	err := s.dbRepository.Update(ctx, userID, v)
 	if err != nil {

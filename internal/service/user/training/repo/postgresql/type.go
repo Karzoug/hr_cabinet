@@ -16,6 +16,6 @@ type training struct {
 	HasScan           bool      `db:"has_scan"`
 }
 
-func convertTrainingToModelTraining(tr training) model.Training {
+func convertFromDBO(tr training) model.Training {
 	return model.Training(tr)
 }

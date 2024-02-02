@@ -14,16 +14,14 @@ import (
 )
 
 type storage struct {
-	*pq.DB
+	pq.DB
 }
 
-func NewUserStorage(db *pq.DB) (*storage, error) {
-	return &storage{
-		DB: db,
-	}, nil
+func New(db pq.DB) storage {
+	return storage{DB: db}
 }
 
-func (s *storage) List(ctx context.Context, userID uint64) ([]model.Training, error) {
+func (s storage) List(ctx context.Context, userID uint64) ([]model.Training, error) {
 	const op = "postgresql training storage: list"
 
 	rows, err := s.DB.Query(ctx, `SELECT
@@ -43,13 +41,13 @@ func (s *storage) List(ctx context.Context, userID uint64) ([]model.Training, er
 
 	trainings := make([]model.Training, len(trs))
 	for i, tr := range trs {
-		trainings[i] = convertTrainingToModelTraining(tr)
+		trainings[i] = convertFromDBO(tr)
 	}
 
 	return trainings, nil
 }
 
-func (s *storage) Get(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
+func (s storage) Get(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
 	const op = "postgresql training storage: get"
 
 	rows, err := s.DB.Query(ctx,
@@ -71,11 +69,11 @@ func (s *storage) Get(ctx context.Context, userID, trainingID uint64) (*model.Tr
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	med := convertTrainingToModelTraining(ed)
+	med := convertFromDBO(ed)
 	return &med, nil
 }
 
-func (s *storage) Add(ctx context.Context, userID uint64, tr model.Training) (uint64, error) {
+func (s storage) Add(ctx context.Context, userID uint64, tr model.Training) (uint64, error) {
 	const op = "postgresql training storage: add"
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO trainings
@@ -104,7 +102,7 @@ func (s *storage) Add(ctx context.Context, userID uint64, tr model.Training) (ui
 	return tr.ID, nil
 }
 
-func (s *storage) Update(ctx context.Context, userID uint64, tr model.Training) error {
+func (s storage) Update(ctx context.Context, userID uint64, tr model.Training) error {
 	const op = "postrgresql training storage: update"
 
 	tag, err := s.DB.Exec(ctx, `UPDATE trainings

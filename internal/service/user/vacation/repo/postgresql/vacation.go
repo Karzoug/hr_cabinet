@@ -14,16 +14,14 @@ import (
 )
 
 type storage struct {
-	*pq.DB
+	pq.DB
 }
 
-func NewUserStorage(db *pq.DB) (*storage, error) {
-	return &storage{
-		DB: db,
-	}, nil
+func New(db pq.DB) storage {
+	return storage{DB: db}
 }
 
-func (s *storage) Get(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error) {
+func (s storage) Get(ctx context.Context, userID, vacationID uint64) (*model.Vacation, error) {
 	const op = "postgresql vacation storage: get"
 
 	rows, err := s.DB.Query(ctx,
@@ -45,11 +43,11 @@ func (s *storage) Get(ctx context.Context, userID, vacationID uint64) (*model.Va
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	mv := convertVacationToModelVacation(v)
+	mv := convertFromDBO(v)
 	return &mv, nil
 }
 
-func (s *storage) List(ctx context.Context, userID uint64) ([]model.Vacation, error) {
+func (s storage) List(ctx context.Context, userID uint64) ([]model.Vacation, error) {
 	const op = "postgresql vacation storage: list"
 
 	rows, err := s.DB.Query(ctx, `SELECT 
@@ -69,13 +67,13 @@ func (s *storage) List(ctx context.Context, userID uint64) ([]model.Vacation, er
 
 	vacations := make([]model.Vacation, len(vs))
 	for i, v := range vs {
-		vacations[i] = convertVacationToModelVacation(v)
+		vacations[i] = convertFromDBO(v)
 	}
 
 	return vacations, nil
 }
 
-func (s *storage) Add(ctx context.Context, userID uint64, v model.Vacation) (uint64, error) {
+func (s storage) Add(ctx context.Context, userID uint64, v model.Vacation) (uint64, error) {
 	const op = "postgresql vacation storage: add"
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO vacations
@@ -99,7 +97,7 @@ func (s *storage) Add(ctx context.Context, userID uint64, v model.Vacation) (uin
 	return v.ID, nil
 }
 
-func (s *storage) Update(ctx context.Context, userID uint64, v model.Vacation) error {
+func (s storage) Update(ctx context.Context, userID uint64, v model.Vacation) error {
 	const op = "postrgresql vacation storage: update"
 
 	tag, err := s.DB.Exec(ctx, `UPDATE vacations

@@ -14,16 +14,14 @@ import (
 )
 
 type storage struct {
-	*pq.DB
+	pq.DB
 }
 
-func NewUserStorage(db *pq.DB) (*storage, error) {
-	return &storage{
-		DB: db,
-	}, nil
+func New(db pq.DB) storage {
+	return storage{DB: db}
 }
 
-func (s *storage) List(ctx context.Context, userID uint64) ([]model.Contract, error) {
+func (s storage) List(ctx context.Context, userID uint64) ([]model.Contract, error) {
 	const op = "postgresql contract storage: list"
 
 	rows, err := s.DB.Query(ctx, `SELECT 
@@ -42,13 +40,13 @@ func (s *storage) List(ctx context.Context, userID uint64) ([]model.Contract, er
 
 	contracts := make([]model.Contract, len(trs))
 	for i, tr := range trs {
-		contracts[i] = fromDBO(tr)
+		contracts[i] = convertFromDBO(tr)
 	}
 
 	return contracts, nil
 }
 
-func (s *storage) Get(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
+func (s storage) Get(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
 	const op = "postgresql contract storage: get"
 
 	//стр-ра
@@ -70,14 +68,14 @@ func (s *storage) Get(ctx context.Context, userID, contractID uint64) (*model.Co
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	mc := fromDBO(c)
+	mc := convertFromDBO(c)
 	return &mc, nil
 }
 
-func (s *storage) Add(ctx context.Context, userID uint64, mc model.Contract) (uint64, error) {
+func (s storage) Add(ctx context.Context, userID uint64, mc model.Contract) (uint64, error) {
 	const op = "postgresql contract storage: add"
 
-	c := toDBO(mc)
+	c := convertToDBO(mc)
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO contracts
 		("user_id", "number", "contract_type", "work_type_id", "probation_period", "date_begin", "date_end")
@@ -108,10 +106,10 @@ func (s *storage) Add(ctx context.Context, userID uint64, mc model.Contract) (ui
 	return c.ID, nil
 }
 
-func (s *storage) Update(ctx context.Context, userID uint64, mc model.Contract) error {
+func (s storage) Update(ctx context.Context, userID uint64, mc model.Contract) error {
 	const op = "postgresql contract storage: update"
 
-	c := toDBO(mc)
+	c := convertToDBO(mc)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE contracts
 		SET number = @number, contract_type = @contract_type, work_type_id = @work_type_id, 

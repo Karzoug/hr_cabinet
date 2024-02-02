@@ -24,7 +24,7 @@ const (
 	passportTypeNational      passportType = "Внутренний"
 )
 
-func convertPassportToModelPassport(p passport) model.Passport {
+func convertFromDBO(p passport) model.Passport {
 	var pt model.PassportType
 	switch p.Type {
 	case passportTypeInternational:
@@ -44,7 +44,7 @@ func convertPassportToModelPassport(p passport) model.Passport {
 	}
 }
 
-func convertModelPassportToPassport(mp model.Passport) passport {
+func convertToDBO(mp model.Passport) passport {
 	var t passportType
 	switch mp.Type {
 	case model.PassportTypeInternational:

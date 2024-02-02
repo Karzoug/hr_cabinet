@@ -10,18 +10,18 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-type service struct {
+type Subservice struct {
 	dbRepository dbRepository
 }
 
-func NewService(dbRepository dbRepository) *service {
-	return &service{
+func New(dbRepository dbRepository) Subservice {
+	return Subservice{
 		dbRepository: dbRepository,
 	}
 }
 
-func (s *service) Get(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
-	const op = "training service: get"
+func (s Subservice) Get(ctx context.Context, userID, trainingID uint64) (*model.Training, error) {
+	const op = "user service: get training"
 
 	tr, err := s.dbRepository.Get(ctx, userID, trainingID)
 	if err != nil {
@@ -33,8 +33,8 @@ func (s *service) Get(ctx context.Context, userID, trainingID uint64) (*model.Tr
 	return tr, nil
 }
 
-func (s *service) List(ctx context.Context, userID uint64) ([]model.Training, error) {
-	const op = "training service: list"
+func (s Subservice) List(ctx context.Context, userID uint64) ([]model.Training, error) {
+	const op = "user service: list trainings"
 
 	trs, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
@@ -43,8 +43,8 @@ func (s *service) List(ctx context.Context, userID uint64) ([]model.Training, er
 	return trs, nil
 }
 
-func (s *service) Add(ctx context.Context, userID uint64, ed model.Training) (uint64, error) {
-	const op = "training service: add"
+func (s Subservice) Add(ctx context.Context, userID uint64, ed model.Training) (uint64, error) {
+	const op = "user service: add training"
 
 	id, err := s.dbRepository.Add(ctx, userID, ed)
 	if err != nil {
@@ -56,8 +56,8 @@ func (s *service) Add(ctx context.Context, userID uint64, ed model.Training) (ui
 	return id, nil
 }
 
-func (s *service) Update(ctx context.Context, userID uint64, tr model.Training) error {
-	const op = "training service: update"
+func (s Subservice) Update(ctx context.Context, userID uint64, tr model.Training) error {
+	const op = "user service: update training"
 
 	err := s.dbRepository.Update(ctx, userID, tr)
 	if err != nil {

@@ -14,17 +14,15 @@ import (
 )
 
 type storage struct {
-	*pq.DB
+	pq.DB
 }
 
-func NewUserStorage(db *pq.DB) (*storage, error) {
-	return &storage{
-		DB: db,
-	}, nil
+func New(db pq.DB) storage {
+	return storage{DB: db}
 }
 
-func (s *storage) List(ctx context.Context, userID uint64) ([]model.Education, error) {
-	const op = "postgresql user storage: list"
+func (s storage) List(ctx context.Context, userID uint64) ([]model.Education, error) {
+	const op = "postgresql education storage: list"
 
 	rows, err := s.DB.Query(ctx, `SELECT
 	id, document_number, title_of_program,
@@ -43,14 +41,14 @@ func (s *storage) List(ctx context.Context, userID uint64) ([]model.Education, e
 
 	educations := make([]model.Education, len(eds))
 	for i, ed := range eds {
-		educations[i] = convertEducationToModelEducation(ed)
+		educations[i] = convertFromDBO(ed)
 	}
 
 	return educations, nil
 }
 
-func (s *storage) Get(ctx context.Context, userID, educationID uint64) (*model.Education, error) {
-	const op = "postgresql user storage: get"
+func (s storage) Get(ctx context.Context, userID, educationID uint64) (*model.Education, error) {
+	const op = "postgresql education storage: get"
 
 	rows, err := s.DB.Query(ctx, `SELECT
 		id, document_number, title_of_program,
@@ -70,12 +68,12 @@ func (s *storage) Get(ctx context.Context, userID, educationID uint64) (*model.E
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	med := convertEducationToModelEducation(ed)
+	med := convertFromDBO(ed)
 	return &med, nil
 }
 
-func (s *storage) Add(ctx context.Context, userID uint64, ed model.Education) (uint64, error) {
-	const op = "postgresql user storage: add"
+func (s storage) Add(ctx context.Context, userID uint64, ed model.Education) (uint64, error) {
+	const op = "postgresql education storage: add"
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO educations
 		("user_id", "document_number", "title_of_program", 
@@ -103,7 +101,7 @@ func (s *storage) Add(ctx context.Context, userID uint64, ed model.Education) (u
 	return ed.ID, nil
 }
 
-func (s *storage) Update(ctx context.Context, userID uint64, ed model.Education) error {
+func (s storage) Update(ctx context.Context, userID uint64, ed model.Education) error {
 	const op = "postrgresql education storage: update"
 
 	tag, err := s.DB.Exec(ctx, `UPDATE educations

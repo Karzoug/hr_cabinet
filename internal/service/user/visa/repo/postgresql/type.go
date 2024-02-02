@@ -15,7 +15,7 @@ type visa struct {
 	ValidFrom   time.Time `db:"valid_from"`
 }
 
-func convertVisaToModelVisa(v visa) model.Visa {
+func convertFromDBO(v visa) model.Visa {
 	return model.Visa{
 		ID:          v.ID,
 		Number:      v.Number,
@@ -26,7 +26,7 @@ func convertVisaToModelVisa(v visa) model.Visa {
 	}
 }
 
-func convertModelVisaToVisa(mv model.Visa) visa {
+func convertToDBO(mv model.Visa) visa {
 	return visa{
 		ID:          mv.ID,
 		Number:      mv.Number,

@@ -14,16 +14,14 @@ import (
 )
 
 type storage struct {
-	*pq.DB
+	pq.DB
 }
 
-func NewUserStorage(db *pq.DB) (*storage, error) {
-	return &storage{
-		DB: db,
-	}, nil
+func New(db pq.DB) storage {
+	return storage{DB: db}
 }
 
-func (s *storage) List(ctx context.Context, userID uint64) ([]model.Visa, error) {
+func (s storage) List(ctx context.Context, userID uint64) ([]model.Visa, error) {
 	const op = "postrgresql visa storage: list"
 
 	rows, err := s.DB.Query(ctx, `SELECT 
@@ -44,13 +42,13 @@ func (s *storage) List(ctx context.Context, userID uint64) ([]model.Visa, error)
 
 	visas := make([]model.Visa, len(vs))
 	for i, ed := range vs {
-		visas[i] = convertVisaToModelVisa(ed)
+		visas[i] = convertFromDBO(ed)
 	}
 
 	return visas, nil
 }
 
-func (s *storage) Get(ctx context.Context, userID, visaID uint64) (*model.Visa, error) {
+func (s storage) Get(ctx context.Context, userID, visaID uint64) (*model.Visa, error) {
 	const op = "postrgresql visa storage: get"
 
 	rows, err := s.DB.Query(ctx,
@@ -70,14 +68,14 @@ func (s *storage) Get(ctx context.Context, userID, visaID uint64) (*model.Visa, 
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	med := convertVisaToModelVisa(p)
+	med := convertFromDBO(p)
 	return &med, nil
 }
 
-func (s *storage) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64, error) {
+func (s storage) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64, error) {
 	const op = "postrgresql visa storage: add"
 
-	v := convertModelVisaToVisa(mv)
+	v := convertToDBO(mv)
 
 	row := s.DB.QueryRow(ctx,
 		`INSERT INTO visas
@@ -107,10 +105,10 @@ func (s *storage) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64
 	return v.ID, nil
 }
 
-func (s *storage) Update(ctx context.Context, userID uint64, mv model.Visa) error {
+func (s storage) Update(ctx context.Context, userID uint64, mv model.Visa) error {
 	const op = "postrgresql visa storage: update"
 
-	v := convertModelVisaToVisa(mv)
+	v := convertToDBO(mv)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE visas
 	SET number = @number, issued_state = @issued_state, 

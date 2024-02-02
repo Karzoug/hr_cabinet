@@ -12,6 +12,6 @@ type vacation struct {
 	DateEnd   time.Time `db:"date_end"`
 }
 
-func convertVacationToModelVacation(v vacation) model.Vacation {
+func convertFromDBO(v vacation) model.Vacation {
 	return model.Vacation(v)
 }

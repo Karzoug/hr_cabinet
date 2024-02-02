@@ -10,17 +10,17 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-type service struct {
+type Subservice struct {
 	userRepository userRepository
 }
 
-func NewService(userRepository userRepository) *service {
-	return &service{
+func New(userRepository userRepository) Subservice {
+	return Subservice{
 		userRepository: userRepository,
 	}
 }
 
-func (s *service) Get(ctx context.Context, userID uint64) (*model.User, error) {
+func (s Subservice) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	const op = "user service: get user"
 
 	u, err := s.userRepository.Get(ctx, userID)
@@ -33,7 +33,7 @@ func (s *service) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	return u, nil
 }
 
-func (s *service) GetExpanded(ctx context.Context, userID uint64) (*model.ExpandedUser, error) {
+func (s Subservice) GetExpanded(ctx context.Context, userID uint64) (*model.ExpandedUser, error) {
 	const op = "user service: get expanded"
 
 	eu, err := s.userRepository.GetExpandedUser(ctx, userID)
@@ -46,7 +46,7 @@ func (s *service) GetExpanded(ctx context.Context, userID uint64) (*model.Expand
 	return eu, nil
 }
 
-func (s *service) ListShortUserInfo(ctx context.Context, params model.ListUsersParams) ([]model.ShortUserInfo, int, error) {
+func (s Subservice) ListShortUserInfo(ctx context.Context, params model.ListUsersParams) ([]model.ShortUserInfo, int, error) {
 	const op = "user service: list users"
 
 	users, count, err := s.userRepository.ListShortUserInfo(ctx, params)
@@ -56,7 +56,7 @@ func (s *service) ListShortUserInfo(ctx context.Context, params model.ListUsersP
 	return users, count, nil
 }
 
-func (s *service) Add(ctx context.Context, u model.User) (uint64, error) {
+func (s Subservice) Add(ctx context.Context, u model.User) (uint64, error) {
 	const op = "user service: add user"
 
 	// TODO: add user to authorizations, use transaction
@@ -73,7 +73,7 @@ func (s *service) Add(ctx context.Context, u model.User) (uint64, error) {
 	return id, nil
 }
 
-func (s *service) Update(ctx context.Context, user model.User) error {
+func (s Subservice) Update(ctx context.Context, user model.User) error {
 	const op = "user service: update user"
 
 	err := s.userRepository.Update(ctx, user)

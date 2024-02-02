@@ -14,16 +14,14 @@ import (
 )
 
 type storage struct {
-	*pq.DB
+	pq.DB
 }
 
-func NewUserStorage(db *pq.DB) (*storage, error) {
-	return &storage{
-		DB: db,
-	}, nil
+func New(db pq.DB) storage {
+	return storage{DB: db}
 }
 
-func (s *storage) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, error) {
+func (s storage) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, error) {
 	const op = "postgresql user storage: get scan"
 
 	rows, err := s.DB.Query(ctx,
@@ -45,11 +43,11 @@ func (s *storage) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, 
 		return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
 	}
 
-	ms := convertScanToModelScan(sc)
+	ms := convertFromDBO(sc)
 	return &ms, nil
 }
 
-func (s *storage) List(ctx context.Context, userID uint64) ([]model.Scan, error) {
+func (s storage) List(ctx context.Context, userID uint64) ([]model.Scan, error) {
 	const op = "postgresql user storage: list scans"
 
 	rows, err := s.DB.Query(ctx,
@@ -70,16 +68,16 @@ func (s *storage) List(ctx context.Context, userID uint64) ([]model.Scan, error)
 
 	scans := make([]model.Scan, len(ss))
 	for i, sc := range ss {
-		scans[i] = convertScanToModelScan(sc)
+		scans[i] = convertFromDBO(sc)
 	}
 
 	return scans, nil
 }
 
-func (s *storage) Add(ctx context.Context, userID uint64, ms model.Scan) (uint64, error) {
+func (s storage) Add(ctx context.Context, userID uint64, ms model.Scan) (uint64, error) {
 	const op = "postgresql user storage: add scan"
 
-	sc := convertModelScanToScan(ms)
+	sc := convertToDBO(ms)
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO scans
 		("user_id", "document_id", "type", "description")

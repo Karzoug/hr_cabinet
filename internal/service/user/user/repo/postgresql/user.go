@@ -17,16 +17,14 @@ import (
 const LimitListUsers = 10
 
 type storage struct {
-	*pq.DB
+	pq.DB
 }
 
-func NewUserStorage(db *pq.DB) (*storage, error) {
-	return &storage{
-		DB: db,
-	}, nil
+func New(db pq.DB) storage {
+	return storage{DB: db}
 }
 
-func (s *storage) Exist(ctx context.Context, userID uint64) (bool, error) {
+func (s storage) Exist(ctx context.Context, userID uint64) (bool, error) {
 	const op = "postrgresql user storage: exist user"
 
 	row := s.DB.QueryRow(ctx, "SELECT COUNT(1) FROM users WHERE id = @user_id",
@@ -64,7 +62,7 @@ FROM militaries
 WHERE militaries.user_id = @user_id`
 )
 
-func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
+func (s storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	const op = "postgresql user storage: get user"
 
 	rows, err := s.DB.Query(ctx, getUserQuery, pgx.NamedArgs{"user_id": userID})
@@ -92,14 +90,14 @@ func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	}
 
 	u.Military = *m
-	mu := convertUserToModelUser(u)
+	mu := convertFromDBO(u)
 	return &mu, nil
 }
 
 // // GetExpandedUser returns summary information about the user.
 // // (!) This is a complex query that potentially returns a lot of data.
 // // Use context with timeout.
-// func (s *storage) GetExpandedUser(ctx context.Context, userID uint64) (*model.ExpandedUser, error) {
+// func (s storage) GetExpandedUser(ctx context.Context, userID uint64) (*model.ExpandedUser, error) {
 // 	const op = "postgresql user storage: get expanded user"
 
 // 	batch := &pgx.Batch{}
@@ -218,7 +216,7 @@ func (s *storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 // 	return &expUser, nil
 // }
 
-func (s *storage) ListShortUserInfo(ctx context.Context, pms model.ListUsersParams) ([]model.ShortUserInfo, int, error) {
+func (s storage) ListShortUserInfo(ctx context.Context, pms model.ListUsersParams) ([]model.ShortUserInfo, int, error) {
 	const op = "postgresql user storage: list short user info"
 
 	sb := pgq.
@@ -263,15 +261,15 @@ func (s *storage) ListShortUserInfo(ctx context.Context, pms model.ListUsersPara
 
 	users := make([]model.ShortUserInfo, len(lu))
 	for i, u := range lu {
-		users[i] = convertShortUserInfoToModelShortUserInfo(u.shortUserInfo)
+		users[i] = convertFromShortUserInfoDBO(u.shortUserInfo)
 	}
 	return users, lu[0].TotalCount, nil
 }
 
-func (s *storage) Add(ctx context.Context, mu model.User) (uint64, error) {
+func (s storage) Add(ctx context.Context, mu model.User) (uint64, error) {
 	const op = "postrgresql user storage: add user"
 
-	user := convertModelUserToUser(&mu)
+	user := convertToDBO(&mu)
 
 	row := s.DB.QueryRow(ctx,
 		`INSERT INTO users 
@@ -323,10 +321,10 @@ func (s *storage) Add(ctx context.Context, mu model.User) (uint64, error) {
 	return user.ID, nil
 }
 
-func (s *storage) Update(ctx context.Context, mu model.User) error {
+func (s storage) Update(ctx context.Context, mu model.User) error {
 	const op = "postrgresql user storage: update user"
 
-	user := convertModelUserToUser(&mu)
+	user := convertToDBO(&mu)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE users
 	SET lastname = @lastname, firstname = @firstname, middlename = @middlename, 

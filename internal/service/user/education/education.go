@@ -10,18 +10,18 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-type service struct {
+type Subservice struct {
 	dbRepository dbRepository
 }
 
-func NewService(dbRepository dbRepository) *service {
-	return &service{
+func New(dbRepository dbRepository) Subservice {
+	return Subservice{
 		dbRepository: dbRepository,
 	}
 }
 
-func (s *service) Get(ctx context.Context, userID, educationID uint64) (*model.Education, error) {
-	const op = "education service: get"
+func (s Subservice) Get(ctx context.Context, userID, educationID uint64) (*model.Education, error) {
+	const op = "user service: get education"
 
 	ed, err := s.dbRepository.Get(ctx, userID, educationID)
 	if err != nil {
@@ -33,8 +33,8 @@ func (s *service) Get(ctx context.Context, userID, educationID uint64) (*model.E
 	return ed, nil
 }
 
-func (s *service) List(ctx context.Context, userID uint64) ([]model.Education, error) {
-	const op = "education service: list"
+func (s Subservice) List(ctx context.Context, userID uint64) ([]model.Education, error) {
+	const op = "user service: list educations"
 
 	eds, err := s.dbRepository.List(ctx, userID)
 	if err != nil {
@@ -43,8 +43,8 @@ func (s *service) List(ctx context.Context, userID uint64) ([]model.Education, e
 	return eds, nil
 }
 
-func (s *service) Add(ctx context.Context, userID uint64, ed model.Education) (uint64, error) {
-	const op = "education service: add"
+func (s Subservice) Add(ctx context.Context, userID uint64, ed model.Education) (uint64, error) {
+	const op = "user service: add education"
 
 	id, err := s.dbRepository.Add(ctx, userID, ed)
 	if err != nil {
@@ -56,8 +56,8 @@ func (s *service) Add(ctx context.Context, userID uint64, ed model.Education) (u
 	return id, nil
 }
 
-func (s *service) Update(ctx context.Context, userID uint64, ed model.Education) error {
-	const op = "education service: update"
+func (s Subservice) Update(ctx context.Context, userID uint64, ed model.Education) error {
+	const op = "user service: update education"
 
 	err := s.dbRepository.Update(ctx, userID, ed)
 	if err != nil {

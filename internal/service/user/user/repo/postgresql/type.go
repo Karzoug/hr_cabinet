@@ -51,13 +51,13 @@ type military struct {
 	HasScan      bool   `db:"has_scan"`
 }
 
-func convertShortUserInfoToModelShortUserInfo(info shortUserInfo) model.ShortUserInfo {
+func convertFromShortUserInfoDBO(info shortUserInfo) model.ShortUserInfo {
 	return model.ShortUserInfo(info)
 }
 
-func convertUserToModelUser(user *user) model.User {
+func convertFromDBO(user *user) model.User {
 	mu := model.User{
-		ShortUserInfo:       convertShortUserInfoToModelShortUserInfo(user.shortUserInfo),
+		ShortUserInfo:       convertFromShortUserInfoDBO(user.shortUserInfo),
 		DateOfBirth:         user.DateOfBirth,
 		PlaceOfBirth:        user.PlaceOfBirth,
 		Grade:               user.Grade,
@@ -93,7 +93,7 @@ func convertUserToModelUser(user *user) model.User {
 	return mu
 }
 
-func convertModelUserToUser(u *model.User) user {
+func convertToDBO(u *model.User) user {
 	var gr gender
 	switch u.Gender {
 	case model.GenderMale:
