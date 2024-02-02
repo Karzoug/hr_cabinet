@@ -1,4 +1,4 @@
-package contract
+package user
 
 import (
 	"context"
@@ -10,17 +10,24 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/pkg/repoerr"
 )
 
-type Subservice struct {
-	dbRepository dbRepository
+type contractRepo interface {
+	List(ctx context.Context, userID uint64) ([]model.Contract, error)
+	Get(ctx context.Context, userID, contractID uint64) (*model.Contract, error)
+	Add(ctx context.Context, userID uint64, tr model.Contract) (uint64, error)
+	Update(ctx context.Context, userID uint64, mc model.Contract) error
 }
 
-func New(dbRepository dbRepository) Subservice {
-	return Subservice{
+type ContractService struct {
+	dbRepository contractRepo
+}
+
+func NewContractService(dbRepository contractRepo) ContractService {
+	return ContractService{
 		dbRepository: dbRepository,
 	}
 }
 
-func (s Subservice) Get(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
+func (s ContractService) Get(ctx context.Context, userID, contractID uint64) (*model.Contract, error) {
 	const op = "user service: get contract"
 
 	tr, err := s.dbRepository.Get(ctx, userID, contractID)
@@ -33,7 +40,7 @@ func (s Subservice) Get(ctx context.Context, userID, contractID uint64) (*model.
 	return tr, nil
 }
 
-func (s Subservice) List(ctx context.Context, userID uint64) ([]model.Contract, error) {
+func (s ContractService) List(ctx context.Context, userID uint64) ([]model.Contract, error) {
 	const op = "user service: list contracts"
 
 	ctrs, err := s.dbRepository.List(ctx, userID)
@@ -45,7 +52,7 @@ func (s Subservice) List(ctx context.Context, userID uint64) ([]model.Contract, 
 	return ctrs, nil
 }
 
-func (s Subservice) Add(ctx context.Context, userID uint64, c model.Contract) (uint64, error) {
+func (s ContractService) Add(ctx context.Context, userID uint64, c model.Contract) (uint64, error) {
 	const op = "user service: add contract"
 
 	id, err := s.dbRepository.Add(ctx, userID, c)
@@ -58,7 +65,7 @@ func (s Subservice) Add(ctx context.Context, userID uint64, c model.Contract) (u
 	return id, nil
 }
 
-func (s Subservice) Update(ctx context.Context, userID uint64, c model.Contract) error {
+func (s ContractService) Update(ctx context.Context, userID uint64, c model.Contract) error {
 	const op = "user service: update contract"
 
 	err := s.dbRepository.Update(ctx, userID, c)

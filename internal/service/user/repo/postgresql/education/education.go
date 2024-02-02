@@ -1,4 +1,4 @@
-package postgresql
+package education
 
 import (
 	"context"

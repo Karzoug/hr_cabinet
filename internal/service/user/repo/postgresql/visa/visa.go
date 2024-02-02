@@ -1,4 +1,4 @@
-package postgresql
+package visa
 
 import (
 	"context"
