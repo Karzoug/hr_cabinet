@@ -33,7 +33,7 @@ const (
 	scanTypeOther      scanType = "Другое"
 )
 
-func convertFromDBO(s scan) model.Scan {
+func convertFromDAO(s scan) model.Scan {
 	var st model.ScanType
 	switch s.Type {
 	case scanTypePassport:
@@ -73,7 +73,7 @@ func convertFromDBO(s scan) model.Scan {
 	}
 }
 
-func convertToDBO(ms model.Scan) scan {
+func convertToDAO(ms model.Scan) scan {
 	var t scanType
 	switch ms.Type {
 	case model.ScanTypePassport:

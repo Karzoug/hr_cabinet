@@ -43,7 +43,7 @@ func (s storage) Get(ctx context.Context, userID, scanID uint64) (*model.Scan, e
 		return nil, fmt.Errorf("%s: %w", op, repoerr.ErrRecordNotFound)
 	}
 
-	ms := convertFromDBO(sc)
+	ms := convertFromDAO(sc)
 	return &ms, nil
 }
 
@@ -68,7 +68,7 @@ func (s storage) List(ctx context.Context, userID uint64) ([]model.Scan, error) 
 
 	scans := make([]model.Scan, len(ss))
 	for i, sc := range ss {
-		scans[i] = convertFromDBO(sc)
+		scans[i] = convertFromDAO(sc)
 	}
 
 	return scans, nil
@@ -77,7 +77,7 @@ func (s storage) List(ctx context.Context, userID uint64) ([]model.Scan, error) 
 func (s storage) Add(ctx context.Context, userID uint64, ms model.Scan) (uint64, error) {
 	const op = "postgresql user storage: add scan"
 
-	sc := convertToDBO(ms)
+	sc := convertToDAO(ms)
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO scans
 		("user_id", "document_id", "type", "description")

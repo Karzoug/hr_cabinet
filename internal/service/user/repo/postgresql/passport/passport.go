@@ -40,7 +40,7 @@ func (s storage) List(ctx context.Context, userID uint64) ([]model.Passport, err
 
 	passports := make([]model.Passport, len(psps))
 	for i, ed := range psps {
-		passports[i] = convertFromDBO(ed)
+		passports[i] = convertFromDAO(ed)
 	}
 
 	return passports, nil
@@ -66,14 +66,14 @@ func (s storage) Get(ctx context.Context, userID, passportID uint64) (*model.Pas
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	med := convertFromDBO(p)
+	med := convertFromDAO(p)
 	return &med, nil
 }
 
 func (s storage) Add(ctx context.Context, userID uint64, mp model.Passport) (uint64, error) {
 	const op = "postrgresql passport storage: add"
 
-	p := convertToDBO(mp)
+	p := convertToDAO(mp)
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO passports
 		("user_id", "number", "citizenship" "type", "issued_date", "issued_by", "issued_by_code")
@@ -103,7 +103,7 @@ func (s storage) Add(ctx context.Context, userID uint64, mp model.Passport) (uin
 func (s storage) Update(ctx context.Context, userID uint64, mp model.Passport) error {
 	const op = "postrgresql passport storage: update"
 
-	p := convertToDBO(mp)
+	p := convertToDAO(mp)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE passports
 	SET number = @number, 

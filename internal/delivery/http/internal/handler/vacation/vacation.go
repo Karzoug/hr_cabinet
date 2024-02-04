@@ -1,43 +1,44 @@
-package visa
+package vacation
 
 import (
 	"log/slog"
 	"net/http"
 	"strconv"
 
+	"github.com/muonsoft/validation/validator"
+
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/request"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
 	"github.com/Employee-s-file-cabinet/backend/internal/service/user"
-	"github.com/muonsoft/validation/validator"
 )
 
-type visaHandlers struct {
-	usecase user.VisaUseCase
+type vacationHandlers struct {
+	usecase user.VacationUseCase
 	logger  *slog.Logger
 }
 
-func NewVisaHandlers(v user.VisaUseCase, l *slog.Logger) visaHandlers {
-	return visaHandlers{
+func newVacationHandlers(v user.VacationUseCase, l *slog.Logger) vacationHandlers {
+	return vacationHandlers{
 		usecase: v,
 		logger:  l,
 	}
 }
 
 // @Produce application/json
-// @Success 200 {object} api.ListVisasResponse
-// @Router  /users/{user_id}/passports/{passport_id}/visas [get]
-func (h visaHandlers) ListVisas(w http.ResponseWriter, r *http.Request, userID uint64) {
+// @Success 200 {object} api.ListVacationsResponse
+// @Router  /users/{user_id}/vacations [get]
+func (h vacationHandlers) ListVacations(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
 
-	vs, err := h.usecase.List(ctx, userID)
+	vacations, err := h.usecase.List(ctx, userID)
 	if err != nil {
 		srverr.ResponseServiceError(w, r, err, h.logger)
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, toAPIListVisas(vs)); err != nil {
+	if err := response.JSON(w, http.StatusOK, toAPIListVacations(vacations)); err != nil {
 		srverr.LogError(r, err, false, h.logger)
 		srverr.ResponseError(w, r,
 			http.StatusInternalServerError,
@@ -47,12 +48,13 @@ func (h visaHandlers) ListVisas(w http.ResponseWriter, r *http.Request, userID u
 }
 
 // @Accept application/json
-// @Param   body body api.AddVisaJSONRequestBody true ""
-// @Router  /users/{user_id}/visas [post]
-func (h visaHandlers) AddVisa(w http.ResponseWriter, r *http.Request, userID uint64) {
+// @Param   body body api.AddVacationJSONRequestBody true ""
+// @Failure 409  {object} api.Error "vacation already exists"
+// @Router  /users/{user_id}/vacations [post]
+func (h vacationHandlers) AddVacation(w http.ResponseWriter, r *http.Request, userID uint64) {
 	ctx := r.Context()
 
-	var v api.AddVisaJSONRequestBody
+	var v api.AddVacationJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &v); err != nil {
 		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error(), h.logger)
 		return
@@ -64,7 +66,7 @@ func (h visaHandlers) AddVisa(w http.ResponseWriter, r *http.Request, userID uin
 		return
 	}
 
-	id, err := h.usecase.Add(ctx, userID, fromAPIAddVisaRequest(v))
+	id, err := h.usecase.Add(ctx, userID, fromAPIAddVacationRequest(v))
 	if err != nil {
 		srverr.ResponseServiceError(w, r, err, h.logger)
 		return
@@ -72,28 +74,28 @@ func (h visaHandlers) AddVisa(w http.ResponseWriter, r *http.Request, userID uin
 
 	w.Header().Set("Location",
 		api.BaseURL+"/users/"+strconv.FormatUint(userID, 10)+
-			"/visas/"+strconv.FormatUint(id, 10))
+			"/vacations/"+strconv.FormatUint(id, 10))
 	w.WriteHeader(http.StatusCreated)
 }
 
-// @Router /users/{user_id}/visas/{visa_id} [delete]
-func (h visaHandlers) DeleteVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64) {
+// @Router /users/{user_id}/vacations/{vacation_id} [delete]
+func (h vacationHandlers) DeleteVacation(w http.ResponseWriter, r *http.Request, userID uint64, vacationID uint64) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// @Produce application/json
-// @Success 200 {object} api.GetVisaResponse
-// @Router  /users/{user_id}/visas/{visa_id} [get]
-func (h visaHandlers) GetVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64) {
+// @Accept application/json
+// @Success 200 {object} api.GetVacationResponse
+// @Router  /users/{user_id}/vacations/{vacation_id} [get]
+func (h vacationHandlers) GetVacation(w http.ResponseWriter, r *http.Request, userID uint64, vacationID uint64) {
 	ctx := r.Context()
 
-	v, err := h.usecase.Get(ctx, userID, visaID)
+	v, err := h.usecase.Get(ctx, userID, vacationID)
 	if err != nil {
 		srverr.ResponseServiceError(w, r, err, h.logger)
 		return
 	}
 
-	if err := response.JSON(w, http.StatusOK, toAPIGetVisaResponse(v)); err != nil {
+	if err := response.JSON(w, http.StatusOK, toAPIGetVacationResponse(v)); err != nil {
 		srverr.LogError(r, err, false, h.logger)
 		srverr.ResponseError(w, r,
 			http.StatusInternalServerError,
@@ -103,12 +105,12 @@ func (h visaHandlers) GetVisa(w http.ResponseWriter, r *http.Request, userID, vi
 }
 
 // @Accept application/json
-// @Param   body body api.PatchVisaJSONRequestBody true ""
-// @Router  /users/{user_id}/visas/{visa_id} [patch]
-func (h visaHandlers) PatchVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64) {
+// @Param   body body api.PatchVacationJSONRequestBody true ""
+// @Router  /users/{user_id}/vacations/{vacation_id} [patch]
+func (h vacationHandlers) PatchVacation(w http.ResponseWriter, r *http.Request, userID uint64, vacationID uint64) {
 	ctx := r.Context()
 
-	var patch api.PatchVisaJSONRequestBody
+	var patch api.PatchVacationJSONRequestBody
 	// TODO: decode patch from request body
 
 	if err := patch.Validate(ctx, validator.Instance()); err != nil {
@@ -121,12 +123,12 @@ func (h visaHandlers) PatchVisa(w http.ResponseWriter, r *http.Request, userID, 
 }
 
 // @Accept  application/json
-// @Param   body body api.PutVisaJSONRequestBody true ""
-// @Router  /users/{user_id}/visas/{visa_id} [put]
-func (h visaHandlers) PutVisa(w http.ResponseWriter, r *http.Request, userID, visaID uint64) {
+// @Param   body body api.PutVacationJSONRequestBody true ""
+// @Router  /users/{user_id}/vacations/{vacation_id} [put]
+func (h vacationHandlers) PutVacation(w http.ResponseWriter, r *http.Request, userID, vacationID uint64) {
 	ctx := r.Context()
 
-	var v api.PutVisaJSONRequestBody
+	var v api.PutVacationJSONRequestBody
 	if err := request.DecodeJSONStrict(w, r, &v); err != nil {
 		srverr.ResponseError(w, r, http.StatusBadRequest, err.Error(), h.logger)
 		return
@@ -138,7 +140,7 @@ func (h visaHandlers) PutVisa(w http.ResponseWriter, r *http.Request, userID, vi
 		return
 	}
 
-	err := h.usecase.Update(ctx, userID, fromAPIPutVisaRequest(visaID, v))
+	err := h.usecase.Update(ctx, userID, fromAPIPutVacationRequest(vacationID, v))
 	if err != nil {
 		srverr.ResponseServiceError(w, r, err, h.logger)
 		return

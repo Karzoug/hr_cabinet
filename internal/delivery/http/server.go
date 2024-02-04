@@ -16,7 +16,7 @@ import (
 	"github.com/Employee-s-file-cabinet/backend/internal/config/env"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/api"
 	srverr "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/errors"
-	handlers "github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/handler"
+	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/handler"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/middleware"
 	"github.com/Employee-s-file-cabinet/backend/internal/delivery/http/internal/response"
 )
@@ -34,9 +34,9 @@ type server struct {
 }
 
 func New(cfg Config, envType env.Type,
-	userService handlers.UserService,
-	authService handlers.AuthService,
-	passwordRecoveryService handlers.PasswordRecoveryService,
+	userService handler.UserService,
+	authService handler.AuthService,
+	passwordRecoveryService handler.PasswordRecoveryService,
 	logger *slog.Logger) (*server, error) {
 	logger = logger.With(slog.String("from", "http-server"))
 
@@ -53,7 +53,7 @@ func New(cfg Config, envType env.Type,
 		logger:     logger,
 	}
 
-	handler := handlers.New(envType, userService, authService, passwordRecoveryService, logger)
+	handler := handler.New(envType, userService, authService, passwordRecoveryService, logger)
 
 	mux := chi.NewRouter()
 	mux.NotFound(srverr.NotFoundHandlerFn(logger))

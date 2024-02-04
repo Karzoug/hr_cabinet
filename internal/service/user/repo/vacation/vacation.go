@@ -43,7 +43,7 @@ func (s storage) Get(ctx context.Context, userID, vacationID uint64) (*model.Vac
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	mv := convertFromDBO(v)
+	mv := convertFromDAO(v)
 	return &mv, nil
 }
 
@@ -67,7 +67,7 @@ func (s storage) List(ctx context.Context, userID uint64) ([]model.Vacation, err
 
 	vacations := make([]model.Vacation, len(vs))
 	for i, v := range vs {
-		vacations[i] = convertFromDBO(v)
+		vacations[i] = convertFromDAO(v)
 	}
 
 	return vacations, nil

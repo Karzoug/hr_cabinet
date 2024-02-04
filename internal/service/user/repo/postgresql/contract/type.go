@@ -24,7 +24,7 @@ const (
 	contractTypeTemporary contractType = "Срочный"
 )
 
-func convertFromDBO(c contract) model.Contract {
+func convertFromDAO(c contract) model.Contract {
 	mc := model.Contract{
 		ID:              c.ID,
 		Number:          c.Number,
@@ -45,7 +45,7 @@ func convertFromDBO(c contract) model.Contract {
 	return mc
 }
 
-func convertToDBO(mc model.Contract) contract {
+func convertToDAO(mc model.Contract) contract {
 	c := contract{
 		ID:              mc.ID,
 		Number:          mc.Number,

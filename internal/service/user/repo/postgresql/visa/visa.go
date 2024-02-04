@@ -42,7 +42,7 @@ func (s storage) List(ctx context.Context, userID uint64) ([]model.Visa, error) 
 
 	visas := make([]model.Visa, len(vs))
 	for i, ed := range vs {
-		visas[i] = convertFromDBO(ed)
+		visas[i] = convertFromDAO(ed)
 	}
 
 	return visas, nil
@@ -68,14 +68,14 @@ func (s storage) Get(ctx context.Context, userID, visaID uint64) (*model.Visa, e
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	med := convertFromDBO(p)
+	med := convertFromDAO(p)
 	return &med, nil
 }
 
 func (s storage) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64, error) {
 	const op = "postrgresql visa storage: add"
 
-	v := convertToDBO(mv)
+	v := convertToDAO(mv)
 
 	row := s.DB.QueryRow(ctx,
 		`INSERT INTO visas
@@ -108,7 +108,7 @@ func (s storage) Add(ctx context.Context, userID uint64, mv model.Visa) (uint64,
 func (s storage) Update(ctx context.Context, userID uint64, mv model.Visa) error {
 	const op = "postrgresql visa storage: update"
 
-	v := convertToDBO(mv)
+	v := convertToDAO(mv)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE visas
 	SET number = @number, issued_state = @issued_state, 

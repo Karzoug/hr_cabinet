@@ -24,7 +24,7 @@ const (
 	passportTypeNational      passportType = "Внутренний"
 )
 
-func convertFromDBO(p passport) model.Passport {
+func convertFromDAO(p passport) model.Passport {
 	var pt model.PassportType
 	switch p.Type {
 	case passportTypeInternational:
@@ -44,7 +44,7 @@ func convertFromDBO(p passport) model.Passport {
 	}
 }
 
-func convertToDBO(mp model.Passport) passport {
+func convertToDAO(mp model.Passport) passport {
 	var t passportType
 	switch mp.Type {
 	case model.PassportTypeInternational:

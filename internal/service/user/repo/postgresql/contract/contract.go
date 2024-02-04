@@ -40,7 +40,7 @@ func (s storage) List(ctx context.Context, userID uint64) ([]model.Contract, err
 
 	contracts := make([]model.Contract, len(trs))
 	for i, tr := range trs {
-		contracts[i] = convertFromDBO(tr)
+		contracts[i] = convertFromDAO(tr)
 	}
 
 	return contracts, nil
@@ -68,14 +68,14 @@ func (s storage) Get(ctx context.Context, userID, contractID uint64) (*model.Con
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	mc := convertFromDBO(c)
+	mc := convertFromDAO(c)
 	return &mc, nil
 }
 
 func (s storage) Add(ctx context.Context, userID uint64, mc model.Contract) (uint64, error) {
 	const op = "postgresql contract storage: add"
 
-	c := convertToDBO(mc)
+	c := convertToDAO(mc)
 
 	row := s.DB.QueryRow(ctx, `INSERT INTO contracts
 		("user_id", "number", "contract_type", "work_type_id", "probation_period", "date_begin", "date_end")
@@ -109,7 +109,7 @@ func (s storage) Add(ctx context.Context, userID uint64, mc model.Contract) (uin
 func (s storage) Update(ctx context.Context, userID uint64, mc model.Contract) error {
 	const op = "postgresql contract storage: update"
 
-	c := convertToDBO(mc)
+	c := convertToDAO(mc)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE contracts
 		SET number = @number, contract_type = @contract_type, work_type_id = @work_type_id, 

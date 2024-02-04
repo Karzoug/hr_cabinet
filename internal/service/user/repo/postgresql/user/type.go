@@ -55,7 +55,7 @@ func convertFromShortUserInfoDBO(info shortUserInfo) model.ShortUserInfo {
 	return model.ShortUserInfo(info)
 }
 
-func convertFromDBO(user *user) model.User {
+func convertFromDAO(user *user) model.User {
 	mu := model.User{
 		ShortUserInfo:       convertFromShortUserInfoDBO(user.shortUserInfo),
 		DateOfBirth:         user.DateOfBirth,
@@ -93,7 +93,7 @@ func convertFromDBO(user *user) model.User {
 	return mu
 }
 
-func convertToDBO(u *model.User) user {
+func convertToDAO(u *model.User) user {
 	var gr gender
 	switch u.Gender {
 	case model.GenderMale:

@@ -41,7 +41,7 @@ func (s storage) List(ctx context.Context, userID uint64) ([]model.Training, err
 
 	trainings := make([]model.Training, len(trs))
 	for i, tr := range trs {
-		trainings[i] = convertFromDBO(tr)
+		trainings[i] = convertFromDAO(tr)
 	}
 
 	return trainings, nil
@@ -69,7 +69,7 @@ func (s storage) Get(ctx context.Context, userID, trainingID uint64) (*model.Tra
 		return nil, repoerr.ErrRecordNotFound
 	}
 
-	med := convertFromDBO(ed)
+	med := convertFromDAO(ed)
 	return &med, nil
 }
 

@@ -90,7 +90,7 @@ func (s storage) Get(ctx context.Context, userID uint64) (*model.User, error) {
 	}
 
 	u.Military = *m
-	mu := convertFromDBO(u)
+	mu := convertFromDAO(u)
 	return &mu, nil
 }
 
@@ -269,7 +269,7 @@ func (s storage) ListShortUserInfo(ctx context.Context, pms model.ListUsersParam
 func (s storage) Add(ctx context.Context, mu model.User) (uint64, error) {
 	const op = "postrgresql user storage: add user"
 
-	user := convertToDBO(&mu)
+	user := convertToDAO(&mu)
 
 	row := s.DB.QueryRow(ctx,
 		`INSERT INTO users 
@@ -324,7 +324,7 @@ func (s storage) Add(ctx context.Context, mu model.User) (uint64, error) {
 func (s storage) Update(ctx context.Context, mu model.User) error {
 	const op = "postrgresql user storage: update user"
 
-	user := convertToDBO(&mu)
+	user := convertToDAO(&mu)
 
 	tag, err := s.DB.Exec(ctx, `UPDATE users
 	SET lastname = @lastname, firstname = @firstname, middlename = @middlename, 
